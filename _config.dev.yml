@@ -11,9 +11,9 @@ title                    : "DevOps"
 title_separator          : "-"
 name                     : "Igor Cicimov"
 description              : "DevOps at Encompass"
-url                      : "http://localhost:4445" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : "http://127.0.0.1:4445" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "/blog" # the subpath of your site, e.g. "/blog"
-repository               : "icicimov/jekyll-now" # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
+repository               : "icicimov/blog" # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 teaser                   : # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
@@ -232,6 +232,7 @@ defaults:
       share: true
       related: true
       author_profile: true
+
 
 
 # HTML Compression

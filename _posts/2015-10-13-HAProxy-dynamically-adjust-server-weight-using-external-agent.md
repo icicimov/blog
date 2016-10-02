@@ -1,11 +1,5 @@
 ---
-comments: true
-author:
-  name: Igor Cicimov
-  email: igorc@encompasscorporation.com
-description: 'Dynamically adjust server weight using external agent in HAProxy'
-keywords: 'haproxy'
-license: '[CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0)'
+type: posts
 title: HAProxy dynamically adjust server weight using external agent
 category: Server
 tags: haproxy

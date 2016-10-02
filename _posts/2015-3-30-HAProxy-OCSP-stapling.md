@@ -1,11 +1,5 @@
 ---
-comments: true
-author:
-  name: Igor Cicimov
-  email: igorc@encompasscorporation.com
-description: 'Introduction to OCSP and OCSP stapling and HAProxy OCSP stapling usage'
-keywords: 'haproxy,ocsp'
-license: '[CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0)'
+type: posts
 title: 'HAProxy OCSP stapling'
 category: Server
 tags: [haproxy, ocsp]
