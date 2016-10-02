@@ -7,10 +7,10 @@
 
 # Site Settings
 locale                   : "en"
-title                    : "Site Title"
+title                    : "DevOps"
 title_separator          : "-"
-name                     : "Your Name"
-description              : "An amazing website."
+name                     : "Igor Cicimov"
+description              : "DevOps at Encompass"
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
@@ -20,7 +20,7 @@ words_per_minute         : 200
 comments:
   provider               : # false (default), "disqus", "discourse", "facebook", "google-plus", "staticman", "custom"
   disqus:
-    shortname            : # https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
+    shortname            : "http-icicimov-github-io" 
   discourse:
     server               : # https://meta.discourse.org/t/embedding-discourse-comments-via-javascript/31963 , e.g.: meta.discourse.org
   facebook:
@@ -30,7 +30,7 @@ comments:
     colorscheme          : # "light" (default), "dark"
 staticman:
   allowedFields          : ['name', 'email', 'url', 'message']
-  branch                 : # "master", "gh-pages"
+  branch                 : "gh-pages" # "master", "gh-pages"
   commitMessage          : "New comment."
   filename               : comment-{@timestamp}
   format                 : "yml"
@@ -55,7 +55,7 @@ yandex_site_verification :
 
 # Social Sharing
 twitter:
-  username               :
+  username               : "icicimov"
 facebook:
   username               :
   app_id                 :
@@ -77,11 +77,11 @@ analytics:
 
 # Site Author
 author:
-  name             : "Your Name"
+  name             : "Igor Cicimov"
   avatar           : "bio-photo.jpg"
   bio              : "I am an amazing person."
-  location         : "Somewhere"
-  email            :
+  location         : "Sydney, Australia"
+  email            : "igorc@encompasscorporation.com"
   uri              :
   bitbucket        :
   codepen          :
@@ -94,13 +94,13 @@ author:
   keybase          :
   instagram        :
   lastfm           :
-  linkedin         :
+  linkedin         : "igorcicimov"
   pinterest        :
   soundcloud       :
   stackoverflow    : # "123456/username" (the last part of your profile url, e.g. http://stackoverflow.com/users/123456/username)
   steam            :
   tumblr           :
-  twitter          :
+  twitter          : "icicimov"
   vine             :
   weibo            :
   xing             :
@@ -172,7 +172,7 @@ sass:
 permalink: /:categories/:title/
 paginate: 5 # amount of posts to show
 paginate_path: /page:num/
-timezone: # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+timezone: Australia/Sydney
 
 
 # Plugins
@@ -219,6 +219,18 @@ tag_archive:
 #   permalinks:
 #     category: /categories/:name/
 #     tag: /tags/:name/
+
+defaults:
+  # _posts
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      read_time: true
+      comments: true
+      share: true
+      related: true
 
 
 # HTML Compression
