@@ -18,6 +18,10 @@ root@server:~# aptitude install libldap2-dev
 Then we switch to our Nginx source directory we have created in this article Centralized logs collection with Logstash and clone the Nginx ldap module inside the modules directory from its project site on GitHub:
 
 ```
+root@server:~# aptitude install apache2-utils liblua5.1-dev daemon dbconfig-common
+root@server:~# add-apt-repository ppa:nginx/stable
+root@server:~# aptitude update
+root@server:~# aptitude build-dep nginx-naxsi
 root@server:~# cd /tmp/nginx-1.6.0
 root@server:/tmp/nginx-1.6.0# cd debian/modules
 root@server:/tmp/nginx-1.6.0/debian/modules# git clone https://github.com/kvspb/nginx-auth-ldap.git
@@ -155,7 +159,6 @@ server {
     root                /opt/server/webapp/content;
 ...   
     location / {
-        include  /etc/nginx/mysite.rules;
         proxy_pass_header Server;
         proxy_set_header Host $http_host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
