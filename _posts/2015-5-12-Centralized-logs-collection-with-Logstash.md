@@ -8,6 +8,7 @@ tags: [logstash, nginx, elasticsearch, kibana, redis]
 Logstash is a tool for managing events and logs. It is very useful for collecting, parsing and storing logs for later use like for example searching. It comes with a web interface for searching through the logs. The picture bellow shows a typical centralized logstash environment. It consists of logstash clients installed on the servers running applications we want to collect logs for and centralized logstash server that does the indexing and storing of the logs. These remote logstash instances are referred as `shippers` and the central one as `indexer` or `reader`.
 
 ![Logstash environment](/blog/images/Logstash_central_log_server_architecture.png "Logstash environment")
+***Picture1:** Logstash environment*
 
 The broker of choice is Redis and the storage for indexing is Elastic Search, which comes natural since Logstash is part of Elastic Search project. The web interface will be served via Nginx which is light enough for this purpose.
 
@@ -570,8 +571,12 @@ root@myserver:/opt# vi /var/www/kibana/config.js
 After all this in place we should see the following dashbord after log in to https://myserver.mydomain.com:
 
 ![Kibana](/blog/images/kibana.png "Kibana")
+***Picture2:** Kibana dashboard*
 
 Obviously some configuration has been done to the dashboard and some data collected already when the screen shot was made.
+
+![Marvel](/blog/images/logstash_marvel_plugin.png "ElasticSearch Marvel plugin")
+***Picture3:** ElasticSearch Marvel plugin*
 
 ## Clients
 
