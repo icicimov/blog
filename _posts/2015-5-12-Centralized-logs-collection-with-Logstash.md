@@ -2,7 +2,7 @@
 type: posts
 title: 'Centralized logs collection with Logstash, ElasticSearch and Kibana in Amazon AWS'
 category: Server
-tags: [logstash, nginx, elasticsearch, kibana]
+tags: [logstash, nginx, elasticsearch, kibana, redis]
 ---
 
 Logstash is a tool for managing events and logs. It is very useful for collecting, parsing and storing logs for later use like for example searching. It comes with a web interface for searching through the logs. The picture bellow shows a typical centralized logstash environment. It consists of logstash clients installed on the servers running applications we want to collect logs for and centralized logstash server that does the indexing and storing of the logs. These remote logstash instances are referred as `shippers` and the central one as `indexer` or `reader`.
@@ -568,6 +568,10 @@ root@myserver:/opt# vi /var/www/kibana/config.js
 ```
 
 After all this in place we should see the following dashbord after log in to https://myserver.mydomain.com:
+
+![Kibana](/blog/images/kibana.png "Kibana")
+
+Obviously some configuration has been done to the dashboard and some data collected already when the screen shot was made.
 
 ## Clients
 
