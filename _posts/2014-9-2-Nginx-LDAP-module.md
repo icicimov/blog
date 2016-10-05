@@ -1,7 +1,7 @@
 ---
 type: posts
 title: 'Nginx LDAP module on Debian/Ubuntu'
-category: Server
+category: Web Server
 tags: [nginx, ldap]
 ---
 
