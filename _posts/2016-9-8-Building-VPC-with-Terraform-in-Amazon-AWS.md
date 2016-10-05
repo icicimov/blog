@@ -5,7 +5,7 @@ category: Server
 tags: [aws, terraform]
 ---
 
-[Terraform](https://www.terraform.io) is a tool for automating infrastructure management. It can be used for a simple task like managing single application instance or more complex ones like managing entire datacenter or virtual cloud. The infrastructure Terraform can manage includes low-level components such as compute instances, storage, and networking, as well as high-level components such as DNS entries, SaaS features and others. It is a great tool to have in a DevOps environment and I find it very powerful but simple to use when it comes to managing infrastructure as a code (IaaC). And the best thing about it is the support for various platforms and providers like AWS, Digital Ocean, OpenStack, Microsoft Azure, Google Cloud etc. meaning you get to use the same toll to manage your infrastructure on any of these cloud providers. See the [Providers](https://www.terraform.io/docs/providers/index.html) page for full list.
+[Terraform](https://www.terraform.io) is a tool for automating infrastructure management. It can be used for a simple task like managing single application instance or more complex ones like managing entire datacenter or virtual cloud. The infrastructure Terraform can manage includes low-level components such as compute instances, storage, and networking, as well as high-level components such as DNS entries, SaaS features and others. It is a great tool to have in a DevOps environment and I find it very powerful but simple to use when it comes to managing infrastructure as a code (IaaC). And the best thing about it is the support for various platforms and providers like AWS, Digital Ocean, OpenStack, Microsoft Azure, Google Cloud etc. meaning you get to use the same tool to manage your infrastructure on any of these cloud providers. See the [Providers](https://www.terraform.io/docs/providers/index.html) page for full list.
 
 Terraform uses configuration files to describe the components of the infrastructure we want to build and manage. It generates an execution plan describing what it will do to reach the desired state, and then executes it to build the `terraform.tfstate` file by default. This state file is extremely important; it maps various resource metadata to actual resource IDs so that Terraform knows what it is managing. This file must be saved and distributed to anyone who might run Terraform against the very VPC infrastructure we created so storing this in GitHub repository is the best way to go in order to share a project.
 
@@ -20,11 +20,13 @@ What is this going to do is:
 * Create a multi tier VPC (Virtual Private Cloud) in specific AWS region
 * Create 2 Private and 1 Public Subnet in the specific VPC CIDR
 * Create Routing Tables and attach them to the appropriate subnets
-* Create a NAT instance with ASG (Auto Scaling Group) to server as default gateway for the private subnets
+* Create a NAT instance with ASG (Auto Scaling Group) to serve as default gateway for the private subnets
 * Create Security Groups to use with EC2 instances we create
 * Create SNS notifications for Auto Scaling events
 
 This is a step-by-step walk through, the source code will be made available at some point.
+
+We will need an SSH key uploaded and a SNS topic created in our AWS account before we start.
 
 ## Building Infrastructure
 
@@ -52,7 +54,7 @@ provider "aws" {
 
 for our AWS provider type. 
 
-Then we create a `.tf` file `vpc_environment.tf` where we put all essential variables needed to build the VPC, like VPC CIDR, AWS zone and regions, EC2 instance type and the ssh key and other AWS related parameters:
+Then we create a `.tf` file `vpc_environment.tf` where we put all essential variables needed to build the VPC, like VPC CIDR, AWS zone and regions, default EC2 instance type and the ssh key and other AWS related parameters:
 
 ```
 /*=== VARIABLES ===*/
@@ -71,7 +73,6 @@ variable "vpc" {
         "tag"         = "unknown"
         "cidr_block"  = "unknown"
         "subnet_bits" = "unknown"
-        "region"      = "unknown"
         "owner_id"    = "unknown"
         "sns_topic"   = "unknown"
     }
@@ -133,11 +134,10 @@ I have created most of the variables as generic and then passing on their values
 ```
 vpc = {
     tag                   = "TFTEST"
-    region                = "ap-southeast-2"
     owner_id              = "<owner-id>"
     cidr_block            = "10.99.0.0/20"
     subnet_bits           = "4"
-    sns_topic             = "arn:aws:sns:ap-southeast-2:<owner-id>:<topic-name>"
+    sns_topic             = "arn:aws:sns:<aws-region>:<owner-id>:<topic-name>"
 }
 key_name                  = "<ssh-key>"
 nat.instance_type         = "m3.medium"
