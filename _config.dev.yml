@@ -233,6 +233,11 @@ defaults:
       related: true
       author_profile: true
 
+related:
+  max_count: 4
+  min_score: 0.1
+  accuracy: 0.75
+
 feature:
   visible: true
   headline: "Featured Tutorials"
