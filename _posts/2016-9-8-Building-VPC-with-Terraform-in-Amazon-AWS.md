@@ -1,7 +1,10 @@
 ---
 type: posts
+header:
+  teaser: '4940499208_b79b77fb0a_z.jpg'
 title: 'Building VPC with Terraform in Amazon AWS'
-category: DevOps
+categories: 
+  - DevOps
 tags: [aws, terraform]
 ---
 
@@ -26,7 +29,7 @@ What is this going to do is:
 
 This is a step-by-step walk through, the source code will be made available at some point.
 
-We will need an SSH key uploaded and a SNS topic created in our AWS account before we start.
+We will need an SSH key uploaded and `awscli` tool installed before we start.
 
 ## Building Infrastructure
 
@@ -137,7 +140,7 @@ vpc = {
     owner_id              = "<owner-id>"
     cidr_block            = "10.99.0.0/20"
     subnet_bits           = "4"
-    sns_topic             = "arn:aws:sns:<aws-region>:<owner-id>:<topic-name>"
+    sns_email             = "<sns-email>"
 }
 key_name                  = "<ssh-key>"
 nat.instance_type         = "m3.medium"
@@ -635,6 +638,10 @@ resource "aws_autoscaling_notification" "main" {
 
 resource "aws_sns_topic" "main" {
   name = "${lower(var.vpc["tag"])}-sns-topic"
+
+  provisioner "local-exec" {
+    command = "aws sns subscribe --topic-arn ${self.arn} --protocol email --notification-endpoint ${var.vpc["sns_email"]}"
+  }
 }
 ```
 
