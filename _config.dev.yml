@@ -233,6 +233,10 @@ defaults:
       related: true
       author_profile: true
 
+feature:
+  visible: true
+  headline: "Featured Tutorials"
+  category: DevOps
 
 
 # HTML Compression

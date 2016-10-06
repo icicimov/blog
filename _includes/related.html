@@ -1,0 +1,20 @@
+<!-- /_includes/featured.html -->
+<h3 class="tile__header">{% if page.feature.headline %}{{ page.feature.headline }}{% else %}Featured Posts{% endif %}</h3>
+  <div class="tiles">
+    {% assign features = site.categories[page.feature.category] | where:"featured", true %}
+    {% for post in features limit:3 %}
+      <article class="tile__item" itemscope itemtype="http://schema.org/CreativeWork">
+        <meta itemprop="text" content="{{ post.excerpt | strip_html }}">
+        <a href="{{ post.url }}">
+          <img src="{% if post.image.teaser %}{{ post.image.teaser }}{% else %}{{ site.teaser }}{% endif %}" itemprop="image" alt="{{ post.title }}">
+          <h3 class="tile__title" itemprop="headline">{{ post.title | markdownify | remove: '<p>' | remove: '</p>' }}</h3>
+          {% assign readtime = post.content | strip_html | number_of_words | divided_by:site.words_per_minute %}
+          <span class="tile__item-time">{% if readtime <= 1 %}1{% else %}{{ readtime }}{% endif %} min read</span>
+        </a>
+        {% if post.work %}
+          <span class="tile__category">{{ post.work }}</span>
+        {% endif %}
+      </article>
+    {% endfor %}
+  </div>
+

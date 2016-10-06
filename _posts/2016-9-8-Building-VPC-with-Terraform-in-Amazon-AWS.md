@@ -1,7 +1,7 @@
 ---
 type: posts
 title: 'Building VPC with Terraform in Amazon AWS'
-category: Server
+category: DevOps
 tags: [aws, terraform]
 ---
 
