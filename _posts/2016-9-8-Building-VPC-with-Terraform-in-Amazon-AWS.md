@@ -5,12 +5,12 @@ header:
 title: 'Building VPC with Terraform in Amazon AWS'
 categories: 
   - DevOps
-tags: [aws, terraform]
+tags: [aws, terraform, infrastructure]
 ---
 
 [Terraform](https://www.terraform.io) is a tool for automating infrastructure management. It can be used for a simple task like managing single application instance or more complex ones like managing entire datacenter or virtual cloud. The infrastructure Terraform can manage includes low-level components such as compute instances, storage, and networking, as well as high-level components such as DNS entries, SaaS features and others. It is a great tool to have in a DevOps environment and I find it very powerful but simple to use when it comes to managing infrastructure as a code (IaaC). And the best thing about it is the support for various platforms and providers like AWS, Digital Ocean, OpenStack, Microsoft Azure, Google Cloud etc. meaning you get to use the same tool to manage your infrastructure on any of these cloud providers. See the [Providers](https://www.terraform.io/docs/providers/index.html) page for full list.
 
-Terraform uses configuration files to describe the components of the infrastructure we want to build and manage. It generates an execution plan describing what it will do to reach the desired state, and then executes it to build the `terraform.tfstate` file by default. This state file is extremely important; it maps various resource metadata to actual resource IDs so that Terraform knows what it is managing. This file must be saved and distributed to anyone who might run Terraform against the very VPC infrastructure we created so storing this in GitHub repository is the best way to go in order to share a project.
+Terraform uses its own domain-specific language (DSL) called the Hashicorp Configuration Language (HCL): a fully JSON-compatible language for describing infrastructure as code. Configuration files created by HCL are used to describe the components of the infrastructure we want to build and manage. It generates an execution plan describing what it will do to reach the desired state, and then executes it to build the `terraform.tfstate` file by default. This state file is extremely important; it maps various resource metadata to actual resource IDs so that Terraform knows what it is managing. This file must be saved and distributed to anyone who might run Terraform against the very VPC infrastructure we created so storing this in GitHub repository is the best way to go in order to share a project.
 
 To install terraform follow the simple steps from the install web page [Getting Started](https://www.terraform.io/intro/getting-started/install.html)
 
@@ -29,7 +29,7 @@ What is this going to do is:
 
 This is a step-by-step walk through, the source code will be made available at some point.
 
-We will need an SSH key uploaded and `awscli` tool installed before we start.
+We will need an SSH key and SSL certificate (for ELB) uploaded to our AWS account and `awscli` tool installed on the machine we are running terraform before we start.
 
 ## Building Infrastructure
 
@@ -118,7 +118,7 @@ variable "images" {
         eu-west-1      = "ami-47a23a30"
         ap-southeast-2 = "ami-6c14310f"
         us-east-1      = "ami-2d39803a"
-        us-west-1      = "ami-d732f0b7"
+        us-west-1      = "ami-48db9d28"
         us-west-2      = "ami-d732f0b7"
     }
 }
@@ -150,7 +150,7 @@ env_domain = {
 }
 ```
 
-Terraform does not support (yet) interpolation by referencing another variable in a variable name nor usage of an array as an element of a map. These are couple of shortcomings but If you have used AWS's CloudFormation you would have faced similar "issues". After all these tools are not really a programming language so we have to accept them as they are and try to make the best of it.
+Terraform does not support (yet) interpolation by referencing another variable in a variable name (see [Terraform issue #2727](https://github.com/hashicorp/terraform/issues/2727)) nor usage of an array as an element of a map. These are couple of shortcomings but If you have used AWS's CloudFormation you would have faced similar "issues". After all these tools are not really a programming language so we have to accept them as they are and try to make the best of it.
 
 We can see I have separated the provider stuff from the rest of it including the resource so I can easily share my project without exposing sensitive data. For example I can create GitHub repository out of my project directory and put the `provider-credentials.tfvariables` file in `.gitignore` so it never gets accidentally uploaded.
 
@@ -284,7 +284,6 @@ resource "aws_iam_policy_attachment" "nat" {
     roles      = ["${aws_iam_role.nat.name}"]
     policy_arn = "${aws_iam_policy.nat.arn}"
 }
-
 
 /*=== NAT INSTANCE ASG ===*/
 resource "aws_autoscaling_group" "nat" {
@@ -693,3 +692,167 @@ to create our VPC. When finished we can destroy the infrastructure:
 ```
 $ terraform destroy vpc.tfplan --force
 ```
+
+### Adding ELB to the mix
+
+Since we are building highly available infrastructure we are going to need a public ELB to put our application servers behind it. Under assumption that the app is listening on port 8080 we can add the following: 
+
+```
+variable "app" {
+    default = {
+        elb_ssl_cert_arn  = ""
+        elb_hc_uri        = ""
+        listen_port_http  = ""
+        listen_port_https = ""
+    }
+}
+
+```
+
+to our `vpc_environment.tf` file and set the values by putting:
+
+```
+app = {
+    instance_type         = "<app-instance-type>"
+    host_name             = "<app-host-name>"
+    elb_ssl_cert_arn      = "<elb-ssl-cert-arn>"
+    elb_hc_uri            = "<app-health-check-path>"
+    listen_port_http      = "8080"
+    listen_port_https     = "443"
+    domain                = "<domain-name>"
+    zone_id               = "<domain-zone-id>"
+}
+```
+
+in our `vpc_environment.tfvars` file. Now we can create the ELB by creating the `vpc_elb.tf` file with following content: 
+
+```
+/*== ELB ==*/
+resource "aws_elb" "app" {
+  /* Requiered for EC2 ELB only
+    availability_zones = "${var.zones}"
+  */
+  name            = "${var.vpc["tag"]}-elb-app"
+  subnets         = ["${aws_subnet.public-subnets.*.id}"]
+  security_groups = ["${aws_security_group.elb.id}"]
+  listener {
+    instance_port      = "${var.app["listen_port_http"]}"
+    instance_protocol  = "http"
+    lb_port            = 443
+    lb_protocol        = "https"
+    ssl_certificate_id = "${var.app["elb_ssl_cert_arn"]}"
+  }
+  listener {
+    instance_port     = "${var.app["listen_port_http"]}"
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+    timeout             = 5
+    target              = "HTTP:${var.app["listen_port_http"]}${var.app["elb_hc_uri"]}"
+    interval            = 10
+  }
+  cross_zone_load_balancing   = true
+  idle_timeout                = 960  # set it higher than the conn. timeout of the backend servers
+  connection_draining         = true
+  connection_draining_timeout = 300
+  tags {
+    Name = "${var.vpc["tag"]}-elb-app"
+    Type = "elb"
+  }
+}
+
+/* In case we need sticky sessions
+resource "aws_lb_cookie_stickiness_policy" "app" {
+    name = "${var.vpc["tag"]}-elb-app-policy"
+    load_balancer = "${aws_elb.app.id}"
+    lb_port = 443
+    cookie_expiration_period = 960
+}
+*/
+
+/* CREATE CNAME DNS RECORD FOR THE ELB */
+resource "aws_route53_record" "app" {
+  zone_id = "${var.app["zone_id"]}"
+  name    = "${lower(var.vpc["tag"])}.${var.app["name"]}"
+  type    = "CNAME"
+  ttl     = "60"
+  records = ["${aws_elb.app.dns_name}"]
+}
+```
+
+The ELB does not support redirections so the app needs to deal with redirecting users from port 80/8080 to 443 for fully secure SSL operation.
+
+Finally, the Security Group for the ELB in `vpc_security.tf` file:
+
+```
+resource "aws_security_group" "elb" {
+    name = "${var.vpc["tag"]}-elb"
+    ingress {
+        from_port   = 80
+        to_port     = 80
+        protocol    = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    ingress {
+        from_port   = 443
+        to_port     = 443
+        protocol    = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    egress {
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    vpc_id = "${aws_vpc.environment.id}"
+    tags {
+        Name        = "${var.vpc["tag"]}-elb-security-group"
+        Environment = "${var.vpc["tag"]}"
+    }
+}
+```
+
+and we are done.
+
+To get some outputs we are interested in from the ELB resource we can add this:
+
+```
+output "elb-app-public-dns" {
+  value = "${aws_elb.app.dns_name}"
+}
+
+output "route53-app-public-dns" {
+  value = "${aws_route53_record.app.fqdn}"
+}
+```
+
+to the `outputs.tf` file.
+
+## Conclusion
+
+As we add more infrastructure to the VPC we can make some improvements to the above code by creating modules for the common tasks like Autoscaling Groups and Launch Configurations, ELB's, IAM Profiles etc., see [Creating Modules](https://www.terraform.io/docs/modules/create.html) for details. 
+
+Not everything can be done this way though. For example the repetative code like:
+
+```
+resource "aws_subnet" "public-subnets" {
+    vpc_id            = "${aws_vpc.environment.id}"
+    count             = "${length(split(",", lookup(var.azs, var.provider["region"])))}"
+    cidr_block        = "${cidrsubnet(var.vpc["cidr_block"], var.vpc["subnet_bits"], count.index)}"
+    availability_zone = "${element(split(",", lookup(var.azs, var.provider["region"])), count.index)}"
+    tags {
+        Name          = "${var.vpc["tag"]}-public-subnet-${count.index}"
+        Environment   = "${lower(var.vpc["tag"])}"
+    }
+    map_public_ip_on_launch = true
+}
+```
+
+is a great candidate for a module except Terraform does not (yet) support `count` parameter inside modules, see [Support issue #953](https://github.com/hashicorp/terraform/issues/953)
+
+Apart from couple of shortcomings mentioned, Terraform is really a powerful tool for creating and managing infrastructure. With its Templates and Provisioners it lays the foundation for other CM and automation tools like Ansible, which is our CM (Configuration Manager) of choice, to deploy systems in an infrastructure environment.
