@@ -88,4 +88,4 @@ and the haproxy reload hook as this:
 
 which will make the client connections hang for very short time needed for the reload.
 
-Puting this in a crontab provides for central management of the haproxy servers for each of our environments.
+Puting this in a crontab provides for central management of the haproxy servers for each of our environments. It also guarantees the integrity and uniformity of the haproxy configuration as any changes made manually on the servers will be rolled back to their initial state, forcing the engineers using Ansible only for configuration management.
