@@ -855,4 +855,15 @@ resource "aws_subnet" "public-subnets" {
 
 is a great candidate for a module except Terraform does not (yet) support `count` parameter inside modules, see [Support issue #953](https://github.com/hashicorp/terraform/issues/953)
 
+It's graphing feature might come handy in obtaining a logical diagram of the infrastructure we are creating:
+
+![Terraform graph](/blog/images/graph.png)
+*Terraform infrastructure graph*
+
+To generate this run:
+
+```
+$ terraform graph | dot -Tpng > graph.png
+```
+
 Apart from couple of shortcomings mentioned, Terraform is really a powerful tool for creating and managing infrastructure. With its Templates and Provisioners it lays the foundation for other CM and automation tools like Ansible, which is our CM (Configuration Manager) of choice, to deploy systems in an infrastructure environment.
