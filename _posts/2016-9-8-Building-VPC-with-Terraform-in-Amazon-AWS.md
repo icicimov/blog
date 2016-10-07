@@ -837,7 +837,7 @@ to the `outputs.tf` file.
 
 As we add more infrastructure to the VPC we can make some improvements to the above code by creating modules for the common tasks like Autoscaling Groups and Launch Configurations, ELB's, IAM Profiles etc., see [Creating Modules](https://www.terraform.io/docs/modules/create.html) for details. 
 
-Not everything can be done this way though. For example the repetative code like:
+Not everything can be done this way though. For example the repetitive code like:
 
 ```
 resource "aws_subnet" "public-subnets" {
