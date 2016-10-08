@@ -866,4 +866,6 @@ To generate this run:
 $ terraform graph | dot -Tpng > graph.png
 ```
 
+And ofcourse there is [Atlas](https://www.hashicorp.com/atlas.html) from HashiCorp, a paid DevOps Infrastructure Suite that provides collaboration, validation and automation features if professional support for those who need it.
+
 Apart from couple of shortcomings mentioned, Terraform is really a powerful tool for creating and managing infrastructure. With its Templates and Provisioners it lays the foundation for other CM and automation tools like Ansible, which is our CM (Configuration Manager) of choice, to deploy systems in an infrastructure environment.
