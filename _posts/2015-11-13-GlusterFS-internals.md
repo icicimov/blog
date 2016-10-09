@@ -20,7 +20,7 @@ Each extended attribute has a value which is 24 hexa decimal digits. First 8 dig
 
 The metadata and entry changelogs are valid for directories. For regular files data and metadata changelogs are valid. For special files like device files etc. the metadata changelog is valid. When a file split-brain happens it could be either data split-brain or meta-data split-brain or both.
 
-Version 3.3 introduced a new structure to the bricks, the `.glusterfs` directory. The GFID is used to build the structure of the `.glusterfs` directory in the brick. Each file is hardlinked to a path that takes the first two digits and makes a directory, then the next two digits makes the next one, and finally the complete `uuid`. For example:
+Version 3.3 introduced a new structure to the bricks, the `.glusterfs` directory. The `GFID` is used to build the structure of the `.glusterfs` directory in the brick. Each file is hardlinked to a path that takes the first two digits and makes a directory, then the next two digits makes the next one, and finally the complete `uuid`. For example:
 
 ```
 [root@server ~]# getfattr -m . -d -e hex /data/activemq-data/db-1755.log
