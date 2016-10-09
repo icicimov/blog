@@ -2,7 +2,7 @@
 type: posts
 title: 'GlusterFS internals'
 categories: 
-  - "High Availability"
+  - "High-Availability"
 tags: [glusterfs, cluster, infrastructure, high-availability]
 ---
 

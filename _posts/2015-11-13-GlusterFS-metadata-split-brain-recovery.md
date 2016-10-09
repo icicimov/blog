@@ -2,7 +2,7 @@
 type: posts
 title: 'GlusterFS metadata split brain recovery'
 categories: 
-  - "High Availability"
+  - "High-Availability"
 tags: [glusterfs, cluster]
 ---
 
