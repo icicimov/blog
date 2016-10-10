@@ -23,6 +23,7 @@ The hosts have been setup with two network interfaces, one on a public `192.168.
 
 Although we have MySQL replication set as Master-Master we have to insure we write to only one server at all times. We use Keepalived with floating VIP for that purpose. It will elect one of the MySQL backends upon client request and establish permanent connection so all consecutive requests go to the same instance. The following kernel setting are needed before we start:
 
+```
 net.ipv4.ip_nonlocal_bind=1
 net.ipv4.ip_forward=1
 net.ipv4.conf.default.arp_ignore=1
@@ -33,6 +34,7 @@ net.ipv4.conf.default.rp_filter=0
 net.ipv4.conf.all.rp_filter=0
 net.ipv4.tcp_syncookies=1
 net.ipv4.conf.all.log_martians=1
+```
 
 that will enable the services, MySQL in this case, to bind to non-local IP address, enable asymmetric routing on the host (requests might come via one interface but leave via another) and set the appropriate ARP level on the network interfaces. Then after installing Keepalived as simple as:
 
@@ -168,7 +170,7 @@ Query OK, 0 rows affected (0.00 sec)
 
 Next we set a simple health check script `/etc/keepalived/mysql-check.sh` on both hosts. We don't want to just check the TCP connection to port 3306 but also check if the server is alive and responding:
 
-```
+```bash
 #!/bin/bash
 mysql --host=$1 --user=hcheck --password=password -Nse "select 1 from dual"
 ```
@@ -181,7 +183,7 @@ $ sudo iptables -t nat -A PREROUTING -d 192.168.100.91 -p tcp -j REDIRECT
 
 We need to do this automatically on fail over and startup so we modify our config little bit. On both servers we create the following script `/etc/keepalived/iptables.sh`:
 
-```
+```bash
 #!/bin/bash
 case $2 in
 backup)
