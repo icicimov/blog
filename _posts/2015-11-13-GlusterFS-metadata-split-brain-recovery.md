@@ -65,7 +65,7 @@ trusted.glusterfs.dht=0x000000010000000000000000ffffffff
 trusted.glusterfs.volume-id=0x7c95e12311014d569fca64fda91e0d4c
 ```
 
-What we need to look at here is the `trusted.afr` attribute. The first 8 hex characters after '0x' of this attribute are representing the data changelog, the second 8 the metadata changelog and the third group is valid for directories only. If the value of the group is '00000000' that means that brick has applied valid changes locally. So what we can see here is that the values of the `xattr` for the metadata changelog on each brick are different and each brick thinks it has the correct metadata and the other two don't. Please see [GlusterFS internals]({% post_url 2015-11-13-GlusterFS-internals %}) for more details on GLusterFS extended attributes.
+What we need to look at here is the `trusted.afr` attribute. The first 8 hex characters after '0x' of this attribute are representing the data changelog, the second 8 the metadata changelog and the third group is valid for directories only. If the value of the group is '00000000' that means that brick has applied valid changes locally. So what we can see here is that the values of the `xattr` for the metadata changelog on each brick are different and each brick thinks it has the correct metadata and the other two don't. Please see [GlusterFS internals]({{ site.baseurl }}{% post_url 2015-11-13-GlusterFS-internals %}) for more details on GLusterFS extended attributes.
 
 Lets find the file location:
 
