@@ -4,7 +4,7 @@ title: 'MySQL Circular Replication'
 categories: 
   - High-Availability
   - Database
-tags: [mysql, database, infrastructure, high-availability, cluster]
+tags: [mysql, database, infrastructure, high-availability, cluster, aws]
 ---
 
 Setting the MySQL in Master-Master mode means in case of an instance failure the other one will transparently take over the client connections avoiding the need of any manual intervention. In Master-Slave mode we would need to manually promote the Slave to Master which will cause service interruption. MySQL circular replication can be used to scale out write nodes but there are certain considerations to be taken into account. The data will only be as complete as the speed of the replication. If data is inserted faster than the MySQL slave thread can run then each node can be missing data from the other node. This can be acceptable or not depending on the application and data requirements. For example if we use foreign keys in our database, inserts will fail if the data which the foreign key references has not yet been replicated. These issues need to be considered before we decide to employ Master-Master circular replication.
@@ -526,3 +526,89 @@ we have:
 root@host02:~# ls -latrh /var/log/mysql/bin*
 -rw-rw---- 1 mysql mysql 521M Aug 26 02:24 /var/log/mysql/bin.000021
 ```
+
+### Optimization
+
+Using `mysqltuner` script:
+
+```
+$ wget http://mysqltuner.pl/ -O mysqltuner.pl
+$ perl mysqltuner.pl
+
+ >>  MySQLTuner 1.4.0 - Major Hayden <major@mhtx.net>
+ >>  Bug reports, feature requests, and downloads at http://mysqltuner.com/
+ >>  Run with '--help' for additional options and output filtering
+Please enter your MySQL administrative login: root
+Please enter your MySQL administrative password: 
+[OK] Currently running supported MySQL version 5.6.23-log
+[OK] Operating on 64-bit architecture
+
+-------- Storage Engine Statistics -------------------------------------------
+[--] Status: Warning: Using a password on the command line interface can be insecure.
++ARCHIVE +BLACKHOLE +CSV -FEDERATED +InnoDB +MRG_MYISAM 
+[--] Data in PERFORMANCE_SCHEMA tables: 0B (Tables: 52)
+[--] Data in MEMORY tables: 0B (Tables: 2)
+[--] Data in MyISAM tables: 36M (Tables: 49)
+[--] Data in InnoDB tables: 20M (Tables: 70)
+[!!] Total fragmented tables: 1
+
+-------- Security Recommendations  -------------------------------------------
+[OK] All database users have passwords assigned
+
+-------- Performance Metrics -------------------------------------------------
+[--] Up for: 4h 43m 5s (56K q [3.309 qps], 17K conn, TX: 19M, RX: 5M)
+[--] Reads / Writes: 86% / 14%
+[--] Total buffers: 248.0M global + 1.1M per thread (151 max threads)
+[OK] Maximum possible memory usage: 417.9M (11% of installed RAM)
+[OK] Slow queries: 0% (0/56K)
+[OK] Highest usage of available connections: 3% (5/151)
+[OK] Key buffer size / total MyISAM indexes: 8.0M/3.5M
+[OK] Key buffer hit rate: 98.8% (21K cached / 260 reads)
+[!!] Query cache efficiency: 8.5% (3K cached / 38K selects)
+[OK] Query cache prunes per day: 0
+[OK] Sorts requiring temporary tables: 0% (0 temp sorts / 174 sorts)
+[!!] Temporary tables created on disk: 78% (199 on disk / 254 total)
+[OK] Thread cache hit rate: 99% (5 created / 17K connections)
+[OK] Table cache hit rate: 92% (206 open / 222 opened)
+[OK] Open file limit used: 15% (154/1K)
+[OK] Table locks acquired immediately: 100% (7K immediate / 7K locks)
+[OK] InnoDB buffer pool / data size: 128.0M/20.8M
+[OK] InnoDB log waits: 0
+-------- Recommendations -----------------------------------------------------
+General recommendations:
+    Run OPTIMIZE TABLE to defragment tables for better performance
+    MySQL started within last 24 hours - recommendations may be inaccurate
+    When making adjustments, make tmp_table_size/max_heap_table_size equal
+    Reduce your SELECT DISTINCT queries without LIMIT clauses
+Variables to adjust:
+    query_cache_limit (> 256K, or use smaller result sets)
+    tmp_table_size (> 16M)
+    max_heap_table_size (> 16M)
+```
+
+I have adjusted the above 3 variables as per recommendation:
+
+```
+tmp_table_size = 32M
+max_heap_table_size = 32M
+query_cache_limit = 512K
+```
+
+Also since we have used 'innodb_file_per_table = 1' option for the database we can auto maintain it with a cron-job like this:
+
+```
+*/5 * * * * root mysqlcheck --auto-repair -e -o -uDBUSERNAME -pDBPASSWORD -hDBHOST DBNAME TABLE_NAME
+```
+
+### Backup and archiving
+
+We will install `s3cmd` and backup the binlogs and the db dump in S3 bucket in our AWS account. The root user cronjob:
+
+```
+# Archive mysql binlogs to S3
+59 23 * * * [ -d /var/log/mysql ] && /usr/local/bin/s3cmd -m text/plain sync /var/log/mysql/ s3://<s3-bucket-name>/mysql/$(hostname)/$(date '+\%F')/ > /dev/null 2>&1
+# Archive mysql backup
+59 23 * * * /usr/bin/mysqldump --opt --single-transaction -u root -p<root-password> <db-name> | /bin/gzip -c > /tmp/db-dump.sql.gz && /usr/local/bin/s3cmd put /tmp/db-dump.sql.gz s3://<s3-bucket-name>/mysql/bkp/$(hostname)/$(date '+\%F')/db-dump.sql.gz
+```
+
+For this to work, there has been appropriate IAM role created with write access policy to the S3 bucket attached to it. Then the EC2 instances get this role attached during launch time. 
