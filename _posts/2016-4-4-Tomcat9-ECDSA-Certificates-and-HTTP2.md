@@ -435,7 +435,7 @@ igorc@sl01:~$ curl --http2 -v -k -s -S -I https://localhost:8443/ -o /dev/null
 igorc@sl01:~$
 ```
 
-in which case the server sends the RSA type (notice the different start and expire dates). In both cases we can see HTTP/2 connection being established.
+in which case the server sends the RSA type (notice the different start and expire dates) and agrees on RSA cipher instead of ECDSA, changes the cipher from `ECDHE-ECDSA-AES256-GCM-SHA384` to `ECDHE-RSA-AES256-GCM-SHA384`. In both cases we can see HTTP/2 connection being established.
 
 ## External_resources:
 * [Tomcat9 documentation](https://tomcat.apache.org/tomcat-9.0-doc/index.html)
