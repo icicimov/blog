@@ -5,7 +5,7 @@ header:
 title: 'HAProxy dynamic backend updates with Ansible'
 categories: 
   - DevOps
-tags: [aws, ansible, infrastructure]
+tags: [aws, ansible, infrastructure, haproxy]
 ---
 
 Due to some ELB limitations that did not play well with our user case like limited session timeout to 17 minutes, lack of multizone balancing, url rewriting to mention few, we are using HAproxy to front our application servers. Dropping ELB means loosing the best feature it provides and that is detection of backend changes. Because of this we had to come up with a solution to this problem and one way of doing it was using Ansible.
@@ -22,7 +22,7 @@ On the Ansible server we have the following playbook:
   serial: 1
   gather_facts: no
   tasks:
-  - add_host: hostname={{ ec2_private_dns_name|replace('.' + region + '.compute.internal', "") }} groupname=backends server_name={{ ec2_private_dns_name }}
+  - add_host: hostname={% raw %}{{ ec2_private_dns_name|replace('.' + region + '.compute.internal', "") }}{% endraw %} groupname=backends server_name={{ ec2_private_dns_name }}
     when: ec2_tag_Type is defined and ec2_tag_Type == "tomcat"
   - add_host: hostname={{ ec2_private_ip_address }} groupname=haproxy server_name={{ ec2_private_dns_name }}
     when: ec2_tag_Type is defined and ec2_tag_Type == "haproxy"    
