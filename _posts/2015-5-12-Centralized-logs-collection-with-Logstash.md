@@ -1,5 +1,7 @@
 ---
 type: posts
+header:
+  teaser: 'Logstash_central_log_server_architecture.png'
 title: 'Centralized logs collection with Logstash, ElasticSearch and Kibana in Amazon AWS'
 category: Server
 tags: [logstash, nginx, elasticsearch, kibana, redis]
