@@ -1,7 +1,9 @@
 ---
 type: posts
+header:
+  teaser: 'Device-Mesh.jpg'
 title: 'Tomcat9, ECDSA/ECC (Elliptic Curve) Certificates and HTTP/2'
-category: Server
+category: 'Web Server'
 tags: [tomcat, ssl, http2]
 ---
 

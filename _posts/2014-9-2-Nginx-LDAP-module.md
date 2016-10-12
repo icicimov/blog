@@ -1,7 +1,9 @@
 ---
 type: posts
+header:
+  teaser: 'Device-Mesh.jpg'
 title: 'Nginx LDAP module on Debian/Ubuntu'
-category: Web Server
+category: 'Web Server'
 tags: [nginx, ldap]
 ---
 

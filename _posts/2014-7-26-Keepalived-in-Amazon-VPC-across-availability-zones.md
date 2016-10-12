@@ -1,5 +1,7 @@
 ---
 type: posts
+header:
+  teaser: 'x1395692220298.jpg'
 title: 'VIP(EIP) fail over with Keepalived in Amazon VPC across availability zones'
 categories: 
   - High-Availability

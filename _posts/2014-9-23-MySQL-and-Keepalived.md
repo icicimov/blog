@@ -1,5 +1,7 @@
 ---
 type: posts
+header:
+  teaser: '42613560.jpeg'
 title: 'MySQL High Availability and Load Balancing with Keepalived'
 categories: 
   - High-Availability

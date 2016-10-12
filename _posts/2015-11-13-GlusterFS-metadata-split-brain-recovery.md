@@ -1,8 +1,10 @@
 ---
 type: posts
+header:
+  teaser: 'blue-abstract-glass-balls-809x412.jpg'
 title: 'GlusterFS metadata split brain recovery'
 categories: 
-  - "High-Availability"
+  - High-Availability
 tags: [glusterfs, cluster]
 ---
 

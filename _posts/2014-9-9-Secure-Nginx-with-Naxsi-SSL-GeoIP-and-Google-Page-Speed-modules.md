@@ -1,7 +1,9 @@
 ---
 type: posts
+header:
+  teaser: 'Device-Mesh.jpg'
 title: 'Secure Nginx with Naxsi, SSL, GeoIP and Google Page Speed modules on Debian/Ubuntu'
-category: Server
+category: 'Web Server'
 tags: [nginx, ssl, geoip]
 ---
 
