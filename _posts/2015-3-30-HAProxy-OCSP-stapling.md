@@ -1,5 +1,7 @@
 ---
 type: posts
+header:
+  teaser: '4940499208_b79b77fb0a_z.jpg'
 title: 'HAProxy OCSP stapling'
 category: Server
 tags: [haproxy, ocsp]
