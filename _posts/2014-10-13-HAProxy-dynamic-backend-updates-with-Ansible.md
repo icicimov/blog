@@ -74,9 +74,11 @@ does the following:
  The relevant part of the HAProxy configuration template looks like this:
 
 ```
+{% raw %}
 {% for backend in groups['backends'] %}
     server {{ backend }} {{ backend }}:8080 check observe layer7
 {% endfor %}
+{% endraw %}
 ```
 and the haproxy reload hook as this:
 
