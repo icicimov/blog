@@ -589,7 +589,7 @@ output database: log, mysql, user=snorby password=<snort-password> dbname=snorby
 
 This file will be practically same on all of the clients apart from the different host name in the `config hostname:` line.
 
-Before we start Barnyard we need to grant access to the main database from this host:
+Before we start Barnyard we need to open TCP port 3306 in the server's Security Group for the client's Security Group and grant access to the main database from this host(s):
 
 ```
 mysql> GRANT ALL ON snorby.* TO 'snorby'@'client.mydomain.com' IDENTIFIED BY '<snort-password>';
