@@ -182,6 +182,7 @@ gems:
   - jekyll-gist
   - jekyll-feed
   - jemoji
+  - json
   - jekyll-lunr-js-search
 
 # mimic GitHub Pages with --safe
@@ -191,6 +192,7 @@ whitelist:
   - jekyll-gist
   - jekyll-feed
   - jemoji
+  - json
   - jekyll-lunr-js-search
 
 
