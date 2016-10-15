@@ -22,6 +22,6 @@ gem "wdm", "~> 0.1.0" if Gem.win_platform?
 group :jekyll_plugins do
   # gem "jekyll-archives"
   # gem "jekyll-related-posts"
-  gem "json"
+  #gem "json"
   gem "jekyll-lunr-js-search"
 end

@@ -4,6 +4,7 @@ type: pages
 layout: single
 title: About
 permalink: /about/
+exclude_from_search: true
 ---
 
 Open source enthusiast, linux/unix devops and sysadmin with focus on infrastructure, AWS cloud computing, clustering and high availability.

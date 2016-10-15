@@ -149,7 +149,6 @@ PLATFORMS
 DEPENDENCIES
   github-pages
   jekyll-lunr-js-search
-  json
 
 BUNDLED WITH
    1.13.2
