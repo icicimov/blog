@@ -181,8 +181,8 @@ gems:
   - jekyll-sitemap
   - jekyll-gist
   - jekyll-feed
-  - jemoji
   - jekyll-lunr-js-search
+  - jemoji
 
 # mimic GitHub Pages with --safe
 whitelist:
@@ -190,8 +190,8 @@ whitelist:
   - jekyll-sitemap
   - jekyll-gist
   - jekyll-feed
-  - jemoji
   - jekyll-lunr-js-search
+  - jemoji
 
 
 # Archives
