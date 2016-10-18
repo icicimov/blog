@@ -26,10 +26,9 @@ ENABLED=1
 ...
 ```
 
-Then we create a stunnel configuration file:
+Then we create a stunnel configuration file `/etc/stunnel/redis-server.conf`:
 
 ```
-root@server:~# vi /etc/stunnel/redis-server.conf
 debug = 7
 output = /stunnel.log
 compression = zlib
