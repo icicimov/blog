@@ -98,6 +98,7 @@ virtual_server 192.168.100.91 3306 {
     }
   }
 }
+```
 
 On host02:
 
@@ -153,6 +154,7 @@ virtual_server 192.168.100.91 3306 {
     }
   }
 }
+```
 
 Set the health check user we will use in Keepalived mysql script on one of the hosts (the change will get replicated to the other one):
 
