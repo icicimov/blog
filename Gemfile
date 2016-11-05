@@ -23,5 +23,10 @@ group :jekyll_plugins do
   # gem "jekyll-archives"
   # gem "jekyll-related-posts"
   #gem "json"
+  gem "jekyll-paginate"
+  gem "jekyll-sitemap"
+  gem "jekyll-gist"
+  gem "jekyll-feed"
   gem "jekyll-lunr-js-search"
+  gem "jemoji"
 end
