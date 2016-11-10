@@ -837,4 +837,4 @@ using the same bash init script as for the reader but named `/etc/init.d/logstas
 
 Since Redis doesn't support SSL we need to secure the data transfer between the clients and the central server. As mentioned before we will setup `stunnel` on the server and clients side for this purpose. On the clients, the `logstash-shipper` process will write to its localhost redis port where stunnel will listen and forward the messages to the remote stunnel on the server via SSL. The server's stunnel process will then hand over the data to the local redis server in clear text.
 
-Please refer to the following wiki page [GlusterFS internals]({{ site.baseurl }}{% post_url 2014-4-2-Securing-Logstash-to-Redis-communication-with-Stunnel %}) for the details.
+Please refer to the following wiki page [Securing Logstash to Redis communication with Stunnel]({{ site.baseurl }}{% post_url 2014-4-2-Securing-Logstash-to-Redis-communication-with-Stunnel %}) for the details.
