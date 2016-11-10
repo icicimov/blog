@@ -8,7 +8,7 @@ categories:
   - Logging
 tags: [logstash, graphite, grafana, statsd]
 ---
-
+{% include toc %}
 We have already setup our centralized log collection system based on Logstash as described in this article Centralized logs collection with Logstash. It's been working great so far and the Kibana front-end provides nice insight into the collected data. However, sometimes we might want some bigger flexibility in displaying and analyzing the data and that's where Graphite comes in place.
 
 # Introduction to Graphite
@@ -662,11 +662,11 @@ we have enabled `CORS` for the Nginx host as well as recommended on the Grafana 
 
 After restarting Nginx then the Grafana UI will be awailable at https://server.mydomain.com.
 
-## Conclusion
+# Conclusion
 
 With this combination of open source tools like `Logstash`, `Graphite` and `Statsd` we can easily collect and monitor any set or arbitrary data. It can also easily scale up to monitor hundreds if not thousands of servers,as reported by some users, via resource clustering and careful data space planing. `Grafana` adds that extra flexibility to create literally any kind of graphs and present them by filtering the data through various functions available in the tool.
 
-## Links and Resources
+# Links and Resources
 
 * [Graphite official site](http://graphite.wikidot.com/)
 * [Stasd](https://github.com/etsy/statsd/)
