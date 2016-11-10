@@ -6,7 +6,7 @@ title: 'Tomcat9, ECDSA/ECC (Elliptic Curve) Certificates and HTTP/2'
 category: 'Web Server'
 tags: [tomcat, ssl, http2]
 ---
-
+{% include toc %}
 Tomcat9 brings bunch of new features of which support for HTTP/2 and multiple certificates per Virtual Host via SNI extension are most important ones. This needs Java 1.8, the latest APR/TC (Tomcat Native) release 1.2.x, since SNI support in current Java 1.8 is useless, which in turn requires OpenSSL version 1.0.2g installed. Early users of HTTP/2, according to one of the main Tomcat developers Mark Thomas, reported improvement of up to 20% in page speed due to its benefits like multiplexing, header compression and server push (servlet 4.0 API needed). By default HTTP/2 (h2) protocol is SSL, as expected the whole internet to be over https only in near future, but there is a clear-text version as well called h2c.
 
 The ECDSA certificates are smaller, meaning faster processing time on the server and less CPU usage which in term means less latency and more security. It's in the early day of adoption by the clients though so for some time we will need to support both certificate types, ECDSA and RSA.

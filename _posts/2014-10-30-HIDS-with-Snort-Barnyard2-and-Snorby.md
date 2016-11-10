@@ -7,7 +7,7 @@ category: Security
 tags: [snort, barnyard, snorby, ids]
 related: true
 ---
-
+{% include toc %}
 [Snort](https://www.snort.org) is open source network-based intrusion detection system (NIDS) that has the ability to perform real-time traffic analysis and packet logging on Internet Protocol (IP) networks. Snort performs protocol analysis, content searching, and content matching.
 
 `Snort` can be configured in three main modes: sniffer, packet logger, and network intrusion detection. In sniffer mode, the program will read network packets and display them on the console. In packet logger mode, the program will log packets to the disk. In intrusion detection mode, the program will monitor network traffic and analyze it against a rule set defined by the user. The program will then perform a specific action based on what has been identified.
