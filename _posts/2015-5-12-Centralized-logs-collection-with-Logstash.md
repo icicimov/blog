@@ -8,7 +8,7 @@ categories:
   - Logging
 tags: [logstash, nginx, elasticsearch, kibana, redis]
 ---
-
+{% include toc %}
 Logstash is a tool for managing events and logs. It is very useful for collecting, parsing and storing logs for later use like for example searching. It comes with a web interface for searching through the logs. The picture bellow shows a typical centralized logstash environment. It consists of logstash clients installed on the servers running applications we want to collect logs for and centralized logstash server that does the indexing and storing of the logs. These remote logstash instances are referred as `shippers` and the central one as `indexer` or `reader`.
 
 ![Logstash environment](/blog/images/Logstash_central_log_server_architecture.png "Logstash environment")
