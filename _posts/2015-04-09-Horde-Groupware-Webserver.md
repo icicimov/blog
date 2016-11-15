@@ -65,7 +65,7 @@ root@server:~# aptitude install php5-mysql
 We can now install Horde:
 
 ```
-root@vmlt1:~# PHP_PEAR_SYSCONF_DIR=/var/www/webmail php -d include_path=/var/www/webmail/pear/php /var/www/webmail/pear/webmail-install
+root@server:~# PHP_PEAR_SYSCONF_DIR=/var/www/webmail php -d include_path=/var/www/webmail/pear/php /var/www/webmail/pear/webmail-install
 
 Installing Horde Groupware Webserver Edition
  
@@ -319,7 +319,7 @@ root@server:~# service apache2 restart
 
 ### ActiveSync
 
-The following settings need to be added to the `/var/www/webmail/config/conf.php` confgiuration file for Microsoft-Server-ActiveSync support:
+The following settings need to be present in the `/var/www/webmail/config/conf.php` confgiuration file for Microsoft-Server-ActiveSync support:
 
 ```
 $conf['activesync']['emailsync'] = true;
@@ -488,4 +488,4 @@ root@server:~# /var/www/webmail/pear/pear -c /var/www/webmail/pear.conf remote-l
 root@server:~# /var/www/webmail/pear/pear -c /var/www/webmail/pear.conf upgrade -a -B horde/webmail
 ```
 
-Then login to the Horde admin console as the administrator user we set upon installation, go to the Configuration screen and click on "Upgrade all DB schemas" button.
+Then login to the Horde admin console as the administrator user we set upon installation, go to the Configuration screen under Administration and click on "Upgrade all DB schemas" button.
