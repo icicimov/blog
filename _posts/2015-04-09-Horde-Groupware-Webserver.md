@@ -8,7 +8,9 @@ categories:
 tags: [horde, webmail, imap, smtp]
 ---
 {% include toc %}
-[Horde](https://www.horde.org/apps/webserver) Groupware Webserver Edition is a free, enterprise ready, browser based communication suite. Users can read, send and organize server messages and manage and share calendars, contacts, tasks, notes, files and bookmarks. It will provide access to our IMAP server via web console.
+[Horde](https://www.horde.org/apps/webmail) Groupware Webserver Edition is a free, enterprise ready, browser based communication suite. Users can read, send and organize server messages and manage and share calendars, contacts, tasks, notes, files and bookmarks. It can be extended with any of the released Horde applications or the Horde modules that are still in development, like a bookmark manager, or a file manager. 
+
+Horde will provide access to our IMAP server via web console.
 
 ## Setup
 
@@ -16,13 +18,13 @@ We install PEAR and then using this system install we install another version of
 
 ```
 root@server:~# aptitude install debpear
-root@server:~# mkdir /var/www/webserver
-root@server:~# pear config-create /var/www/webserver/ /var/www/webserver/pear.conf
-root@server:~# pear -c /var/www/webserver/pear.conf install pear
-root@server:~# /var/www/webserver/pear/pear -c /var/www/webserver/pear.conf channel-discover pear.horde.org
-root@server:~# /var/www/webserver/pear/pear -c /var/www/webserver/pear.conf install horde/horde_role
-root@server:~# /var/www/webserver/pear/pear -c /var/www/webserver/pear.conf run-scripts horde/horde_role
-root@server:~# /var/www/webserver/pear/pear -c /var/www/webserver/pear.conf install -a -B horde/webserver
+root@server:~# mkdir /var/www/webmail
+root@server:~# pear config-create /var/www/webmail/ /var/www/webmail/pear.conf
+root@server:~# pear -c /var/www/webmail/pear.conf install pear
+root@server:~# /var/www/webmail/pear/pear -c /var/www/webmail/pear.conf channel-discover pear.horde.org
+root@server:~# /var/www/webmail/pear/pear -c /var/www/webmail/pear.conf install horde/horde_role
+root@server:~# /var/www/webmail/pear/pear -c /var/www/webmail/pear.conf run-scripts horde/horde_role
+root@server:~# /var/www/webmail/pear/pear -c /var/www/webmail/pear.conf install -a -B horde/webmail
 ```
 
 Next we setup MySQL database:
@@ -39,13 +41,13 @@ affiliates. Other names may be trademarks of their respective
 owners.
 Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
  
-mysql> create database webserver;
+mysql> create database webmail;
 Query OK, 1 row affected (0.00 sec)
  
-mysql> use webserver;
+mysql> use webmail;
 Database changed
  
-mysql> grant all on webserver.* to 'webserver'@'localhost' identified by '<password>';
+mysql> grant all on webmail.* to 'webmail'@'localhost' identified by '<password>';
 Query OK, 0 rows affected (0.00 sec)
  
 mysql> flush privileges;
@@ -63,7 +65,7 @@ root@server:~# aptitude install php5-mysql
 We can now install Horde:
 
 ```
-root@vmlt1:~# PHP_PEAR_SYSCONF_DIR=/var/www/webserver php -d include_path=/var/www/webserver/pear/php /var/www/webserver/pear/webserver-install
+root@vmlt1:~# PHP_PEAR_SYSCONF_DIR=/var/www/webmail php -d include_path=/var/www/webmail/pear/php /var/www/webmail/pear/webmail-install
 
 Installing Horde Groupware Webserver Edition
  
@@ -83,7 +85,7 @@ Request persistent connections?
  
 Type your choice [0]:
  
-Username to connect to the database as* [] webserver
+Username to connect to the database as* [] webmail
 Password to connect with
 How should we connect to the database?
     (unix) UNIX Sockets
@@ -93,7 +95,7 @@ Type your choice [unix]: unix
  
 Location of UNIX socket [] /var/run/mysqld/mysqld.sock
  
-Database name to use* [] webserver
+Database name to use* [] webmail
  
 Internally used charset* [utf-8]
  
@@ -124,11 +126,11 @@ Writing main configuration file... done.
 Thank you for using Horde Groupware Webserver Edition!
 ```
 
-The settings can be found in the main config file `/var/www/webserver/config/conf.php` in case we need to change anything.
+The settings can be found in the main config file `/var/www/webmail/config/conf.php` in case we need to change anything.
 
 ### IMAP configuration
 
-We create new local config file `/var/www/webserver/imp/config/backends.local.php` to tell Horde how to connect to the IMAP server (`courier-imap` already installed):
+We create new local config file `/var/www/webmail/imp/config/backends.local.php` to tell Horde how to connect to the IMAP server (`courier-imap` already installed):
 
 ```php
 <?php
@@ -177,9 +179,9 @@ Edit the default host in `/etc/apache2/sites-available/default` file:
     ServerName server.mydomain.com
 ...
     RedirectMatch 302 (?i)/autodiscover/autodiscover.xml https://server.mydomain.com/autodiscover/autodiscover.xml
-    <Directory "/var/www/webserver/">
-        php_value include_path /var/www/webserver/pear/php
-        SetEnv PHP_PEAR_SYSCONF_DIR /var/www/webserver
+    <Directory "/var/www/webmail/">
+        php_value include_path /var/www/webmail/pear/php
+        SetEnv PHP_PEAR_SYSCONF_DIR /var/www/webmail
     </Directory>
 </VirtualHost>
 ```
@@ -261,25 +263,26 @@ SSLStrictSNIVhostCheck off
     ####
     #### HORDE WEBMAIL ###
     ####
-    Alias /Microsoft-Server-ActiveSync /var/www/webserver/rpc.php   
+    Alias /Microsoft-Server-ActiveSync /var/www/webmail/rpc.php   
     ## Replace Alias with Rewrite in case of php via mod_fcgid
-    #RewriteRule ^/Microsoft-Server-ActiveSync /webserver/rpc.php [PT,L,QSA]
+    #RewriteRule ^/Microsoft-Server-ActiveSync /webmail/rpc.php [PT,L,QSA]
  
     RewriteRule .* - [E=HTTP_MS_ASPROTOCOLVERSION:%{HTTP:Ms-Asprotocolversion}]
     RewriteRule .* - [E=HTTP_X_MS_POLICYKEY:%{HTTP:X-Ms-Policykey}]
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
  
     ## Autodiscovery
-    Alias /autodiscover/autodiscover.xml /var/www/webserver/rpc.php
-    Alias /Autodiscover/Autodiscover.xml /var/www/webserver/rpc.php
-    Alias /AutoDiscover/AutoDiscover.xml /var/www/webserver/rpc.php
-    <Directory "/var/www/webserver/">
+    Alias /autodiscover/autodiscover.xml /var/www/webmail/rpc.php
+    Alias /Autodiscover/Autodiscover.xml /var/www/webmail/rpc.php
+    Alias /AutoDiscover/AutoDiscover.xml /var/www/webmail/rpc.php
+    <Directory "/var/www/webmail/">
         Options +FollowSymlinks
         Order deny,allow
         Allow from all
-        php_value include_path /var/www/webserver/pear/php
-        SetEnv PHP_PEAR_SYSCONF_DIR /var/www/webserver
+        php_value include_path /var/www/webmail/pear/php
+        SetEnv PHP_PEAR_SYSCONF_DIR /var/www/webmail
     </Directory>
+    
     ## Protect the APC GUI cache page
     <Files "apc.php">
             AuthName Opcache-gui
@@ -312,6 +315,29 @@ check the configuration and restart Apache:
 ```
 root@server:~# apache2ctl configtest
 root@server:~# service apache2 restart
+```
+
+### ActiveSync
+
+The following settings need to be added to the `/var/www/webmail/config/conf.php` confgiuration file for Microsoft-Server-ActiveSync support:
+
+```
+$conf['activesync']['emailsync'] = true;
+$conf['activesync']['version'] = '14';
+$conf['activesync']['autodiscovery'] = 'full';
+$conf['activesync']['outlookdiscovery'] = false;
+$conf['activesync']['logging']['type'] = 'horde';
+$conf['activesync']['ping']['heartbeatmin'] = 60;
+$conf['activesync']['ping']['heartbeatmax'] = 2700;
+$conf['activesync']['ping']['heartbeatdefault'] = 480;
+$conf['activesync']['ping']['deviceping'] = true;
+$conf['activesync']['ping']['waitinterval'] = 15;
+$conf['activesync']['enabled'] = true;
+```
+and the following line to the apache SSL vhost as shown above:
+
+```
+Alias /Microsoft-Server-ActiveSync /var/www/webmail/rpc.php
 ```
 
 ## Horde Tuning
@@ -353,7 +379,7 @@ apc.file_update_protection=0
 apc.enabled=1
 apc.enable_cli=0
 apc.cache_by_default=1
-apc.filters = "-/var/www/webserver/pear/php/apc\.php$"
+apc.filters = "-/var/www/webmail/pear/php/apc\.php$"
 apc.include_once_override=0
 apc.localcache=1
 apc.localcache.size=512
@@ -369,14 +395,39 @@ apc.write_lock=1
 apc.mmap_file_mask = /tmp/apc-encompass.XXXXXX
 ```
 
-and restart Apache. This will expose the APC monitoring GUI at `/var/www/webserver/pear/php/apc.php` and to protect it we have setup the LDAP authentication as shown in the Apache SSL config `/etc/apache2/sites-enabled/default-ssl`.
+and restart Apache. This will expose the APC monitoring GUI at `/var/www/webmail/pear/php/apc.php` and to protect it we have setup the LDAP authentication as shown in the Apache SSL config `/etc/apache2/sites-enabled/default-ssl`.
+
+There are some user credentials in the `apc.php` file too which we can setup if we need to protect the page in case we don't want to do that through apache:
+
+```
+defaults('ADMIN_USERNAME','apc');             // Admin Username
+defaults('ADMIN_PASSWORD','password');        // Admin Password - CHANGE THIS TO ENABLE!!!
+```
+
+The moment we change the default password the authentication will get enabled.
+
+As mentioned above the APC is installed from ubuntu package repo. The newest version though is always available via php/pecl:
+
+```
+root@server:~# pecl channel-update pecl.php.net
+Updating channel "pecl.php.net"
+Update of Channel "pecl.php.net" succeeded
+
+root@server:~# pecl search apc
+Retrieving data...0%
+.Matched packages, channel pecl.php.net:
+=======================================
+Package Stable/(Latest) Local
+APC     3.1.13 (stable) 3.1.13 Alternative PHP Cache
+APCu    4.0.7 (beta)           APCu - APC User Cache
+```
 
 ### Autoload caching module
 
 To benefit from further optimizations we can install autolad caching module which links the php classes to file paths (so in case the php compiler finds missing class it can convert the name into file path and load the file containing the missing class):
 
 ```
-root@server:~# /var/www/webserver/pear/pear -c /var/www/webserver/pear.conf install -a -B horde/horde_autoloader_cache
+root@server:~# /var/www/webmail/pear/pear -c /var/www/webmail/pear.conf install -a -B horde/horde_autoloader_cache
 horde/Horde_Autoloader_Cache can optionally use PHP extension "eaccelerator"
 horde/Horde_Autoloader_Cache can optionally use PHP extension "xcache"
 downloading Horde_Autoloader_Cache-2.0.3.tgz ...
@@ -404,7 +455,7 @@ to the Apache PHP5 ini file `/etc/php5/apache2/php.ini` or into a new file `/etc
 
 ### Enable viewing HTML eservers
 
-In the `/var/www/webserver/imp/config/mime_drivers.php` file find the following section:
+In the `/var/www/webmail/imp/config/mime_drivers.php` file find the following section:
 
 ```
 ...
@@ -422,16 +473,19 @@ and change `inline` to true.
 
 ## Updating Horde
 
-The following procedure will have Horde updated:
+We have already done the first step at the beggining of the installation:
 
 ```
-root@server:~# pear channel-discover pear.horde.org
+root@server:~# /var/www/webmail/pear/pear -c /var/www/webmail/pear.conf channel-discover pear.horde.org
 Adding Channel "pear.horde.org" succeeded
 Discovery of channel "pear.horde.org" succeeded
- 
-root@server:~# pear remote-list -c horde
- 
-root@server:~# pear upgrade -a -B horde/webserver
+```
+
+so we just need to execute the following two:
+
+```
+root@server:~# /var/www/webmail/pear/pear -c /var/www/webmail/pear.conf remote-list -c horde
+root@server:~# /var/www/webmail/pear/pear -c /var/www/webmail/pear.conf upgrade -a -B horde/webmail
 ```
 
 Then login to the Horde admin console as the administrator user we set upon installation, go to the Configuration screen and click on "Upgrade all DB schemas" button.
