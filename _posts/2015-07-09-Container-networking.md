@@ -7,7 +7,7 @@ categories:
   - Docker
 tags: [docker, containers, virtualizasion]
 ---
-{% include toc %}
+
 The previous related post [Building custom Docker images and configuring with Ansible]({{ site.baseurl }}{% post_url 2015-07-09-Building-custom-Docker-images-and-configuring-with-Ansible %}) talked about creating our own customized images and running our application in containers built from those images pulled from our private DockerHub repository we created.
 
 Now that we have our containers running we need to get their services connect to each other. The default Docker networking consist of single virtual bridge where all containers created connect to via their default interface `eth0`. The problem here is that the IP addresses for the containers on this network are randomly issued via Docker internal DHCP service and there isn't any native way inside Docker to assign static ones. This is not a problem by itself since the containers will be able to see each other via the bridge. The problem is that there is no way to know the IP addresses in front during our automated image creation process thus we can't tell Tomcat where to find the DB and ES servers in our Ansible playbooks. If we want to muck around with the containers on our local hosts then this is fine, but most of the users would probably want to just pull the images and start the containers and everything should just work.
@@ -72,7 +72,7 @@ $ GUESTNAME="Tomcat"
 $ MTU=$(ip link show docker0 | awk '{print $5}')
 {% raw %}
 $ NSPID=$(docker inspect --format='{{ .State.Pid }}' $GUESTNAME)
-{% raw %}
+{% endraw %}
 $ LOCAL_IFNAME="v${CONTAINER_IFNAME}pl${NSPID}"
 $ GUEST_IFNAME="v${CONTAINER_IFNAME}pg${NSPID}"
  
