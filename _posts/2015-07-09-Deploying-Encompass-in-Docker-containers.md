@@ -29,12 +29,12 @@ $ sudo docker run -d --name="Tomcat" --link MongoDB:db --link ElasticSearch:es -
 
 and Docker will do the pulling and start the containers. Then find the IP address of the Tomcat container:
 
-```
 {% raw %}
+```
 $ sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' 874bc9860811
 172.17.0.4
-{% endraw %}
 ```
+{% endraw %}
 
 and set your hosts file, for example:
 

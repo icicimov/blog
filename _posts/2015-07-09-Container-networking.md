@@ -61,6 +61,7 @@ and make our images generic. This is fairly simple approach, tested and works fi
 
 The third option would be assigning static IP to a container outside of Docker using veth pair of interfaces and netns option of the ip tool. The process for our Tomcat container would be as follows:
 
+{% raw %}
 ```bash
 $ sudo aptitude install bridge-utils arping
  
@@ -70,9 +71,7 @@ $ IPADDR=172.17.0.201/16
 $ GUESTNAME="Tomcat"
  
 $ MTU=$(ip link show docker0 | awk '{print $5}')
-{% raw %}
 $ NSPID=$(docker inspect --format='{{ .State.Pid }}' $GUESTNAME)
-{% endraw %}
 $ LOCAL_IFNAME="v${CONTAINER_IFNAME}pl${NSPID}"
 $ GUEST_IFNAME="v${CONTAINER_IFNAME}pg${NSPID}"
  
@@ -88,6 +87,7 @@ $ sudo ip netns exec $NSPID ip addr add $IPADDR dev $CONTAINER_IFNAME
 $ sudo ip netns exec $NSPID ip link set $CONTAINER_IFNAME up
 $ sudo ip netns exec $NSPID arping -c 1 -A -I $CONTAINER_IFNAME $IPADDR
 ```
+{% endraw %}
 
 In other words, after installing the needed software, we create a pair of veth interfaces on the host and attach one end to the container and the other end to Docker's docker0 bridge. Then we set a static IP address from docker0 IP range using netns directly in the virtual network space of the container and finally do an ARP broadcast on the containers network to inform the other peers of the new interface.
 
@@ -177,21 +177,23 @@ ac8ad635-f2ff-4562-8138-4f58783cd7fc
 
 On the first box the Docker IP's of our containers are:
 
+{% raw %}
 ```
 ubuntu@ip-172-31-1-215:~/ansible_docker$ for cont in $(sudo docker ps -q); do sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' $cont; done
 172.17.0.4
 172.17.0.3
 172.17.0.2
 ```
+{% endraw %}
 
 and on the second one our Tomcat container for example has IP of:
 
-```
 {% raw %}
+```
 ubuntu@ip-172-31-7-240:~$ sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' cc7088477bf7
 172.17.0.5
-{% endraw %}
 ```
+{% endraw %}
 
 Now if I attach to any of the the first box containers I should be able to ping the Tomcat on the second box:
 

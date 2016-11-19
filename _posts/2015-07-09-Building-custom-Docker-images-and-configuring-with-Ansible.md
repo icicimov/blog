@@ -398,8 +398,8 @@ If we want our container to be started together with the docker service we can a
 
 Since we have exposed some service ports inside our custom built images, now we can connect to them from the host after we find the IP address of our containers. For Tomcat one for example:
 
-```
 {% raw %}
+```
 $ sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' 82b1f9d4d872
 172.17.0.138
  
@@ -426,8 +426,8 @@ Certificate chain
 ---
 Server certificate
 ...
-{% endraw %}
 ```
+{% endraw %}
 
 ## Docker Repository
 
