@@ -341,6 +341,7 @@ crm(live)configure# property stonith-enabled="true"
 crm(live)configure# commit
 crm(live)configure# exit
 root@server01:~#
+```
 
 Now if we check the cluster state we can see our new fencing resources configured:
 
@@ -391,13 +392,14 @@ This has created `.deb` packages in the parent directory of the current working 
 [ALL]:~/drbd-8.4# dpkg -i ../drbd-dkms_8.4.1-1_all.deb ../drbd-utils_8.9.6-1_amd64.deb
 ```
 
-At the end we pin the kernel so we don't exidently run upgrade:
+At the end we pin the kernel so we don't accidentally run upgrade:
 
 ```
 [ALL]:~/drbd-8.4# vi /etc/apt/preferences.d/kernel
 Package: linux-generic linux-headers-generic linux-image-generic linux-restricted-modules-generic
 Pin: version 3.13.0-86
 Pin-Priority: 1001
+```
 
 To confirm the installation we run:
 
