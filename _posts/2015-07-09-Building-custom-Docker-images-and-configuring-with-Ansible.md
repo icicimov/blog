@@ -6,6 +6,7 @@ title: 'Building custom Docker images and configuring with Ansible'
 categories: 
   - Docker
 tags: [docker, containers, virtualizasion]
+date: 2014-11-19
 ---
 {% include toc %}
 Due to ever rising popularity of Docker this page will provide a walk through process of building custom Encompass Docker images and creating containers. The image configuration will be executed with our existing Ansible repository. We will store this images in our private Docker image repository (each account gets one free private repository) or in our own image storage created on a EC2 server or S3 bucket.

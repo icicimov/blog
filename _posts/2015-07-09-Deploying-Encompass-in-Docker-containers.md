@@ -6,6 +6,7 @@ title: 'Deploying Encompass In Docker Containers'
 categories: 
   - Docker
 tags: [docker, containers, virtualizasion]
+date: 2014-11-21
 ---
 
 At the beginning, just a short summery of how we can start using out container images.

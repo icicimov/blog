@@ -6,6 +6,7 @@ title: 'Container Networking'
 categories: 
   - Docker
 tags: [docker, containers, virtualizasion]
+date: 2014-11-19
 ---
 
 The previous related post [Building custom Docker images and configuring with Ansible]({{ site.baseurl }}{% post_url 2015-07-09-Building-custom-Docker-images-and-configuring-with-Ansible %}) talked about creating our own customized images and running our application in containers built from those images pulled from our private DockerHub repository we created.
