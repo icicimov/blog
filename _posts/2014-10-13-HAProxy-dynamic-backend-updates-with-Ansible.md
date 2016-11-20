@@ -4,7 +4,7 @@ header:
   teaser: '4940499208_b79b77fb0a_z.jpg'
 title: 'HAProxy dynamic backend updates with Ansible'
 categories:  
-  - Automation
+  - DevOps
 tags: [aws, ansible, infrastructure, haproxy]
 ---
 

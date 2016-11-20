@@ -4,7 +4,7 @@ header:
   teaser: '4940499208_b79b77fb0a_z.jpg'
 title: 'Managing system resources with Cgroups and Ansible'
 categories: 
-  - Automation
+  - DevOps
 tags: [cgroups, ansible, automation]
 related: true
 ---
