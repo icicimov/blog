@@ -315,8 +315,8 @@ Finding the appropriate GC settings is usually long and time consuming process. 
 
 # References and further reading
 
-(http://www.oracle.com/technetwork/java/javase/gc-tuning-6-140523.html)
-(http://blog.griddynamics.com/2011/06/understanding-gc-pauses-in-jvm-hotspots_02.html)
-(http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html)
-(http://www.oracle.com/technetwork/java/javase/tsg-vm-149989.pdf)
-(http://wiki.apache.org/tomcat/MemoryLeakProtection)
+* [Java SE 6 HotSpot Virtual Machine Garbage Collection Tuning](http://www.oracle.com/technetwork/java/javase/gc-tuning-6-140523.html)
+* [Understanding GC pauses in JVM hotspots](http://blog.griddynamics.com/2011/06/understanding-gc-pauses-in-jvm-hotspots_02.html)
+* [Java HotSpot VM Options](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html)
+* [JVM troubleshooting guide](http://www.oracle.com/technetwork/java/javase/tsg-vm-149989.pdf)
+* [Memory Leak Protection](http://wiki.apache.org/tomcat/MemoryLeakProtection)
