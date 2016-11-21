@@ -5,7 +5,7 @@ header:
 title: 'Managing system resources with Cgroups and Ansible'
 categories: 
   - DevOps
-tags: [cgroups, ansible, automation]
+tags: [cgroups, ansible]
 related: true
 ---
 

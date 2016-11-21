@@ -39,7 +39,7 @@ Husband and father, in love with the ocean, MotoGP and F1.
 
 * Configuration management: CloudFormation, Ansible, Terraform, cloud-init
 * Virtualization: AWS, KVM (libvirt), VMWare, OpenStack, LXC
-* HA and LB: HAProxy, Apache2 (mod_jk, mod_proxy), Heartbeat, Keepalived, IPVS, Corosync, Pacemaker, DRBD, iSCSI, LVM, RAID
+* HA and LB: HAProxy, Apache2 (mod_jk, mod_proxy), Heartbeat, Keepalived, IPVS, Corosync, Pacemaker, DRBD, iSCSI, ZFS, LVM, RAID
 * J2EE and Web server: Weblogic 8.1, 9.x, 10.x application server, Apache2 web server, Tomcat, Nginx
 * Database administration: PostgreSQL, Oracle 9/10/11g, MySQL, SleepycatDB, LDAP, MongoDB
 * OS and computer network administration: TCP/IP, UNIX (Solaris 8,9,10), Linux (Debian, Ubuntu, RedHat, Fedora, CentOS), Windows (2000/2003, NT, 98)

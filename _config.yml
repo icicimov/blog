@@ -247,6 +247,7 @@ defaults:
 #  headline: "Featured Tutorials"
 #  category: DevOps 
 
+show_drafts: false
 
 # HTML Compression
 # - http://jch.penibelst.de/
