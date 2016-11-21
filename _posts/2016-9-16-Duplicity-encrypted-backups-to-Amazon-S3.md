@@ -111,7 +111,7 @@ uid                  duplicity (Duplicity S3 backup encryption key)
 sub   2048R/5XXXXXX8 2016-09-15
 ```
 
-The GnuPGP documentation [Unattended GPG key generation](https://www.gnupg.org/documentation/manuals/gnupg/Unattended-GPG-key-generation.html) explains how to automate the key generation by feeding an answer file via `--batch` option. It is also a good idea to install `rng-tools` that supply the `rngd` daemon we can use to provide enough entropy on the server in case of low activity.
+The GnuPGP documentation [Unattended GPG key generation](https://www.gnupg.org/documentation/manuals/gnupg/Unattended-GPG-key-generation.html) explains how to automate the key generation by feeding an answer file via `--batch` option. It is also a good idea to install `haveged` daemon or `rng-tools` that supply the `rngd` daemon we can use to provide enough entropy on the server in case of low activity.
 
 List the keys:
 
