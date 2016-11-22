@@ -1,8 +1,10 @@
 ---
 type: posts
+header:
+  teaser: '42613560.jpeg'
 title: 'PostgreSQL Archiving Replication'
 category: Database
-tags: [postgresql, replication, ha]
+tags: [postgresql, replication, high-availability]
 ---
 
 In this mode PostgreSQL replicates the WAL archive logs.

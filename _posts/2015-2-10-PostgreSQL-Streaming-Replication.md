@@ -1,8 +1,10 @@
 ---
 type: posts
+header:
+  teaser: '42613560.jpeg'
 title: 'PostgreSQL Streaming Replication'
 category: Database
-tags: [postgresql, replication, ha]
+tags: [postgresql, replication, high-availability]
 ---
 
 Streaming replication means the changes are synchronously applied from the master to the slave(s).
