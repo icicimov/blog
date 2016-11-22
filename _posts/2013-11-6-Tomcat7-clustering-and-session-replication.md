@@ -127,9 +127,9 @@ After logging to the manager app the following screen shots of the sessions on b
 ![Tomcat sessions](/blog/images/tomcat1-manager-app-sessions.png "Tomcat sessions")
 ![Tomcat sessions](/blog/images/tomcat2-manager-app-sessions.png "Tomcat sessions")
 
-{% comment %}
+
 {% include gallery caption="Tomcat session replication" %}
-{% endcomment %}
+
 
 We can see that each server has created additional backup session from the other cluster member.
 
