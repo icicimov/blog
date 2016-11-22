@@ -7,6 +7,15 @@ categories:
   - High-Availability
 tags: [tomcat, cluster]
 date: 2013-11-6
+gallery:
+  - url: tomcat1-manager-app-sessions.png
+    image_path: tomcat1-manager-app-sessions-600x400.png
+    alt: "placeholder image 1"
+    title: "Tomcat1 manager app sessions"
+  - url: tomcat2-manager-app-sessions.png
+    image_path: tomcat2-manager-app-sessions-600x400.png
+    alt: "placeholder image 2"
+    title: "Tomcat2 manager app sessions"
 ---
 
 This was a POC for Tomcat clustering and session replication in AWS. It has been set up and tested on a pair of EC2 instances (ip-172-31-13-11 and ip-172-31-13-12) deployed in one of our test VPC's. Since the multicast between the availability zones is still not possible in AWS we need to use the static cluster membership. The traffic for the private subnet is unrestricted for the `Security Group` the instances belong to.
@@ -115,8 +124,12 @@ We can see ip-172-31-13-11 adding ip-172-31-13-12 to the cluster and sending the
 
 After logging to the manager app the following screen shots of the sessions on both nodes confirm the replication has been successful.
 
+{% comment %}
 ![Tomcat sessions](/blog/images/tomcat1-manager-app-sessions.png "Tomcat sessions")
 ![Tomcat sessions](/blog/images/tomcat2-manager-app-sessions.png "Tomcat sessions")
+{% endcomment %}
+
+{% include gallery caption="Tomcat session replication" %}
 
 We can see that each server has created additional backup session from the other cluster member.
 
