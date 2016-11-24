@@ -11,7 +11,7 @@ Open source enthusiast, linux/unix devops and sysadmin with focus on infrastruct
 
 ### More Information
 
-Husband and father, in love with the ocean, MotoGP and F1.
+Husband and father, in love with the ocean, MotoGP and F1. When not playing with my home computer lab or doing my usual DevOps and Sysadmin stuff at [Encompass Corporation](http://www.encompasscorporation.com) I spend my time outdoors with my family, at the beach or riding my motorcycle. 
 
 ### Recent work history
 
