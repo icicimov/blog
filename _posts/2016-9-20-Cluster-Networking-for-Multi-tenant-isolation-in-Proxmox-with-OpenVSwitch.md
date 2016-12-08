@@ -496,8 +496,11 @@ And we also disable the dnsmasq daemon in `/etc/default/dnsmasq` since we want t
 [...]
 ENABLED=0
 [...]
+```
 
-In case we need debugging we can ad:
+In case we need debugging we can add:
+
+```
 [...]
 DAEMON_ARGS="-D
 [...]
