@@ -10,7 +10,7 @@ date: 2016-9-21
 series: "Highly Available Multi-tenant KVM Virtualization with Proxmox PVE and OpenVSwitch"
 ---
 
-PVE-4.2 has built in support for ZFS over iSCSI for several targets among which is Solaris `COMSTAR`. I built a ZFS VM appliance based on `OmniOS` (Solaris) and `napp-it` and managed to create a shared storage ZFS pool over iSCSI and launch `vm09` with root device on `zvol`. This also supports live migrations as well. Being an appliance, `napp-it` provides a web UI at `192.168.0.141:81` that we can use to create and manage all our resources. It also supports creating a file shares like NFS and Samba over ZFS.
+PVE-4.2 has built in support for ZFS over iSCSI for several targets among which is Solaris `COMSTAR`. I built a ZFS VM appliance based on `OmniOS` (Solaris) and `napp-it`, see [ZFS storage with OmniOS and iSCSI]({{ site.baseurl }}{% post_url 2016-4-29-ZFS-storage-with-OmniOS-and-iSCSI %}), and managed to create a shared storage ZFS pool over iSCSI and launch `vm09` with root device on `zvol`. This also supports live migrations as well. Being an appliance, `napp-it` provides a web UI at `192.168.0.141:81` that we can use to create and manage all our resources. It also supports creating a file shares like NFS and Samba over ZFS.
 
 This is the state on the OmniOS cluster:
 
