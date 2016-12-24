@@ -13,7 +13,7 @@ The following setup of iSCSI shared storage on cluster of OmniOS servers was lat
 
 [OmniOS](https://omnios.omniti.com/) is an open source continuation of OpenSolaris (discontinued by Oracle when they acquired Sun Microsystems back in 2010) that builds on [IllumOS](http://illumos.org/) project, the OpenSolaris reincarnation. ZFS and iSCSI, or COMSTAR (Common Multiprotocol SCSI Target), have been part of Solaris for very long time bringing performance and stability to the storage solution.
 
-For the setup I'm using two VM's, omnios01 and omnios02, connected via two networks, public 192.168.0.0/24 and private 10.10.1.0/24 one.
+For the setup I'm using two VM's, `omnios01` and `omnios02`, connected via two networks, public `192.168.0.0/24` and private `10.10.1.0/24` one configured on the hypervisor.
 
 ## OmniOS installation and initial setup
 
@@ -974,7 +974,7 @@ Online: [ omnios01 omnios02 ]
 
 and after couple of seconds we can see that omnios01 is back online and the VIP has moved back to omnios01. After setting `resource-stickiness=100` though the resources will stay on omnios02.
 
-> Please note that I'm *NOT* using a shared storage for the cluster hence the ZFS resource failover can *NOT* work.
+> Please note that I'm **NOT** using a shared storage for the cluster hence the ZFS resource failover can **NOT** work.
 
 
 ## References
@@ -983,6 +983,7 @@ and after couple of seconds we can see that omnios01 is back online and the VIP 
 * [Building zfs storage appliance part-2](http://zfs-create.blogspot.com.au/2014/05/building-zfs-storage-appliance-part-2.html)
 * [Use pacemaker and corosync on Illumos (OmniOS) to run a HA active/passive cluster](https://blog.zhaw.ch/icclab/use-pacemaker-and-corosync-on-illumos-omnios-to-run-a-ha-activepassive-cluster/)
 * [ZFS iSCSI Configuration](https://www.highlnk.com/2014/04/zfs-iscsi-configuration/)
+* [Configuring iSCSI Devices With COMSTAR](https://docs.oracle.com/cd/E23824_01/html/821-1459/fnnop.html)
 
 ## APPENDIX
 

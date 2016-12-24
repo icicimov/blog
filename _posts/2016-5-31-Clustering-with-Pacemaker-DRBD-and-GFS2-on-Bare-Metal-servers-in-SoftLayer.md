@@ -208,6 +208,10 @@ quorum {
     # Quorum for the Pacemaker Cluster Resource Manager
     provider: corosync_votequorum
     expected_votes: 1
+    two_node: 1
+    wait_for_all: 1
+    last_man_standing: 1
+    auto_tie_breaker: 0
 }
  
 aisexec {
