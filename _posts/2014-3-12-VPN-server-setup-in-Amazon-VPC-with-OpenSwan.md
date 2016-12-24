@@ -182,6 +182,7 @@ To make this rules persist over reboots we need to install `iptables-persistent`
 
 ```
 root@vpn-server:~# aptitude install iptables-persistent
+root@vpn-server:~# iptables-save > /etc/iptables/rules.v4
 ```
 
 ## Configure the kernel
