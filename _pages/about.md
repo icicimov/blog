@@ -47,4 +47,5 @@ Husband and father, in love with the ocean, MotoGP and F1. When not playing with
 
 ### Contact me
 
-[igorc@encompasscorporation.com](mailto:igorc@encompasscorporation.com)
+* [igorc@encompasscorporation.com](mailto:igorc@encompasscorporation.com)
+* [igorc@icicimov.com](mailto:igorc@icicimov.com) ([GPG key]({{ site.baseurl }}/download/igorc@icicimov.com.key))
