@@ -5,7 +5,7 @@ header:
 title: 'Container Networking'
 categories: 
   - Docker
-tags: [docker, containers, virtualizasion]
+tags: [docker, containers, virtualization]
 date: 2014-11-19
 ---
 

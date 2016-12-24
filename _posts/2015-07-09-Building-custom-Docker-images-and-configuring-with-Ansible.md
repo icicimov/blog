@@ -5,7 +5,7 @@ header:
 title: 'Building custom Docker images and configuring with Ansible'
 categories: 
   - Docker
-tags: [docker, containers, virtualizasion]
+tags: [docker, containers, virtualization]
 date: 2014-11-19
 ---
 {% include toc %}
