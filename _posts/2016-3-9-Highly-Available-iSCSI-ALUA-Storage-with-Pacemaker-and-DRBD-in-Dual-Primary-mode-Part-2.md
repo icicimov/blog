@@ -177,7 +177,7 @@ Target: iqn.2016-02.local.virtual:hpms02.vg1 (non-flash)
         Internal iscsid Session State: NO CHANGE
 ```
 
-To find which device belongs to which portal connection we can run the same command with "-P 3" to get even more details:
+To find which device belongs to which portal connection we can run the same command with `-P 3` to get even more details:
 
 ```
 root@proxmox01:~# iscsiadm -m session -P3
@@ -375,7 +375,7 @@ Target: iqn.2016-02.local.virtual:hpms02.vg1 (non-flash)
             Attached scsi disk sdd        State: running
 ```
 
-We can see the 4 new block devices have been created upon loging to the targets, `sda`, `sdb`, `sdc` and `sdd`. The device names depened on the loging order so it is important we use disk-by-id or the disk WWID in our further configuration as the disk order/names can change. Tthe LUN's from hpms01 have been mounted localy as `sda` and `sdb`, whereis the LUN's from hpms02 as `sdc` and `sdd`. These disks have to match the multipath connections further down on this page and groupped in appropriate paths of which the path leading to the current SCST ALUA Master (and its disks) should be marked as `status=active` and other one as `status=enabled`.
+We can see the 4 new block devices have been created upon login to the targets, `sda`, `sdb`, `sdc` and `sdd`. The device names depend on the login order so it is important we use `disk-by-id` or the disk `WWID` in our further configuration as the disk order/names can change. The LUN's from hpms01 have been mounted locally as `sda` and `sdb`, where is the LUN's from hpms02 as `sdc` and `sdd`. These disks have to match the multipath connections further down on this page and grouped in appropriate paths of which the path leading to the current SCST ALUA Master (and its disks) should be marked as `status=active` and other one as `status=enabled`.
 
 We can query one of the devices to discover the features offered by the iSCSI backend:
 
