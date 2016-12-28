@@ -320,7 +320,7 @@ root@drbd01:~# /lib/udev/scsi_id --whitelisted --device=/dev/sdd
 23238363932313833
 ```
 
-The sda and sdb are our system disks the VM is running of thus we only want the iSCSI devices considered by multiptah, which explains the above config. Now after restarting the multipathd daemon:
+The sda and sdb are our system disks the VM is running of thus we only want the iSCSI devices considered by multiptah, which explains the above config. Now after restarting the `multipathd` daemon:
 
 ```
 root@drbd01:~# service multipath-tools restart
@@ -346,7 +346,7 @@ size=20G features='1 queue_if_no_path' hwhandler='0' wp=rw
   `- 4:0:0:0 sdd 8:48 active ready running
 ```
 
-The Multipath tool aslo created it's own mapper device:
+The Multipath tool also created it's own mapper device:
 
 ```
 root@drbd01:~# ls -l /dev/mapper/mylun
@@ -390,7 +390,7 @@ root@drbd01:~# cat /proc/mounts | grep mylun
 
 Then we create the following test script `multipath_test.sh`:
 
-```
+```bash
 #!/bin/bash
 interval=1
 while true; do
@@ -510,7 +510,7 @@ Install the cluster stack packages on both servers (drbd01 and drbd02):
 # aptitude install -y heartbeat pacemaker corosync fence-agents openais cluster-glue resource-agents openipmi ipmitool
 ```
 
-First we generate Corosync authentication key. To insure we have enough entropy (since this is inside VM) we install haveged first, run corosync-keygen and then we copy the key over to the second server:
+First we generate Corosync authentication key. To insure we have enough entropy (since this is inside VM) we install `haveged` first, run `corosync-keygen` and then we copy the key over to the second server:
 
 ```
 root@drbd02:~# aptitude install haveged
@@ -780,7 +780,7 @@ primitive p_o2cb lsb:o2cb \
     meta target-role="Started"
 ```
 
-The second bug is in the OCF file system agent where it only checks if the cluster type is "cman" thus in case of Ubuntu whit Corosync the agent fails. To fix the second bug, we edit `/usr/lib/ocf/resource.d/heartbeat/Filesystem` and find:
+The second bug is in the OCF file system agent where it only checks if the cluster type is `cman` thus in case of Ubuntu whit Corosync the agent fails. To fix the second bug, we edit `/usr/lib/ocf/resource.d/heartbeat/Filesystem` and find:
 
 ```
 ...
@@ -797,8 +797,8 @@ line and replace `cman` with `corosync`:
 ```
 
 See the following bug reports for more details:
-https://bugs.launchpad.net/ubuntu/+source/ocfs2-tools/+bug/1412438
-https://bugs.launchpad.net/ubuntu/+source/ocfs2-tools/+bug/1412548
+* [OCF:pacemaker:o2cb broken in 14.04](https://bugs.launchpad.net/ubuntu/+source/ocfs2-tools/+bug/1412438)
+* [OCF Resource Agent "Filesystem" is still CMAN dependent](https://bugs.launchpad.net/ubuntu/+source/ocfs2-tools/+bug/1412548)
 
 So, at the end we create the following resources:
 
