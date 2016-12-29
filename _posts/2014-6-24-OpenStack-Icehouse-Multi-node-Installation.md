@@ -5,7 +5,7 @@ header:
 title: 'OpenStack Icehouse Multi-node Installation with Ceph backend for Cinder and Glance'
 categories: 
   - Virtualization
-tags: [openstack, ceph]
+tags: [openstack, ceph, rbd]
 date: 2014-9-24
 series: "OpenStack Icehouse Multi-node Installation"
 ---
@@ -107,7 +107,7 @@ iface eth2 inet static
 	netmask 255.255.255.128
 ```
 
-Meaning the Data and API network are sharing same `/24` segment with Data having the lower end `192.168.144.0/25` and API network the upper half `192.168.144.129/25` of the range. The `192.168.122.113/24` is the management network and the `192.168.122.113/24` is the VM data network.
+Meaning the Data and API network are sharing same `/24` segment with Data having the lower end `192.168.144.0/25` and API network the upper half `192.168.144.129/25` of the range. The `192.168.122.0/24` is the Management network and the `192.168.133.0/24` is the VM data network.
 
 The hosts file on the servers:
 
@@ -2012,7 +2012,7 @@ Secret value set
 Now we enable Nova to work with Ceph volumes (rbd storage driver):
 
 ```
-root@ostack-compute:~# vi /etc/nova/nova.con
+root@ostack-compute:~# vi /etc/nova/nova.conf
 [DEFAULT]
 ...
 ## CEPH VOLUMES ##
@@ -2026,13 +2026,13 @@ libvirt_inject_key=false
 libvirt_inject_partition=-2
 ```
 
-and restart the compute service:
+Confirm the file `/etc/ceph/ceph.conf` exists and restart the compute service:
 
 ```
 root@ostack-compute:~# service nova-compute restart
 ```
 
-After this we can go to the GUI and launch new Cirros `m1.small` instance (we can't use m1.tiny since this flavour supports 1GB volumes only and ours is 4GB) and
+After this we can go to the GUI and launch new Cirros `m1.small` instance (we can't use m1.tiny since this flavor supports 1GB volumes only and ours is 4GB) and
 choose boot from volume option:
 
 ```
