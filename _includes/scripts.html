@@ -1,5 +1,11 @@
 <script src="{{ base_path }}/assets/js/main.min.js"></script>
 
+{% if page.mathjax %}
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+{% endif %}
+
 <!-- Search Results by jekyll-lunr-js-search -->
 <script src="{{ base_path }}/assets/js/lunr/lunr.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="{{ base_path }}/assets/js/lunr/mustache.min.js" type="text/javascript" charset="utf-8"></script>
