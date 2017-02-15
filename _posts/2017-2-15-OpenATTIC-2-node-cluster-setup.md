@@ -310,7 +310,7 @@ ii  openattic-pgsql                      1.2.1-1                              al
 
 In case we have changed something or installed a new module after the initial install we can always re-run `oaconfig install` to bring the system up-to-date.
 
-{% include gallery caption="OpenATTIC" %}
+{% include gallery caption="OpenATTIC-1.2.1" %}
 
 # Issues and workarounds 
 
