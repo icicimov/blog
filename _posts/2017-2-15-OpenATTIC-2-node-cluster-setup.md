@@ -27,7 +27,7 @@ Since I want to run a cluster of two nodes I need to configure Highly Available 
 
 {% include series.html %}  
 
-Packages downloaded from OpenATTIC official site and ready for install, I want to test most of the modules available hence have downloaded all/most of the deb packages available:
+Packages for `version 1.2.1` downloaded from OpenATTIC official site and ready for install, I want to test most of the modules available hence have downloaded all/most of the deb packages available:
 
 ```
 root@oattic01:~# ls -1 openattic* | sort
@@ -311,7 +311,7 @@ root@[ALL]:~# chown openattic\: /var/log/openattic_rpcd
 
 solved the problem and the next run of `oaconfig install` was successful.
 
-At the end I got "Bad Request (400)" error when tried to access the web UI. Adding `ALLOWED_HOSTS` parameter to `/etc/openattic/settings.py` solves the problem for Django-1.6.11 and Python-2.7. In my case I just added:
+At the end I got `Bad Request (400)` error when tried to access the web UI. Adding `ALLOWED_HOSTS` parameter to `/etc/openattic/settings.py` solves the problem for Django-1.6.11 and Python-2.7. In my case I just added:
 
 ```
 ALLOWED_HOSTS = [ '*' ]
