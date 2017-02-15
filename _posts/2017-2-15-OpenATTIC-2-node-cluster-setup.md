@@ -8,6 +8,15 @@ categories:
 tags: [high-availability, cluster, openattic]
 date: 2017-2-15
 series: "OpenATTIC 2-node cluster setup"
+gallery:
+  - url: oattic-1.2-cluster-setup.png
+    image_path: oattic-1.2-cluster-setup_600x300.png
+    alt: "placeholder image 1"
+    title: "OpenATTIC cluster nodes"
+  - url: oattic-1.2-cluster-drbd-mirror-volume.png
+    image_path: oattic-1.2-cluster-drbd-mirror-volume_600x300.png
+    alt: "placeholder image 2"
+    title: "OpenATTIC DRBD mirror"
 ---
 
 [OpenATTIC](http://openattic.org) is an opensource converged storage that I think has a great potential to become a unified SDS for virtualization platforms. It offers features like CIFS, NFS, iSCSI and CEPH storage backends, mirrored volumes via DRBD and support for LVM, ZFS, XFS and Btrfs just to mention some.
@@ -300,6 +309,8 @@ ii  openattic-pgsql                      1.2.1-1                              al
 ```
 
 In case we have changed something or installed a new module after the initial install we can always re-run `oaconfig install` to bring the system up-to-date.
+
+{% include gallery caption="OpenATTIC" %}
 
 # Issues and workarounds 
 
