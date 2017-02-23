@@ -7,9 +7,24 @@ categories:
   - Storage
 tags: [high-availability, cluster, ceph]
 date: 2014-9-2
+gallery:
+  - url: Calamari_node_registration.png
+    image_path: Calamari_node_registration_600x300.png
+    alt: "placeholder image 1"
+    title: "Nodes registration"
+  - url: Calamari_dashboard.png
+    image_path: Calamari_dashboard_600x300.png
+    alt: "placeholder image 2"
+    title: "Dashboard"
+  - url: Calamari_manage_pools.png
+    image_path: Calamari_manage_pools_600x300.png
+    alt: "placeholder image 3"
+    title: "Pools management"
 ---
 
 As pointed on its home page, [Ceph](https://ceph.com/) is a unified, distributed storage system designed for performance, reliability and scalability. It provides seamless access to objects using native language bindings or radosgw (RGW), a REST interface that's compatible with applications written for S3 and Swift. Ceph's RADOS Block Device (RBD) provides access to block device images that are striped and replicated across the entire storage cluster. It also provides a POSIX-compliant network file system (CephFS) that aims for high performance, large data storage, and maximum compatibility with legacy.
+
+## Setup
 
 I'm setting up a ceph cluster on three VM's ostack-ceph1, ostack-ceph2 and ostack-ceph3, using the first one as deployment node as well.
 
@@ -268,3 +283,20 @@ ID WEIGHT  TYPE NAME             UP/DOWN REWEIGHT PRIMARY-AFFINITY
 -4 0.00999     host ostack-ceph3                                   
  2 0.00999         osd.2              up  1.00000          1.00000
 ```
+
+## Remove Ceph
+
+To completely remove Ceph follow the procedure below:
+
+```
+igorc@ostack-ceph1:~/ceph-cluster$ sudo service ceph-all stop
+igorc@ostack-ceph1:~/ceph-cluster$ ceph-deploy purge ostack-ceph1 ostack-ceph2 ostack-ceph3
+igorc@ostack-ceph1:~/ceph-cluster$ ceph-deploy purgedata ostack-ceph1 ostack-ceph2 ostack-ceph3
+igorc@ostack-ceph1:~/ceph-cluster$ ceph-deploy forgetkeys
+```
+
+## Calamari Ceph GUI
+
+There is a great guide at [How to install Calamari for Ceph Cluster on Ubuntu 14.04](http://www.cirgan.net/how-to-install-calamari-for-ceph-cluster-on-ubuntu-14-04/). With some tweaks I was able to setup Calamari on one of my VM's and integrate with the Ceph cluster created above.
+
+{% include gallery caption="Calamari" %}
