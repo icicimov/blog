@@ -976,6 +976,96 @@ and after couple of seconds we can see that omnios01 is back online and the VIP 
 
 > Please note that I'm **NOT** using a shared storage for the cluster hence the ZFS resource failover can **NOT** work.
 
+## Repeat the same and create pool2 on omnios02
+
+Create another VIF on both nodes:
+
+```
+root@omnios02:/root# dladm create-vnic -l e1000g1 VIP2
+root@omnios02:/root# dladm show-link
+LINK        CLASS     MTU    STATE    BRIDGE     OVER
+e1000g0     phys      1500   up       --         --
+e1000g1     phys      1500   up       --         --
+VIP1        vnic      1500   up       --         e1000g1
+VIP2        vnic      1500   up       --         e1000g1
+```
+
+Create the pool on omnios02:
+
+```
+root@omnios02:/root# zpool create -f -m /pool2 -o autoexpand=on -o autoreplace=on -o cachefile=none pool2 raidz c2t1d0 c2t2d0 c2t3d0
+```
+
+Configure Pacemaker:
+
+```
+primitive p_pool2_VIP ocf:heartbeat:IPaddr \
+         params ip="10.10.1.206" cidr_netmask="24" nic="VIP2" \
+         op monitor interval="10s" \
+         meta target-role="Started"
+primitive p_zfs_pool2 ocf:heartbeat:ZFS \
+  params pool="pool2" \
+  op start timeout="90" \
+  op stop timeout="90"
+colocation col_pool2_with_VIP inf: p_zfs_pool2 p_pool2_VIP
+order o_pool2_before_VIP inf: p_zfs_pool2 p_pool2_VIP
+```
+
+The result:
+
+```
+root@omnios02:/root# crm status
+============
+Last updated: Wed Feb 22 04:37:07 2017
+Stack: Heartbeat
+Current DC: omnios02 (641f06f8-65a9-44fd-80f4-96b87e9c4062) - partition with quorum
+Version: 1.0.11-6e010d6b0d49a6b929d17c0114e9d2d934dc8e04
+2 Nodes configured, unknown expected votes
+4 Resources configured.
+============
+
+Online: [ omnios01 omnios02 ]
+
+ p_pool1_VIP    (ocf::heartbeat:IPaddr):        Started omnios01
+ p_zfs_pool1    (ocf::heartbeat:ZFS):   Started omnios01
+ p_pool2_VIP    (ocf::heartbeat:IPaddr):        Started omnios02
+ p_zfs_pool2    (ocf::heartbeat:ZFS):   Started omnios02
+```
+
+Check for the second VIP on omnios02:
+
+```
+root@omnios02:/root# ipadm show-addr
+ADDROBJ           TYPE     STATE        ADDR
+lo0/v4            static   ok           127.0.0.1/8
+e1000g0/v4        static   ok           192.168.0.142/24
+e1000g1/dhcp      dhcp     ok           10.10.1.13/24
+VIP2/cr           static   ok           10.10.1.206/24
+lo0/v6            static   ok           ::1/128
+```
+
+After reboot of omnios02 node the COMSTAR target was also created:
+
+```
+root@omnios02:/root# itadm list-target -v
+TARGET NAME                                                  STATE    SESSIONS 
+iqn.2010-08.org.illumos:stmf-ha:pool2                        online   0        
+        alias:                  -
+        auth:                   none (defaults)
+        targetchapuser:         -
+        targetchapsecret:       unset
+        tpg-tags:               default 
+```
+
+Now we can use this pool for ZFS-over-iSCSI in Proxmox too. In real world scenario, where both head nodes are connected to 2 x JBOD SAS enclousers lets say for full redundancy, when one of the head nodes goes down its hosted pool will be migrated to the other head with no impact on the clients apart from the short pause during failover and VIP migration.
+
+Just a note rgarding Proxmox, to use these pools we need to generate SSH key for passwordless access from Proxmox nodes to OmniOS nodes, for example:
+
+```
+root@proxmox01:/etc/pve/priv/zfs# ssh-keygen -t rsa -b 2048 -f 10.10.1.206_id_rsa -N ''
+```
+
+and add the `/etc/pve/priv/zfs/10.10.1.206_id_rsa.pub` key to the `authorized_keys` file of the `root` user on the OmniOS servers.
 
 ## References
 
