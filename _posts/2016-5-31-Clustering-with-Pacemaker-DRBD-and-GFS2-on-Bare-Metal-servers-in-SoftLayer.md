@@ -66,12 +66,31 @@ Number  Start (sector)    End (sector)  Size       Code  Name
    3      1048578048      1300236287   120.0 GiB   8300  Linux filesystem
 ```
 
+For optimal performance we need to find the Strip size of the RAID5 array of the volume we will create the file system on:
+
+```
+root@server01:~# storcli /c0/v1 show all | grep Strip
+Strip Size = 256 KB
+```
+
+So the strip size is 256KB and we have 2 data disks in RAID5 so we ned to take this into account when creating the LVM and the file system.
+
 For the shared file system I used the first partition to create LVM of size 200GB leaving around 20% for snapshots:
 
 ```
-[ALL]:~# pvcreate /dev/sdb1
+[ALL]:~# pvcreate --dataalignment 512K /dev/sdb1
   Physical volume "/dev/sdb1" successfully created
- 
+```
+
+where `dataalignment` is calculated as `Strip size * No. Data disks`. To check the data alignment we can run:
+
+```
+root@server01:~# pvs -o +pe_start /dev/sdb1
+```
+
+Next we create the VG and LV:
+
+```
 [ALL]:~# vgcreate -A y vg_drbd0 /dev/sdb1
   Volume group "vg_drbd0" successfully created
  
@@ -85,7 +104,7 @@ At the end we need to tell LVM where to look for logical volumes and which devic
 [ALL]:~# vi /etc/lvm/lvm.conf
 ...
     filter = [ "r|^/dev/drbd.*$|", "a|^/dev/sda.*$|", "a|^/dev/sdb.*$|", "r/.*/" ]
-    write_cache_state = 1
+    write_cache_state = 0
 ...
 ```
 
