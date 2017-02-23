@@ -25,7 +25,8 @@ gallery:
 As pointed on its home page, [Ceph](https://ceph.com/) is a unified, distributed storage system designed for performance, reliability and scalability. It provides seamless access to objects using native language bindings or radosgw (RGW), a REST interface that's compatible with applications written for S3 and Swift. Ceph's RADOS Block Device (RBD) provides access to block device images that are striped and replicated across the entire storage cluster. It also provides a POSIX-compliant network file system (CephFS) that aims for high performance, large data storage, and maximum compatibility with legacy.
 
 ![Ceph distributed storage system](/blog/images/ceph-distributed-storage-system.jpg "Ceph distributed storage system")
-***Picture1:** Ceph distributed storage system*
+
+*Ceph distributed storage system*
 
 ## Setup
 
