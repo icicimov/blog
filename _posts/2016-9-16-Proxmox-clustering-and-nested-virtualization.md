@@ -166,6 +166,14 @@ root@proxmox01:~# egrep -c '(vmx|svm)' /proc/cpuinfo
 
 the CPU virtualization features of the host are being passed on to the launched instances.
 
+Just a note for the case when we want to run nested Proxmox instances in `libvirt`. The cpu mode needs to be set to `host-passthrough` by editing the domain's xml file:
+
+```
+<cpu mode='host-passthrough'>
+```
+
+otherwise the nested virtualization will not work. Selecting the `Copy Cpu Configuration` in VirtManager sets the cpu mode to `host-model` which does not enable this feature although the name suggests it should.
+
 The Host is already part of our office network `192.168.0.0/24` which is presented to the running instances as external bridged network for internet access. I have created two additional networks for clustering purposes `10.10.1.0/24` and `10.20.1.0/24`, the relevant setup in `/etc/network/interfaces`:
 
 ```
