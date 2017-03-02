@@ -157,7 +157,7 @@ To enable the feature on reboot:
 root@virtual:~# echo "options kvm-intel nested=y" > /etc/modprobe.d/kvm-intel.conf
 ```
 
-We can now start our Proxmox instances and we can see on the nested Proxmox hosts after startup:
+We can now create our nested Proxmox instances and choose `host` for `CPU Type` so they can inherit the KVM features. Then we can see on the nested Proxmox hosts after startup:
 
 ```
 root@proxmox01:~# egrep -c '(vmx|svm)' /proc/cpuinfo
