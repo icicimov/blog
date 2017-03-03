@@ -174,7 +174,7 @@ Just a note for the case when we want to run nested Proxmox instances in `libvir
 
 otherwise the nested virtualization will not work. Selecting the `Copy Cpu Configuration` in VirtManager sets the cpu mode to `host-model` which does not enable this feature although the name suggests it should.
 
-The Host is already part of our office network `192.168.0.0/24` which is presented to the running instances as external bridged network for internet access. I have created two additional networks for clustering purposes `10.10.1.0/24` and `10.20.1.0/24`, the relevant setup in `/etc/network/interfaces`:
+The Host is already part of our office network `192.168.0.0/24` which is presented to the running instances as external bridged network for internet access. I have created two additional networks on isolated virtual bridges for clustering purposes `10.10.1.0/24` and `10.20.1.0/24`, the relevant setup in `/etc/network/interfaces`:
 
 ```
 # Create private network bridge with DHCP server
@@ -540,5 +540,9 @@ service vm:102 (proxmox01, started)
 ```
 
 Same operation can be executed via the GUI too.
+
+## VM Templates
+
+After creating a template from a VM it is best we remove the CD drive we used to mount the installation `iso` media, set `KVM hardware virtualization` to `no` (we don't need this in VM's launched in a already nested VM) and set `Qemu Agent` to `yes` (improves network performance) under the `Options` tab for the template before we launch any instances from it.
 
 {% include series.html %}
