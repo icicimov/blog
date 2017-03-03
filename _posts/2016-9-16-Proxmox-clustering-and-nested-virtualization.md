@@ -541,8 +541,8 @@ service vm:102 (proxmox01, started)
 
 Same operation can be executed via the GUI too.
 
-## VM Templates
+## Note about VM Templates
 
-After creating a template from a VM it is best we remove the CD drive we used to mount the installation `iso` media, set `KVM hardware virtualization` to `no` (we don't need this in VM's launched in a already nested VM) and set `Qemu Agent` to `yes` (improves network performance) under the `Options` tab for the template before we launch any instances from it.
+It is common procedure to create a Template from base image VM that we can then use to launch new VM's of the same type, lets say Ubuntu-14.04 VM's fast and easy. After creating a template from a VM it is best we remove the CD drive we used to mount the installation `iso` media, set `KVM hardware virtualization` to `no` (we don't need this in VM's launched in a already nested VM) and set `Qemu Agent` to `yes` which is used to freeze the guest file system when making a backup (assumes `qemu-guest-agent` package installed) under the `Options` tab for the template before we launch any instances from it.
 
 {% include series.html %}
