@@ -6,7 +6,7 @@ title: 'Using data source to mitigate lack of intermediate variables and interpo
 categories: 
   - DevOps
 tags: [terraform]
-date: 2016-9-26
+date: 2016-8-26
 ---
 
 Just something I dug out in the Terraform forum and would like to keep as a reminder for the future. Terraform will not allow us to do something like this:
