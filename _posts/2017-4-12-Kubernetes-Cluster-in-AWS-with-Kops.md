@@ -82,7 +82,7 @@ I will use a simple nodejs app I created for the POC and will deploy k8s in exis
 The following image should depict the build of the k8s cluster via Kops.
 
 ![Kubernetes cluster in private AWS subnets](/blog/images/kops_k8s_cluster_aws.png "Kubernetes cluster in private AWS subnets")
-***Picture1:** Kubernetes cluster in private AWS subnets across multiple zones*
+***Picture2:** Kubernetes cluster in private AWS subnets across multiple zones*
 
 Good starting point for Kops on AWS is the documentation page in Git: [Getting Started](https://github.com/kubernetes/kops/blob/master/docs/aws.md). Following the instructions we first install `kubectl` on our local station, the basic configuration tool for Kubernetes:
 
@@ -200,7 +200,7 @@ or weave:
 $ kubectl apply -f https://git.io/weave-kube
 ```
 
-just to mention couple of most used overlay CNI networks/plugins. Just a quick note about above flannel files, the `kube-flannel-rbac.yml` should be applied for `k8s-1.6.x` versions which use RBAC by default. The [Cluster Networking](https://kubernetes.io/docs/concepts/cluster-administration/networking/) section of the official Kubrnetes documentation has more details on the networking subject. 
+just to mention couple of most used overlay CNI networks/plugins. Just a quick note about above flannel files, the `kube-flannel-rbac.yml` should be applied for `k8s-1.6.x` versions which use [RBAC](http://kubernetes.io/docs/admin/authorization/rbac/) by default. The [Cluster Networking](https://kubernetes.io/docs/concepts/cluster-administration/networking/) section of the official Kubrnetes documentation has more details on the networking subject. 
 
 Ok, so after Kops deployment has finished we can check the status of our k8s cluster we deployed in a existing VPC:
 
