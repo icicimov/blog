@@ -260,9 +260,9 @@ users:
     username: admin
 ```
 
-This holds all the credentials necessary for the `admin` user access to the cluster. For other lower level access, lets say read-only user, a separate certificates need to be created and associated to separate role in the cluster.
+This holds all the credentials necessary for the `admin` user access to the cluster. For other lower level access, lets say read-only user, a separate certificates need to be created and associated to separate role in the cluster. There is an example [here](https://ngineered.co.uk/blog/configuring-kubectl-for-multiple-clusters) on expanding the kubectl config file for access to multiple clusters.
 
-Kops creates an publicly accessible ELB that exposes the k8s API service point. The access is granted only to authorized users like the admin user in the above kubectl file.
+Kops creates a publicly accessible ELB that exposes the k8s API service point. The access is granted only to authorized users like the admin user in the above kubectl file and only from the IP's specified via the `ADMIN_ACCESS` variable in the above script.
 
 An AWS EBS storage class is also created for us automatically:
 
