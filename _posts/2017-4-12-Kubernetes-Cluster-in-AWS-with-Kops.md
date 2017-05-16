@@ -173,7 +173,7 @@ populating the Kops YAML config template is not a difficult task (can be also in
 $ kops update cluster --name=tftest.encompasshost.internal --yes
 ```
 
-or if using local config file (mine as a template is available for download from [here]({{ site.baseurl }}/download/kops_1.5.3_k8s_1.5.6_cluster.txt)):
+or if using local config file (mine as a template is available for download from [here]({{ site.baseurl }}/download/kops_1.5.3_k8s_1.5.6_cluster.yml)):
 
 ```
 $ kops update cluster --config kops-tftest.yml --name=tftest.encompasshost.internal --yes
