@@ -8,6 +8,7 @@ categories:
 tags: [kubernetes, docker]
 date: 2017-4-12
 series: "Kubernetes Cluster in AWS"
+excerpt: "Kubernetes is a  platform for deploying and managing containers. It is production-grade, open-source infrastructure for the deployment, scaling, management, and composition of application containers across clusters of hosts."
 ---
 {% include toc %}
 

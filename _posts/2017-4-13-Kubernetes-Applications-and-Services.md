@@ -10,7 +10,6 @@ date: 2017-4-13
 series: "Kubernetes Cluster in AWS"
 ---
 {% include toc %}
-
 In my previous post [Kubernetes Cluster in AWS with Kops]({{ site.baseurl }}{% post_url 2017-4-12-Kubernetes-Cluster-in-AWS-with-Kops %}) I deployed a Kubernetes cluster with fully private topology (subnets and DNS vise) in existing AWS VPC using Kops. Now it's time to start deploying to it and exploring its functionality. 
 
 # Applications and Services
