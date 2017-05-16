@@ -6,6 +6,8 @@ title: 'Kubernetes Cluster in AWS with Kops'
 categories: 
   - Virtualization
 tags: [kubernetes, docker]
+date: 2017-4-12
+series: "Kubernetes Cluster in AWS"
 ---
 {% include toc %}
 
@@ -280,3 +282,17 @@ No events.
 ```
 
 that we can use to attach gp2 EBS volumes to the pods for services that need to store persistent data like MongoDB lets say via [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/).
+
+### Known Issues and Limitations
+
+There are missing tags that are not applied to the subnets when Kops creates k8s cluster in existing VPC. The following tags need to get applied **after** the k8s is created and **before** we start creating any `type=LoadBalancer` Service or Ingress:
+
+```
+KubernetesCluster = "tftest.encompasshost.internal"
+```
+
+This is not a big problem, we can apply the tags via Terraform while creating the VPC (knowing our k8s cluster name before we start of course). See the case I've opened for more details [https://github.com/kubernetes/kops/issues/2388](https://github.com/kubernetes/kops/issues/2388).
+
+The subnet tagging also imposes a limitation that no more than one single k8s cluster can exist in a single VPC (they'll be overwriting each others tags if that is the case), but since this will always be the case for us it is not something we should worry about.
+
+{% include series.html %}
