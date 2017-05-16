@@ -5,7 +5,7 @@ header:
 title: 'Kubernetes Cluster in AWS with Kops'
 categories: 
   - Virtualization
-tags: [kubernetes, docker]
+tags: [kubernetes, docker, containers]
 date: 2017-4-12
 series: "Kubernetes Cluster in AWS"
 excerpt: "Kubernetes is a  platform for deploying and managing containers. It is production-grade, open-source infrastructure for the deployment, scaling, management, and composition of application containers across clusters of hosts."

@@ -5,7 +5,7 @@ header:
 title: 'Kubernetes Applications and Services'
 categories: 
   - Virtualization
-tags: [kubernetes, docker]
+tags: [kubernetes, docker, containers]
 date: 2017-4-13
 series: "Kubernetes Cluster in AWS"
 ---

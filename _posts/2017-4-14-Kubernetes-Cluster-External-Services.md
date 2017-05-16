@@ -5,7 +5,7 @@ header:
 title: 'Kubernetes Cluster External Services'
 categories: 
   - Virtualization
-tags: [kubernetes, docker]
+tags: [kubernetes, docker, containers]
 date: 2017-4-14
 series: "Kubernetes Cluster in AWS"
 ---
