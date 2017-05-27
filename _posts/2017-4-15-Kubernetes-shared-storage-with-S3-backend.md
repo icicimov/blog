@@ -254,6 +254,38 @@ Now we need to make a slight change to our Deployment so we mount the host share
 [...]
 ```
 
-The key part is `mountPath: /data:shared` which enables the volume to be mounted as shared inside the pod. When the container starts it will mount the S3 bucket onto `/data` and consequently the data will be available under `/mnt/data-s3fs` on the host and thus to any other container/pod running on it (and has `/mnt/data-s3fs` mounted too). Then we can convert the Deployment into DaemonSet and have this running on every node in our cluster and automatically mounting the S3 bucket providing cluster-wise shared storage for our Pods and Services.
+and re-apply the YAML file. The key part is `mountPath: /data:shared` which enables the volume to be mounted as shared inside the pod. When the container starts it will mount the S3 bucket onto `/data` and consequently the data will be available under `/mnt/data-s3fs` on the host and thus to any other container/pod running on it (and has `/mnt/data-s3fs` mounted too).
+
+To test lets login to the s3fs pod and create new directory in the share:
+
+```
+root@s3fs-793318855-5m0rn:/# ls -l /data                                                                                                                                                                           
+total 2
+drwxr-xr-x 1 106 112 0 Oct  2  2014 bin
+drwxr-xr-x 1 106 112 0 Aug 24  2014 documents
+drwx------ 1 106 112 0 Aug 25  2014 pdf
+root@s3fs-793318855-5m0rn:/# mkdir /data/test
+root@s3fs-793318855-5m0rn:/# ls -ltr /data     
+total 2
+drwxr-xr-x 1  106  112 0 Oct  2  2014 bin
+drwxr-xr-x 1  106  112 0 Aug 24  2014 documents
+drwx------ 1  106  112 0 Aug 25  2014 pdf
+drwxr-xr-x 1 root root 0 Apr 15 12:37 test
+```
+
+and then lets check the share on the k8s node this pod is running on:
+
+```
+root@ip-10-99-7-170:~# ls -ltr /mnt/data-s3fs/
+total 2
+drwxr-xr-x 1 sshd  112 0 Aug 24  2014 documents
+drwx------ 1 sshd  112 0 Aug 25  2014 pdf
+drwxr-xr-x 1 sshd  112 0 Oct  2  2014 bin
+drwxr-xr-x 1 root root 0 Apr 15 12:37 test
+```
+
+and we can see the new directory here too.
+
+We can convert the Deployment into DaemonSet and have this running on every node in our cluster and automatically mounting the S3 bucket providing cluster-wise shared storage for our Pods and Services.
 
 {% include series.html %}
