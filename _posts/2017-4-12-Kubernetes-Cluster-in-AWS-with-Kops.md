@@ -298,4 +298,8 @@ This is not a big problem, we can apply the tags via Terraform while creating th
 
 The subnet tagging also imposes a limitation that no more than one single k8s cluster can exist in a single VPC (they'll be overwriting each others tags if that is the case), but since this will always be the case for us it is not something we should worry about.
 
+## Kops Add-ons
+
+To add additional elements to the cluster like Dashboard, Heapster for basic CPU and RAM monitoring and Route53 plugin proceed to [Installing Kubernetes Addons](https://github.com/kubernetes/kops/blob/master/docs/addons.md) page in the Kops GitHub repository.
+
 {% include series.html %}
