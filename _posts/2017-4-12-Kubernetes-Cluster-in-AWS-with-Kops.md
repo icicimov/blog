@@ -134,10 +134,12 @@ export DNS_ZONE_ID="ZXXXXXXXXXXXXI"
 export NODE_SIZE="t2.medium"
 export NODE_COUNT=3
 export MASTER_SIZE="t2.small"
+export KUBERNETES_VERSION="1.5.6"
 kops create cluster \
     --name "${NAME}" \
     --cloud aws \
-    --cloud-labels "Environment=\"tftest\",Type=\"k8s\",Role=\"node\"Provisioner=kops" \
+    --kubernetes-version ${KUBERNETES_VERSION} \
+    --cloud-labels "Environment=\"tftest\",Type=\"k8s\",Role=\"node\",Provisioner=\"kops\"" \
     --node-count ${NODE_COUNT} \
     --zones "${ZONES}" \
     --master-zones "${ZONES}" \
