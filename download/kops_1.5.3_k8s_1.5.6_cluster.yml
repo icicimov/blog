@@ -3,6 +3,37 @@ kind: Cluster
 metadata:
   name: xxxxxxxx.domain.com
 spec:
+  additionalPolicies:
+    node: |
+      [
+        # optional custom policies
+        {
+          "Effect": "Allow",
+          "Action": ["sts:AssumeRole"],
+          "Resource": ["arn:aws:iam::YOUR_ACCOUNT_NUMBER:role/k8s-*"]
+        }
+      ]
+    master: |
+      [
+        # optional custom policies
+        {
+          "Effect": "Allow",
+          "Action": ["sts:AssumeRole"],
+          "Resource": ["arn:aws:iam::YOUR_ACCOUNT_NUMBER:role/k8s-*"]
+        },
+        # kops 1.5.3 requires adding this for zones not matching the cluster domain
+        {
+            "Effect": "Allow",
+            "Action": [
+                "route53:ChangeResourceRecordSets",
+                "route53:ListResourceRecordSets",
+                "route53:GetHostedZone"
+            ],
+            "Resource": [
+                "arn:aws:route53:::hostedzone/ZONE_ID"
+            ]
+        }
+      ]
   api:
     loadBalancer:
       type: Public
