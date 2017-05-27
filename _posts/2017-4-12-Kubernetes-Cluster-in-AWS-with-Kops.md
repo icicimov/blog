@@ -202,6 +202,11 @@ or weave:
 
 ```
 $ kubectl apply -f https://git.io/weave-kube
+# optional Scope dashboard for weave
+$ kubectl apply --namespace kube-system -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+$ kubectl port-forward -n kube-system "$(kubectl get -n kube-system pod \
+  --selector=weave-scope-component=app -o jsonpath='{.items..metadata.name}')" 4040
+# and connect to it: http://localhost:4040
 ```
 
 just to mention couple of most used overlay CNI networks/plugins. Just a quick note about above flannel files, the `kube-flannel-rbac.yml` should be applied for `k8s-1.6.x` versions which use [RBAC](http://kubernetes.io/docs/admin/authorization/rbac/) by default. The [Cluster Networking](https://kubernetes.io/docs/concepts/cluster-administration/networking/) section of the official Kubrnetes documentation has more details on the networking subject. 
