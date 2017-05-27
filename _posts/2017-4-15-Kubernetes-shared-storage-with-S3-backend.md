@@ -29,7 +29,7 @@ The first step is creating our s3fs Docker image so we start with its Dockerfile
 #  -e MNT_POINT=/data git.encompasshost.com:5001/encompass/images/s3fs:latest
 ########################################################
  
-FROM encompass/ubuntu-trusty:latest
+FROM ubuntu:14.04
  
 MAINTAINER Igor Cicimov <igorc@encompasscorporation.com>
  
