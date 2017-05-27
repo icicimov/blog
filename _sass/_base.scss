@@ -145,6 +145,15 @@ td > code {
   border-radius: $border-radius;
   box-shadow: $box-shadow;
 
+/* Code colour and background like GitLab
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  font-size: $type-size-6;
+  color: #c0341d;
+  background-color: #fcefed;
+  border-radius: $border-radius;
+*/
+
   &:before, &:after {
     letter-spacing: -0.2em;
     content: "\00a0"; /* non-breaking space*/
