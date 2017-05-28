@@ -169,15 +169,15 @@ root@glustera:~# systemctl daemon-reload
 root@glustera:~# systemctl start heketi.service
 root@glustera:~# journalctl -xe -u heketi
 [...]
-May 24 14:35:27 ip-10-77-3-203 heketi[8567]: Heketi v4.0.0
-May 24 14:35:27 ip-10-77-3-203 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 Loaded ssh executor
-May 24 14:35:27 ip-10-77-3-203 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 Adv: Max bricks per volume set to 33
-May 24 14:35:27 ip-10-77-3-203 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 Adv: Max brick size 1024 GB
-May 24 14:35:27 ip-10-77-3-203 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 Adv: Min brick size 1 GB
-May 24 14:35:27 ip-10-77-3-203 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 Loaded simple allocator
-May 24 14:35:27 ip-10-77-3-203 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 GlusterFS Application Loaded
-May 24 14:35:27 ip-10-77-3-203 heketi[8567]: Authorization loaded
-May 24 14:35:27 ip-10-77-3-203 heketi[8567]: Listening on port 8080
+May 24 14:35:27 ip-10-99-3-216 heketi[8567]: Heketi v4.0.0
+May 24 14:35:27 ip-10-99-3-216 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 Loaded ssh executor
+May 24 14:35:27 ip-10-99-3-216 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 Adv: Max bricks per volume set to 33
+May 24 14:35:27 ip-10-99-3-216 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 Adv: Max brick size 1024 GB
+May 24 14:35:27 ip-10-99-3-216 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 Adv: Min brick size 1 GB
+May 24 14:35:27 ip-10-99-3-216 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 Loaded simple allocator
+May 24 14:35:27 ip-10-99-3-216 heketi[8567]: [heketi] INFO 2017/05/24 14:35:27 GlusterFS Application Loaded
+May 24 14:35:27 ip-10-99-3-216 heketi[8567]: Authorization loaded
+May 24 14:35:27 ip-10-99-3-216 heketi[8567]: Listening on port 8080
  
 root@glustera:~# netstat -tuplen | grep LISTEN | grep heketi
 tcp6       0      0 :::8080                 :::*                    LISTEN      515        322113      8567/heketi
@@ -371,7 +371,8 @@ metadata:
   namespace: default
 type: "kubernetes.io/glusterfs"
 data:
-  key: M25jME1wNHNzMjUk
+  # echo -n "PASSWORD" | base64
+  key: PASSWORD_BASE64_ENCODED
 ```
 
 and then the StorageClass YAML file `gluster-heketi-external-storage-class.yml` it self:
