@@ -16,7 +16,7 @@ This article [Configuring Private DNS Zones and Upstream Nameservers in Kubernet
 
 ## Consul servers setup
 
-The only change we need to make here is install and configure dnsmasq to listen on TCP/UDP port 53 and forward the requests for the ".consul" domain to the local consul service on port 8600:
+The only change we need to make here is install and configure dnsmasq to listen on TCP/UDP port 53 and forward the requests for the `.consul` domain to the local consul service on port 8600:
 
 ```
 # aptitude install -y dnsmasq
