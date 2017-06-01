@@ -604,3 +604,5 @@ root@ip-10-99-8-43:~# cat /proc/mounts | grep -i glust
 root@ip-10-99-8-25:~# curl http://100.65.201.19
 Hello World from GlusterFS!!!
 ```
+
+{% include series.html %}
