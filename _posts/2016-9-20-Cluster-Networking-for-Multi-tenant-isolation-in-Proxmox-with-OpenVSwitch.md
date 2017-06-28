@@ -53,6 +53,7 @@ iface eth3 inet manual
         up ip link set eth3 up
  
 # GRE/VXLAN bridge
+auto vmbr1
 allow-ovs vmbr1
 iface vmbr1 inet manual
         ovs_type OVSBridge
@@ -69,6 +70,7 @@ iface tep0 inet static
         netmask 255.255.255.0
  
 # Integration bridge
+auto vmbr2
 allow-ovs vmbr2
 iface vmbr2 inet manual
     ovs_type OVSBridge
@@ -79,7 +81,7 @@ iface vmbr2 inet manual
 allow-vmbr2 vx1
 iface vx1 inet manual
     ovs_type OVSTunnel
-    ovs-bridge vmbr2
+    ovs_bridge vmbr2
     ovs_tunnel_type vxlan
     ovs_options trunks=11,22,33
     ovs_tunnel_options options:remote_ip=10.30.1.186 options:key=flow options:dst_port=4789
@@ -92,8 +94,11 @@ iface dhcptap0 inet static
         ovs_options tag=11
         address 172.29.240.3
         netmask 255.255.255.0
+```
 
 and on proxmox02:
+
+```
 # GRE/VXLAN network
 allow-vmbr1 eth3
 iface eth3 inet manual
@@ -103,6 +108,7 @@ iface eth3 inet manual
         up ip link set eth3 up
  
 # GRE/VXLAN bridge
+auto vmbr1
 allow-ovs vmbr1
 iface vmbr1 inet manual
         ovs_type OVSBridge
@@ -119,6 +125,7 @@ iface tep0 inet static
         netmask 255.255.255.0
  
 # Integration bridge
+auto vmbr2
 allow-ovs vmbr2
 iface vmbr2 inet manual
     ovs_type OVSBridge
@@ -129,7 +136,7 @@ iface vmbr2 inet manual
 allow-vmbr2 vx1
 iface vx1 inet manual
     ovs_type OVSTunnel
-    ovs-bridge vmbr2
+    ovs_bridge vmbr2
     ovs_tunnel_type vxlan
     ovs_options trunks=11,22,33
     ovs_tunnel_options options:remote_ip=10.30.1.185 options:key=flow options:dst_port=4789
@@ -156,7 +163,7 @@ f463d896-7fcb-40b1-b4a1-e493b255d978
             trunks: [11, 22, 33]
             Interface "vx1"
                 type: vxlan
-                options: {dst_port="4789", key=flow, remote_ip="10.10.1.186"}
+                options: {dst_port="4789", key=flow, remote_ip="10.30.1.186"}
     Bridge "vmbr1"
         Port "eth3"
             Interface "eth3"
@@ -182,7 +189,7 @@ root@proxmox02:~# ovs-vsctl show
             trunks: [11, 22, 33]
             Interface "vx1"
                 type: vxlan
-                options: {dst_port="4789", key=flow, remote_ip="10.10.1.185"}
+                options: {dst_port="4789", key=flow, remote_ip="10.30.1.185"}
     Bridge "vmbr1"
         Port "tep0"
             Interface "tep0"
@@ -220,7 +227,7 @@ f463d896-7fcb-40b1-b4a1-e493b255d978
             trunks: [11, 22, 33]
             Interface "vx1"
                 type: vxlan
-                options: {dst_port="4789", key=flow, remote_ip="10.10.1.186"}
+                options: {dst_port="4789", key=flow, remote_ip="10.30.1.186"}
     Bridge "vmbr1"
         Port "eth3"
             Interface "eth3"
@@ -253,7 +260,7 @@ root@proxmox02:~# ovs-vsctl show
             trunks: [11, 22, 33]
             Interface "vx1"
                 type: vxlan
-                options: {dst_port="4789", key=flow, remote_ip="10.10.1.185"}
+                options: {dst_port="4789", key=flow, remote_ip="10.30.1.185"}
         Port "veth101i2"
             tag: 22
             Interface "veth101i2"
