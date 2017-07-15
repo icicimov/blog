@@ -111,17 +111,20 @@ For the renewal process I created the following script inder `/usr/local/bin/ins
 ```
 #!/bin/bash
 
-#apache2ctl graceful-stop && \
+cd /opt/letsencrypt && \
+apache2ctl graceful-stop && \
 /opt/letsencrypt/letsencrypt-auto certonly --standalone --renew-by-default \
-  --csr /etc/apache2/ssl.crt/icicimov.com.csr --keep >> /var/log/letsencrypt/letsencrypt-auto-update.log && \
+  --csr /etc/apache2/ssl.crt/icicimov.com.csr \
+  -d icicimov.com >> /var/log/letsencrypt/letsencrypt-auto-update.log && \
 cp /opt/letsencrypt/0000_cert.pem /etc/apache2/ssl.crt/icicimov_com_cert.pem && \
 cp /opt/letsencrypt/0000_chain.pem /etc/apache2/ssl.crt/icicimov_com_cert_chain.pem && \
 { apache2ctl graceful; service postfix restart; }
 cat /opt/letsencrypt/0000_cert.pem /etc/apache2/ssl.crt/icicimov_com_private_key.pem \
     /opt/letsencrypt/0000_chain.pem > /etc/ssl/private/icicimov_com_cert.pem && \
 { service courier-imap-ssl restart; service courier-pop-ssl restart; }
+exit 0
 ```
-that will automatically renew the SSL certificate and put all bits and pieces in place same like I did manually above. Put this in crontab:
+that will automatically renew the SSL certificate and put all bits and pieces in place same like I did manually above. Put this in the `/etc/crontab` crontab file:
 
 ```
 @monthly root /usr/local/bin/install_new_certs.sh
