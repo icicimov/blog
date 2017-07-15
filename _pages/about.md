@@ -38,7 +38,7 @@ Husband and father, in love with the ocean, MotoGP and F1. When not playing with
 ### Skills
 
 * Configuration management: CloudFormation, Ansible, Terraform, cloud-init
-* Virtualization: AWS, KVM (libvirt), VMWare, OpenStack, LXC
+* Virtualization: AWS, KVM (libvirt), VMWare, OpenStack, LXC, Proxmox, Docker, Kubernetes
 * HA and LB: HAProxy, Apache2 (mod_jk, mod_proxy), Heartbeat, Keepalived, IPVS, Corosync, Pacemaker, DRBD, iSCSI, ZFS, LVM, RAID
 * J2EE and Web server: Weblogic 8.1, 9.x, 10.x application server, Apache2 web server, Tomcat, Nginx
 * Database administration: PostgreSQL, Oracle 9/10/11g, MySQL, SleepycatDB, LDAP, MongoDB
