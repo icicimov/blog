@@ -384,7 +384,7 @@ Errors 0
 [...]
 ```
 
-The scripts are available for download: [duplicity_mongodb_backup.sh]({{ site.baseurl }}/download/duplicity_mongodb_backup.sh), [duplicity_es_backup.sh]({{ site.baseurl }}/download/duplicity_es_backup.sh), [duplicity_data_backup.sh]({{ site.baseurl }}/download/duplicity_data_backup.sh).
+The scripts are available for download: [duplicity_mongodb_backup.sh]({{ site.baseurl }}/download/duplicity_mongodb_backup.sh), [duplicity_es_backup.sh]({{ site.baseurl }}/download/duplicity_es_backup.sh), [duplicity_data_backup.sh]({{ site.baseurl }}/download/duplicity_data_backup.sh). The backup strategy in the scripts is full backup every 2 weeks and daily incremental in between keeping last 12 full backups and remove all incremental backups older than the last 4 full backups.
 
 ## Duply (simple duplicity)
 
