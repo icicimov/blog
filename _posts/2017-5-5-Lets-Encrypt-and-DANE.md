@@ -80,7 +80,7 @@ Cert chain written to <fdopen>
 
 IMPORTANT NOTES:
  - Congratulations! Your certificate and chain have been saved at
-   /opt/letsencrypt/0001_chain.pem. Your cert will expire on
+   /opt/letsencrypt/0000_chain.pem. Your cert will expire on
    2017-08-04. To obtain a new or tweaked version of this certificate
    in the future, simply run letsencrypt-auto again. To
    non-interactively renew *all* of your certificates, run
@@ -116,11 +116,11 @@ apache2ctl graceful-stop && \
 /opt/letsencrypt/letsencrypt-auto certonly --standalone --renew-by-default \
   --csr /etc/apache2/ssl.crt/icicimov.com.csr \
   -d icicimov.com >> /var/log/letsencrypt/letsencrypt-auto-update.log && \
-cp /opt/letsencrypt/0000_cert.pem /etc/apache2/ssl.crt/icicimov_com_cert.pem && \
-cp /opt/letsencrypt/0000_chain.pem /etc/apache2/ssl.crt/icicimov_com_cert_chain.pem && \
+cp $(ls -t /opt/letsencrypt/*_cert.pem | head -1) /etc/apache2/ssl.crt/icicimov_com_cert.pem && \
+cp $(ls -t /opt/letsencrypt/*_chain.pem | head -1) /etc/apache2/ssl.crt/icicimov_com_cert_chain.pem && \
 { apache2ctl graceful; service postfix restart; }
-cat /opt/letsencrypt/0000_cert.pem /etc/apache2/ssl.crt/icicimov_com_private_key.pem \
-    /opt/letsencrypt/0000_chain.pem > /etc/ssl/private/icicimov_com_cert.pem && \
+cat $(ls -t /opt/letsencrypt/*_cert.pem | head -1) /etc/apache2/ssl.crt/icicimov_com_private_key.pem \
+    $(ls -t /opt/letsencrypt/*_chain.pem | head -1) > /etc/ssl/private/icicimov_com_cert.pem && \
 { service courier-imap-ssl restart; service courier-pop-ssl restart; }
 exit 0
 ```
