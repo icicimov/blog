@@ -6,7 +6,10 @@ title: 'PostgreSQL Confluence DB replication with Bucardo'
 category: Database
 tags: [postgresql, replication, high-availability]
 date: 2016-9-19
+excerpt: "In cases where we can’t use the built-in PostgreSQL replication facility, like for example Confluence DB which has replication protection, Bucardo is very efficient option..."
 ---
+
+{% include toc %}
 
 # Introduction
 
