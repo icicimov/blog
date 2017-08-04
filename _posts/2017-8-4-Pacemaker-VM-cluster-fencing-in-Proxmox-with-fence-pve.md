@@ -45,13 +45,13 @@ For the fencing agent I used the current PVE `fence-agents-4.0.20` repository fr
 ```
 $ wget https://github.com/proxmox/fence-agents-pve/raw/master/fence-agents-4.0.20.tar.gz
 $ ./autogen.sh 
-$ pip install suds
+$ sudo pip install suds
 $ ./configure 
 $ make
 $ sudo make install
 ```
 
-The agents are installed under "/usr/sbin/". To get the resource metadata (the input parameters supported) run:
+The agents are installed under `/usr/sbin/`. To get the resource metadata (the input parameters supported) run:
 
 ```
 $ /usr/sbin/fence_pve -o metadata
@@ -138,6 +138,7 @@ root@sl02:~#
 
 We can see the `sl01` VM being restarted and in the logs:
 
+```
 Aug  4 14:22:04 sl02 corosync[1173]:   [MAIN  ] Completed service synchronization, ready to provide service.
 Aug  4 14:22:04 sl02 dlm_controld[22329]: 82908 fence request 1 pid 6631 nodedown time 1501820524 fence_all dlm_stonith
 Aug  4 14:22:04 sl02 kernel: [82908.857103] dlm: closing connection to node 1
