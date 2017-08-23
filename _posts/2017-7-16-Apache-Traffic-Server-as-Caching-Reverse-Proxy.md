@@ -403,6 +403,8 @@ based on the `Accept` header that Origin sends itself.
 
 ## Plugins
 
+The following plugins are installed by TS:
+
 ```
 root@ip-172-31-47-28:~# ls -1 /usr/local/libexec/trafficserver/*.so
 authproxy.so
