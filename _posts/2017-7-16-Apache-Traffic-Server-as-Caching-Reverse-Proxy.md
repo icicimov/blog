@@ -198,12 +198,12 @@ CONFIG proxy.config.http.cache.ignore_client_no_cache INT 1
 
 The `proxy.config.http.cache.ignore_client_no_cache` setting enables us to ignore the client no-cache requests and serve the content from cache if present.
 
-The `proxy.config.http.cache.ignore_client_cc_max_age` setting enables TS to ignore any Cache-Control: max-age headers from the client.
+The `proxy.config.http.cache.ignore_client_cc_max_age` setting enables TS to ignore any `Cache-Control: max-age` headers from the client.
 
 The `proxy.config.http.normalize_ae_gzip` setting enables TS to normalize all `Accept-Encoding: headers` to one of the following:
 
-    * Accept-Encoding: gzip (if the header has gzip or x-gzip with any q) OR
-    * blank (for any header that does not include gzip)
+* Accept-Encoding: gzip (if the header has gzip or x-gzip with any q) OR
+* blank (for any header that does not include gzip)
 
 This is useful for minimizing cached alternates of documents (e.g. gzip,deflate vs. deflate,gzip).
 
