@@ -322,8 +322,9 @@ Cache Lookup Result                                    :cache hit
 ICP status                                             :no icp
 Parent proxy connection status                         :no parent proxy or unknown
 Origin server connection status                        :no server connection needed
-Header Rewriting
 ```
+
+## Header Rewriting
 
 First we enable the `header_rewrite` plugin in the `plugin.config` file:
 
