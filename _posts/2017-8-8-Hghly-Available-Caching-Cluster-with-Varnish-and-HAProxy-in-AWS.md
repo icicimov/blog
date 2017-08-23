@@ -1,7 +1,7 @@
 ---
 type: posts
 header:
-  teaser: 'cloud-computing.jpg'
+  teaser: 'varnish.png'
 title: 'Hghly Available Caching Cluster with Varnish and HAProxy in AWS'
 categories: 
   - Server
@@ -13,7 +13,7 @@ Varnish is a smart caching reverse-proxy and web application accelerator. Accord
 
 Varnish doesn't implement SSL/TLS and wants to dedicate all of its CPU cycles to what it does best. Varnish also implements HAProxy's PROXY protocol so that HAProxy can very easily be deployed in front of Varnish as an SSL offloader as well as a load balancer and pass it all relevant client information. Also, Varnish naturally supports decompression from the cache when a server has provided a compressed object, but doesn't compress however. HAProxy can then be used to compress outgoing data when backend servers do not implement compression, though it's rarely a good idea to compress on the load balancer unless the traffic is low.
 
-Will be using Using Haproxy-1.7.8 (later updated to 1.7.9) and Varnish-5.1.1 (later updated to 5.1.3 to fix [DoS vulnerability](https://varnish-cache.org/security/VSV00001.html#vsv00001)) on Ubuntu-16.04 Xenial.
+Will be using Using Haproxy-1.7.8 (later updated to 1.7.9) and Varnish-5.1.1 (later updated to 5.1.3 to fix [DoS vulnerability](https://varnish-cache.org/security/VSV00001.html#vsv00001)) on Ubuntu-16.04 Xenial. The `t2.medium` is probably a good instance size to start with but we can upgrade in case of any issues like high cpu or memory usage or very low cache eviction times.
 
 This is the servers layout across two AZs in AWS:
 
