@@ -243,3 +243,4 @@ varnishstat
 
 * [HAProxy, Varnish and the single hostname website](https://www.haproxy.com/blog/haproxy-varnish-and-the-single-hostname-website/)
 * [Varnish Cache on GitHub](https://github.com/varnishcache/varnish-cache)
+* [Hitch for SSL suport](https://github.com/varnish/hitch/blob/master/docs/configuration.md)
