@@ -6,7 +6,7 @@ title: 'Consul Service Discovery, Distributed KV Store and much more'
 categories: 
   - DevOps
 tags: ['consul']
-date: 2016-6-9
+date: 2015-7-31
 excerpt: "Consul is completely distributed, highly available service discovery tool that can scale to thousands of nodes and services across multiple datacenters. In a ever growing cloud environment, service discovery becomes a useful abstraction to map the specific designations and port numbers of the your services/load-balancers to nice, semantic names."
 ---
 {% include toc %}
