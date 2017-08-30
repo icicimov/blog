@@ -5,7 +5,7 @@ header:
 title: 'Apache Traffic Server as Caching Reverse Proxy'
 categories: 
   - Server
-tags: ['trafficserver', caching']
+tags: ['trafficserver', 'caching']
 date: 2017-7-16
 excerpt: "[Apache Traffic Server](http://trafficserver.apache.org/) is a high-performance web proxy cache that improves network efficiency and performance by caching frequently-accessed information at the edge of the network. This brings content physically closer to end users, while enabling faster delivery and reduced bandwidth use. Traffic Server is designed to improve content delivery"
 ---

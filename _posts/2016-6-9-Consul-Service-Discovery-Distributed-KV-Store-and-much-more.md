@@ -134,10 +134,6 @@ then point the browser to [](http://localhost:8500) to access the Web UI. This c
 
 We can notice our Web UI is protected by LDAP authentication so only registered users can get access.
 
-Some screen shots of the web console:
-
-![Datacenter]()
-
 Previously I mentioned that the node communication in the datacenter is protected with SSL certificates. I have used our existing `PKIX` setup to generate the files. First I created a `v3` file with that describes the certificate usage and purpose:
 
 ```
