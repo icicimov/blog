@@ -494,6 +494,16 @@ Use the `traffic_top` tool for Linux system top like overview of the caching:
 ![traffic_top](/blog/images/traffic_top.png "traffic_top")
 *Cache overview by traffic_top*
 
+In case we nee to clear the cache for some reason we can use `traffic_server` utility:
+
+```
+$ sudo trafficserver stop
+$ sudo traffic_server -Cclear
+$ sudo trafficserver start
+```
+
+The clear command deletes all data in the object store and the host database. Traffic Server does not prompt you to confirm the deletion.
+
 Use the `traffic_logstats` tool to quickly check overall or per origin stats:
 
 ```
