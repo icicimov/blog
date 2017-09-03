@@ -1,0 +1,49 @@
+# /etc/kubernetes/manifests/kube-proxy.manifest
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+  creationTimestamp: null
+  labels:
+    k8s-app: kube-proxy
+    tier: node
+  name: kube-proxy
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -c
+    - echo -998 > /proc/$$$/oom_score_adj && kube-proxy --kubeconfig=/var/lib/kube-proxy/kubeconfig
+      --conntrack-max-per-core=131072 --resource-container="" --cluster-cidr=100.64.0.0/16
+      --master=https://127.0.0.1 --proxy-mode=iptables --v=2 2>&1 | /usr/bin/tee /var/log/kube-proxy.log
+    image: gcr.io/google_containers/kube-proxy:v1.6.7
+    imagePullPolicy: IfNotPresent
+    name: kube-proxy
+    resources:
+      requests:
+        cpu: 100m
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /var/log
+      name: varlog
+    - mountPath: /var/lib/kube-proxy
+      name: kubeconfig
+      readOnly: true
+    - mountPath: /etc/ssl/certs
+      name: ssl-certs-hosts
+      readOnly: true
+  hostNetwork: true
+  volumes:
+  - hostPath:
+      path: /var/log
+    name: varlog
+  - hostPath:
+      path: /var/lib/kube-proxy
+    name: kubeconfig
+  - hostPath:
+      path: /usr/share/ca-certificates
+    name: ssl-certs-hosts

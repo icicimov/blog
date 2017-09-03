@@ -1,0 +1,72 @@
+# /etc/kubernetes/manifests/kube-apiserver.yml
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    dns.alpha.kubernetes.io/internal: k8s-api.virtual.local
+  creationTimestamp: null
+  labels:
+    k8s-app: kube-apiserver
+  name: kube-apiserver
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -c
+    - /usr/local/bin/kube-apiserver --address=127.0.0.1 --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,DefaultTolerationSeconds,ResourceQuota
+      --allow-privileged=true --anonymous-auth=false --apiserver-count=3 --authorization-mode=RBAC,AlwaysAllow
+      --authorization-rbac-super-user=admin --basic-auth-file=/srv/kubernetes/basic_auth.csv
+      --client-ca-file=/srv/kubernetes/ca.pem --etcd-servers-overrides=/events#http://127.0.0.1:4002
+      --etcd-servers=http://127.0.0.1:4001 --insecure-port=8080 --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP,LegacyHostIP
+      --runtime-config=api/all=true,batch/v2alpha1=true,rbac.authorization.k8s.io/v1alpha1=true
+      --secure-port=443 --service-cluster-ip-range=100.65.0.0/24 --storage-backend=etcd2
+      --tls-cert-file=/srv/kubernetes/apiserver.pem --tls-private-key-file=/srv/kubernetes/apiserver-key.pem
+      --token-auth-file=/srv/kubernetes/known_tokens.csv --v=2 1>>/var/log/kube-apiserver.log
+      2>&1
+    image: gcr.io/google_containers/kube-apiserver:v1.6.7
+    livenessProbe:
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: kube-apiserver
+    ports:
+    - containerPort: 443
+      hostPort: 443
+      name: https
+    - containerPort: 8080
+      hostPort: 8080
+      name: local
+    resources:
+      requests:
+        cpu: 150m
+    volumeMounts:
+    - mountPath: /etc/ssl
+      name: etcssl
+      readOnly: true
+    - mountPath: /usr/share/ca-certificates
+      name: cacertificates
+      readOnly: true
+    - mountPath: /srv/kubernetes
+      name: srvkube
+      readOnly: true
+    - mountPath: /var/log/kube-apiserver.log
+      name: logfile
+  hostNetwork: true
+  volumes:
+  - hostPath:
+      path: /etc/ssl
+    name: etcssl
+  - hostPath:
+      path: /usr/share/ca-certificates
+    name: cacertificates
+  - hostPath:
+      path: /srv/kubernetes
+    name: srvkube
+  - hostPath:
+      path: /var/log/kube-apiserver.log
+    name: logfile
