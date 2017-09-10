@@ -449,6 +449,6 @@ I am: nodejs-app-deployment-4489171-zf48m
 
 We can see we are hitting both Pods in the service in round-robin fashion which means the load-balancing is working. The dashboard screen shot showing the application status of load balancer: 
 
-![Træfik dashboard](/blog/images/traefik-dashboard.png "Træfik dashboard")
+[![Træfik dashboard](/blog/images/traefik-dashboard.png)](/blog/images/traefik-dashboard.png "Træfik dashboard")
 
 {% include series.html %}
