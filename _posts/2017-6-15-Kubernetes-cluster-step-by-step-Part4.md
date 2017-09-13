@@ -38,7 +38,7 @@ Now that we have the `Etcd` cluster up and running we can move to setting up the
 On one of the nodes we run:
 
 ```
-etcdctl set /coreos.com/network/config '{ "Network": "100.64.0.0/16", "SubnetLen": "24", "Backend": {"Type": "vxlan"} }'
+etcdctl set /coreos.com/network/config '{ "Network": "100.64.0.0/16", "SubnetLen": 24, "Backend": {"Type": "vxlan"} }'
 ```
 
 Then we download and install it, repeat the bellow procedure on each of the nodes:
@@ -113,7 +113,11 @@ cat << EOF > /lib/systemd/system/flanneld.service
 [Unit]
 Description=Network fabric for containers
 Documentation=https://github.com/coreos/flannel
+After=network.target
+After=network-online.target
+Wants=network-online.target
 After=etcd.service
+Before=docker.service
 
 [Service]
 Type=notify
