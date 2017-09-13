@@ -25,7 +25,7 @@ echo 'deb https://apt.dockerproject.org/repo debian-jessie main' | tee /etc/apt/
 Debian stable comes with 3.16 kernel and in case we need something new, i.e. we want to use `overlay2` storage driver in Docker, we need to install the latest kernel from backports:
 
 ```
-apt-get install -y -t jessie-backports linux-image-amd64
+APT_LISTCHANGES_FRONTEND=none apt-get install -y -t jessie-backports linux-image-amd64
 ```
 
 This is a decision that needs to be done at the very beginning because making the change later will involve stopping and recreating of all containers running with the old storage driver which can mean data lose as well.
