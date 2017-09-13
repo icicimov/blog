@@ -18,15 +18,22 @@ The purpose of this exercise is to create local `Kubernetes` cluster for testing
 In this step we prepare the nodes for Kubernetes. First we enable Debian backports and Docker repository on each of the nodes:
 
 ```
-# echo 'deb http://httpredir.debian.org/debian jessie-backports main' | tee /etc/apt/sources.list.d/backports.list
-# printf 'Package: *\nPin: release a=unstable\nPin-Priority: 150\n' > /etc/apt/preferences.d/limit-unstable
-# echo 'deb https://apt.dockerproject.org/repo debian-jessie main' | tee /etc/apt/sources.list.d/docker.list
+echo 'deb http://httpredir.debian.org/debian jessie-backports main' | tee /etc/apt/sources.list.d/backports.list
+printf 'Package: *\nPin: release a=unstable\nPin-Priority: 150\n' > /etc/apt/preferences.d/limit-unstable
+echo 'deb https://apt.dockerproject.org/repo debian-jessie main' | tee /etc/apt/sources.list.d/docker.list
 ```
+Debian stable comes with 3.16 kernel and in case we need something new, i.e. we want to use `overlay2` storage driver in Docker, we need to install the latest kernel from backports:
+
+```
+apt-get install -y -t jessie-backports linux-image-amd64
+```
+
+This is a decision that needs to be done at the very beginning because making the change later will involve stopping and recreating of all containers running with the old storage driver which can mean data lose as well.
 
 To enable the Memory `cgroup` properly working (this is Debian specific) edit the default GRUB file:
 
 ```
-# vi /etc/default/grub
+# /etc/default/grub
 ...
 GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"
 ...
@@ -35,8 +42,8 @@ GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"
 And restart:
 
 ```
-# update-grub
-# reboot
+update-grub
+reboot
 ```
 
 Couple of sysctl settings in `/etc/sysctl.conf` file:
