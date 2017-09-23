@@ -230,6 +230,8 @@ Aug 06 13:20:39 ip-10-77-0-94 haproxy[5054]: xxx.xxx.xxx.xxx:62180 [06/Aug/2017:
 Aug 06 13:20:46 ip-10-77-0-94 haproxy[5054]: xxx.xxx.xxx.xxx:62480 [06/Aug/2017:13:20:46.263] localhost~ bk_varnish_uri/varnish2 0/0/1/1/2 200 20465 - - ---- 6/6/0/0/0 0/0 "GET /ef3dd9e795c2124fcd2d6292b07543c9.png HTTP/1.1"
 ```
 
+[![Haproxy status page](/blog/images/haproxy-varnish.png)](/blog/images/haproxy-varnish.png "Haproxy status page")
+
 At the end some useful commands/tools that come with Varnish Cache installation (the first one helps monitoring hits and misses in realtime):
 
 ```
