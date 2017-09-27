@@ -287,6 +287,23 @@ For GlusterFS:
 }
 ```
 
+ActiveMQ heath check:
+
+```
+{
+    "service": {
+        "name": "activemq",
+        "port": 61616,
+        "tags": ["activemq", "staging"],
+        "check": {
+            "service_id": "activemq",
+            "script": "[ $(sudo lsof -iTCP:61616 -sTCP:LISTEN -Fp) ] && nc -4nzv -q0 -w1 127.0.0.1 61616 > /dev/null 2>&1 || exit 0",
+            "interval": "10s"
+        }
+    }
+}
+```
+
 And the Gluster health check script `/usr/local/bin/gluster_status.sh` looks like this:
 
 ```
