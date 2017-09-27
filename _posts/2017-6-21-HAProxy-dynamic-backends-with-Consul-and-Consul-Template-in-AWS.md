@@ -70,7 +70,33 @@ for file in /etc/haproxy/conf.d/*.cfg; do test -f $file && EXTRAOPTS="$EXTRAOPTS
 [...]
 ```
 
-so that HAP concatenates in memory these config files with the main one. 
+so that HAP concatenates in memory these config files with the main one. In case of Systemd my Unit file looks like this:
+
+```
+[Unit]
+Description=HAProxy Load Balancer
+Documentation=man:haproxy(1)
+Documentation=file:/usr/share/doc/haproxy/configuration.txt.gz
+After=network.target syslog.service
+Wants=syslog.service
+StartLimitIntervalSec=0
+
+[Service]
+Environment="CONFIG=/etc/haproxy/haproxy.cfg" "PIDFILE=/run/haproxy.pid" "EXTRAOPTS="
+EnvironmentFile=-/etc/default/haproxy
+ExecStartPre=/bin/sh -c 'EXTRAOPTS='';for file in /etc/haproxy/conf.d/*.cfg; do test -f $file && EXTRAOPTS="$EXTRAOPTS -f $file"; done; echo EXTRAOPTS=\\\""$EXTRAOPTS"\\\" > /etc/default/haproxy'
+ExecStartPre=/usr/sbin/haproxy -f $CONFIG -c -q $EXTRAOPTS
+ExecStart=/usr/sbin/haproxy-systemd-wrapper -f $CONFIG -p $PIDFILE $EXTRAOPTS
+ExecReload=/usr/sbin/haproxy -f $CONFIG -c -q $EXTRAOPTS
+ExecReload=/bin/kill -USR2 $MAINPID
+KillMode=mixed
+Restart=always
+RestartSec=2s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
+```
 
 In turn each of those files is controlled by Consul Template that monitors the members of the Service the backend servers belong to via Consul and dynamically updates the file(s) if necessary and reloads HAProxy. Example of such a template:
 
