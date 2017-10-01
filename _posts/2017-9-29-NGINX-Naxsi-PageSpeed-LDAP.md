@@ -5,7 +5,7 @@ header:
 title: 'Build NGINX 1.10.3 from package sources with added Naxsi, PageSpeed, LDAP and GeoIP on Ubuntu-16.04 Xenial'
 categories: 
   - DevOps
-tags: ['nginx']
+tags: ['nginx', 'ldap']
 date: 2017-9-29
 ---
 

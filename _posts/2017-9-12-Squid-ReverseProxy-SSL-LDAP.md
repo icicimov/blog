@@ -5,7 +5,7 @@ header:
 title: 'Secure Squid3 Reverse Proxy with SSL and LDAP Authentication on Ubuntu-16.04 Xenial'
 categories: 
   - DevOps
-tags: ['squid']
+tags: ['squid', 'ldap']
 date: 2017-9-12
 ---
 
