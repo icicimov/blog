@@ -9,7 +9,7 @@ tags: ['squid']
 date: 2017-9-12
 ---
 
-As described on it's website [Direct SSL/TLS connection](https://wiki.squid-cache.org/Features/HTTPS#Direct_SSL.2FTLS_connection), Squid can be used for SSL terminate in reverse proxy mode. The SSL is not enabled by default in the Ubuntu Xenial package so we need to change that first by building from the sources.
+As described on it's website [Direct SSL/TLS connection](https://wiki.squid-cache.org/Features/HTTPS#Direct_SSL.2FTLS_connection), Squid can be used for SSL termination in reverse proxy mode. The SSL is not enabled by default in the Ubuntu Xenial package so we need to change that first by building from the sources.
 
 ```
 cd /tmp
