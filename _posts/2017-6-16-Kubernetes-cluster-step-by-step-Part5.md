@@ -292,4 +292,8 @@ spec:
     name: logfile
 ```
 
+At the end, the image of HAProxy dashboard showing the Kube-api service load balancer:
+
+[![Kube-api in HAProxy dashboard](/blog/images/k8s-haproxy-dashboard-traefik.png)](/blog/images/k8s-haproxy-dashboard-traefik.png "Kube-api in HAProxy dashboard")
+
 {% include series.html %}

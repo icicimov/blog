@@ -451,4 +451,8 @@ We can see we are hitting both Pods in the service in round-robin fashion which 
 
 [![Træfik dashboard](/blog/images/traefik-dashboard.png)](/blog/images/traefik-dashboard.png "Træfik dashboard")
 
+and the HAProxy dashboard showing the Traefik instance running on one of the K8S nodes:
+
+[![Træfik in HAProxy dashboard](/blog/images/k8s-haproxy-dashboard-traefik.png)](/blog/images/k8s-haproxy-dashboard-traefik.png "Træfik in HAProxy dashboard")
+
 {% include series.html %}
