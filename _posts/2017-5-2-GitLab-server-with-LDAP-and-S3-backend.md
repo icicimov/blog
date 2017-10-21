@@ -5,7 +5,7 @@ header:
 title: 'GitLab Server with LDAP and S3 backend'
 categories: 
   - Server
-tags: ['gitlab', 'ldap', 'CI/CD']
+tags: ['gitlab', 'ldap', 'CI/CD', 'aws']
 date: 2017-5-2
 ---
 
