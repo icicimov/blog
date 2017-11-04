@@ -1,0 +1,19 @@
+dn: cn=config
+changetype: modify
+add: olcTLSCipherSuite
+olcTLSCipherSuite: NORMAL
+-
+add: olcTLSCRLCheck
+olcTLSCRLCheck: none
+-
+add: olcTLSVerifyClient
+olcTLSVerifyClient: never
+-
+add: olcTLSCACertificateFile
+olcTLSCACertificateFile: /etc/ssl/certs/DigiCertCA.crt
+-
+add: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/ssl/certs/star_mydomain_com.pem
+-
+add: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/ssl/private/contentCaKey.pem

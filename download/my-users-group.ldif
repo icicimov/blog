@@ -1,0 +1,13 @@
+dn: cn=my-users,ou=Groups,dc=mydomain,dc=com
+objectClass: posixGroup
+cn: Encompass Users
+gidNumber: 15001
+memberUid: my-user
+memberUid: user1
+memberUid: user2
+memberUid: user3
+memberUid: user4
+memberUid: user5
+memberUid: user6
+memberUid: user7
+memberUid: user8

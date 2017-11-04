@@ -1,0 +1,19 @@
+dn: nisMapName=auto.master,ou=Maps,dc=mydomain,dc=com
+nisMapName: auto.master
+objectClass: nisMap
+
+dn: cn=/home,nisMapName=auto.master,ou=Maps,dc=mydomain,dc=com
+cn: /home
+objectClass: nisObject
+nisMapName: auto.master
+nisMapEntry: auto.home
+
+dn: nisMapName=auto.home,ou=Maps,dc=mydomain,dc=com
+nisMapName: auto.home
+objectClass: nisMap
+
+dn: cn=/,nisMapName=auto.home,ou=Maps,dc=mydomain,dc=com
+cn: /
+objectClass: nisObject
+nisMapName: auto.home
+nisMapEntry: -fstype=nfs,rw,hard,intr my-nfs-server.mydomain.com:/export/home/&

@@ -1,0 +1,6 @@
+dn: olcDatabase={1}hdb,cn=config
+changetype: modify
+add: olcAccess
+olcAccess: {0}to attrs=userPassword,shadowLastChange by dn="cn=admin,dc=mydomain,dc=com" write by self write by anonymous auth by * none
+olcAccess: {1}to dn.base="" by anonymous auth by * none
+olcAccess: {2}to * by dn="cn=admin,dc=mydomain,dc=com" write by dn="cn=<my-read-only-user>,ou=Users,dc=mydomain,dc=com" read by anonymous auth by * none

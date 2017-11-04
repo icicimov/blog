@@ -1,0 +1,19 @@
+dn: ou=SUDOers,dc=mydomain,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: SUDOers 
+
+dn: cn=defaults,ou=SUDOers,dc=mydomain,dc=com
+objectClass: top
+objectClass: sudoRole
+cn: defaults 
+description: Default sudoOptions
+sudoOption: env_keep+=SSH_AUTH_SOCK
+
+dn: cn=%my-users,ou=SUDOers,dc=mydomain,dc=com
+objectClass: top
+objectClass: sudoRole
+cn: %my-users
+sudoUser: %my-users
+sudoHost: ALL
+sudoCommand: ALL

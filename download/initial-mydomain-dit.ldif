@@ -1,0 +1,26 @@
+# mydomain.com
+dn: dc=mydomain,dc=com
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: mydomain.com
+dc: mydomain
+
+dn: ou=Users,dc=mydomain,dc=com
+objectClass: organizationalUnit
+ou: Users
+
+dn: ou=Groups,dc=mydomain,dc=com
+objectClass: organizationalUnit
+ou: Groups
+
+dn: cn=my-users,ou=Groups,dc=mydomain,dc=com
+objectClass: posixGroup
+cn: Encompass Users
+gidNumber: 15001
+memberUid: user1
+memberUid: user2
+
+dn: ou=Maps,dc=mydomain,dc=com
+objectClass: organizationalUnit
+ou: Maps
