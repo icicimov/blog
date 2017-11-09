@@ -114,7 +114,7 @@ User used soft hard grace used soft hard grace
 root -- 36 0 0 4 0 0
 ```
 
-Next wecreate all the users with home dir under `/export/home`. Then we set the disk quota for each user on that directory to around 4GB:
+Next we create all the users with home dir under `/export/home`. Then we set the disk quota for each user on that directory to around 4GB:
 
 ```
 root@file-server:~/scripts# for i in user1 user2 user3 user4 user5; do setquota -u $i 4194304 4194304 0 0 /export/home/; done
@@ -131,6 +131,7 @@ user2 -- 24 4194304 4194304 6 0 0
 user3 -- 24 4194304 4194304 6 0 0
 user4 -- 24 4194304 4194304 6 0 0
 user5 -- 24 4194304 4194304 6 0 0
+```
 
 ### NFS server and exports
 
