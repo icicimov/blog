@@ -313,7 +313,7 @@ logging {
         debug: off
         timestamp: on
         logger_subsys {
-                subsys: subsys: QUORUM 
+                subsys: QUORUM 
                 debug: off
                 tags: enter|leave|trace1|trace2|trace3|trace4|trace6
         }
