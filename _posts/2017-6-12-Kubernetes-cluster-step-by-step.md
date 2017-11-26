@@ -63,6 +63,16 @@ The `/etc/hosts` file where we set the nodes dns resolution and some domains we 
 192.168.0.150 k8s-api.virtual.local   k8s-etcd.virtual.local  k8s-api k8s-etcd
 ```
 
+The `/etc/resolv.conf` will look like this:
+
+``` 
+nameserver 192.168.0.1
+nameserver 8.8.8.8
+search virtual.local
+```
+
+and since Kubernetes mounts this file inside every Pod created it will enable them to resolve external DNS names via our LAN's router DNS cache first.  
+
 ## Docker
 
 The following scriplet installs Docker on Debian Wheezy:
