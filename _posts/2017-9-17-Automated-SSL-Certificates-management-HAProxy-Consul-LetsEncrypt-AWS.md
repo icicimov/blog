@@ -76,7 +76,7 @@ to the Consul client exposed on the Bastion server. The access to it is for one 
 The [letsencrypt-check-certs.sh]({{ site.baseurl }}/download/letsencrypt-check-certs.sh) script running as cron job with randomized execution time:
 
 ```
-15 01 * * * sleep $(( (RANDOM%900+1)*2 )) && /usr/local/bin/letsencrypt-check-certs.sh
+15 01 * * * sleep $(( (RANDOM\%900+1)*2 )) && /usr/local/bin/letsencrypt-check-certs.sh
 ```
 
 takes care of this. It checks if any of the certificates `/etc/ssl/private/*.crt` have 30 days or less (as recommended by LE) till expiration and invokes the above get-cert script for those that do.
