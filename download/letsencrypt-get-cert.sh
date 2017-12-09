@@ -24,4 +24,4 @@ done
 # Create or renew certificate for the domain(s) supplied for this tool,
 # concatenate the certificate chain and the private key together for haproxy
 # and reload the service
-$LE_TOOL --non-interactive --no-bootstrap --no-self-upgrade --no-eff-email --staple-ocsp --agree-tos --renew-by-default --standalone --post-hook "cat $LE_OUTPUT/$1/fullchain.pem $LE_OUTPUT/$1/privkey.pem > ${SSL_DIR}/${1}.crt && /usr/local/bin/letsencrypt-update-consul.sh ${1}.crt" --preferred-challenges http --http-01-port 9876 certonly $DOMAINS $MAIL
+$LE_TOOL --non-interactive --no-bootstrap --no-self-upgrade --no-eff-email --staple-ocsp --agree-tos --renew-by-default --standalone --post-hook "cat `ls -td -1 $LE_OUTPUT/${1}* 2>/dev/null | head -1`/fullchain.pem `ls -td -1 $LE_OUTPUT/${1}* 2>/dev/null | head -1`/privkey.pem > ${SSL_DIR}/${1}.crt && /usr/local/bin/letsencrypt-update-consul.sh ${1}.crt" --preferred-challenges http --http-01-port 8888 certonly $DOMAINS $MAIL

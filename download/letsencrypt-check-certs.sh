@@ -15,7 +15,8 @@ alertsec=$(($ALERT_DAYS*24*3600))
 certs=$(ls -1 ${STOREDIR}/*.crt)
 for i in $certs
 do
-    cert="${i##*/}"
+    crt="${i##*/}"
+    cert="${crt%.*}"
     exptmstmp=$(openssl x509 -noout -in $i -enddate | cut -d"=" -f2)
     expsec=$(date -d "$exptmstmp" +%s)
     now=$(date +%s)
