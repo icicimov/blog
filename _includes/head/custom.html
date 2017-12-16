@@ -6,37 +6,47 @@
 <!-- insert favicons. use http://realfavicongenerator.net/ -->
 <link rel="shortcut icon" href="{{ "/favicon.ico" | prepend: site.baseurl }}" />
 
-<!-- UItoTop (go to top) plugin -->
-<style type=text/css>
-#toTop {
-        display:none;
-        text-decoration:none;
-        position:fixed;
-        bottom:10px;
-        right:10px;
-        overflow:hidden;
-        width:51px;
-        height:51px;
-        border:none;
-        text-indent:-999px;
-        background:url("{{ site.baseurl }}/assets/images/ui.totop.png") no-repeat left top;
+</script>
+<style type="text/css"">
+a.btt {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  width: 40px;
+  height: 40px;
+  right: 30px;
+  bottom: 30px;
+  background: #ebebeb;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  border-radius: 30px;
+  box-shadow: 3px 3px 10px rgba(23, 25, 25, 0.2);
+  transition: transform 0.3s ease-in-out;
+  text-decoration: none;
 }
 
-#toTopHover {
-        background:url("{{ site.baseurl }}/assets/images/ui.totop.png") no-repeat left -51px;
-        width:51px;
-        height:51px;
-        display:block;
-        overflow:hidden;
-        float:left;
-        opacity: 0;
-        -moz-opacity: 0;
-        filter:alpha(opacity=0);
+a.btt .fa {
+  width: 100%;
+  height: 100%;
+  display: table;
 }
 
-#toTop:active, #toTop:focus {
-        outline:none;
+a.btt .fa-chevron-up:before {
+  color: black;
+  position: relative;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+a.btt:hover {
+  transform: translatey(-10%);
+  text-decoration: none;
+}
+
+a.btt:active, a.btt:focus {
+  text-decoration: none;
+  outline: none;
 }
 </style>
-
 <!-- end custom head snippets -->
