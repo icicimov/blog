@@ -151,6 +151,7 @@ kops create cluster \
     --network-cidr "${NETWORK_CIDR}" \
     --networking calico \
     --vpc "${VPC_ID}" \
+    --admin-access "${ADMIN_ACCESS}" \
     --ssh-public-key ${SSH_PUBLIC_KEY}
 ```
 
