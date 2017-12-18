@@ -425,7 +425,7 @@ persistentvolumeclaim "gluster-dyn-pvc" created
 If we check now:
 
 ```
-igorc@igor-laptop:/media/igorc/SANDISK64U/MY_VM/Docker/Kubernetes/kops-cluster$ kubectl get pv,pvc -n default
+$ kubectl get pv,pvc -n default
 NAME                                          CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS    CLAIM                                      STORAGECLASS              REASON    AGE
 pv/pvc-4b2aeebc-40f5-11e7-a30f-0a40ea97115b   2Gi        RWX           Delete          Bound     default/gluster-dyn-pvc                    gluster-heketi-external             2m
 [...]
