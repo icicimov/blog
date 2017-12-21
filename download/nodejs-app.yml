@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: nodejs-app
-        image: git.encompasshost.com:5001/encompass/nodejs-app/nodejs-app:latest 
+        image: igoratencompass/nodejs-app
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -71,8 +71,6 @@ spec:
       restartPolicy: Always
       securityContext: {}
       terminationGracePeriodSeconds: 30
-      imagePullSecrets:
-        - name: encompass-gitlab-registry
       tolerations:
       - key: node-role.kubernetes.io/master
         operator: "Equal"
