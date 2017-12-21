@@ -12,6 +12,8 @@ The **Online Certificate Status Protocol (OCSP)** is an Internet protocol used f
 
 OCSP stapling, formally known as the TLS Certificate Status Request extension, is an alternative approach to the OCSP for checking the revocation status of X.509 digital certificates. It allows the presenter (the server) of a certificate to bear the resource cost involved in providing OCSP responses by appending ("stapling") a time-stamped OCSP response signed by the CA to the initial TLS Handshake, eliminating the need for clients to contact the CA.
 
+[![OCSP stapling](/blog/images/OCSP_Stapling.png)](/blog/images/OCSP_Stapling.png "OCSP stapling")
+
 ## Setting HAP for OCSP stapling
 
 HAProxy implements OCSP stapling since version 1.5.6. By attaching the CA signed OCSP response to the initial SSL/TLS hand shake, the servers speed up the process of the establishing the SSL connection since the client does not need to contact the CRL or the OCSP responder of the CA does saving significant time. In our case, we need to contact the OCSP responder of our CA (Digicert), save the response in a file and tell HAP to use that file for stapling. The process can be described in two steps:
