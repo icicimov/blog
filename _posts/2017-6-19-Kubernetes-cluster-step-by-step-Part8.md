@@ -5,7 +5,7 @@ header:
 title: 'Kubernetes cluster step-by-step: Services and Load Balancing'
 categories: 
   - Kubernetes
-tags: ['kubernetes', 'træfik']
+tags: ['kubernetes', 'traefik']
 date: 2017-6-19
 excerpt: "The purpose of this exercise is to create local `Kubernetes` cluster for testing deployments. It will be deployed on 3 x VMs (Debian Jessie 8.8) nodes which will be Master and Worker nodes"
 series: "Kubernetes cluster step-by-step"
