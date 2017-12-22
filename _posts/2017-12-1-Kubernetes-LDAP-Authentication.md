@@ -5,7 +5,7 @@ header:
 title: 'Kubernetes RBAC Authorization and LDAP Authentication with Tokens using API Webhook and kube-ldap-authn'
 categories: 
   - Virtualization
-tags: [kubernetes, rbac, ldap]
+tags: [kubernetes, rbac, ldap, kops]
 date: 2017-12-1
 ---
 
@@ -120,9 +120,9 @@ for i in *.ldif; do ldapmodify -a -H ldapi:/// -f $i -D "cn=my-admin-user,dc=myd
 
 ## Kubernetes Setup
 
-First clone the `https://github.com/torchbox/kube-ldap-authn.git` repository locally and follow the instructions at the plugin's page [https://github.com/torchbox/kube-ldap-authn](https://github.com/torchbox/kube-ldap-authn). For one of my test cluster named k9s I needed the following steps:
+First clone the `https://github.com/torchbox/kube-ldap-authn.git` repository locally and follow the very good instructions at the plugin's page [https://github.com/torchbox/kube-ldap-authn](https://github.com/torchbox/kube-ldap-authn). For one of my test cluster named k9s I needed the following steps:
 
-Created the `config.py` settings file first to match our LDAP:
+Modified the `config.py` settings file inside the `kube-ldap-authn` directory first to match our LDAP:
 
 ```
 # config.py
@@ -208,7 +208,7 @@ contexts:
   name: webhook
 ```
 
-If using Kops like I do, utilize the new `fileAssets` feature and add the following to your cluster config YAML:
+If using [Kops (Kubernetes Operations)](https://github.com/kubernetes/kops) like I do, utilize the new `fileAssets` feature and add the following to your cluster config YAML:
 
 ```
   fileAssets:
@@ -304,8 +304,8 @@ If we now try running command with this users credentials:
 $ export KUBECONFIG=/home/igorc/.kube/k9s.virtual.local/config
 $ kubectl --context=userTest-context get pods
 NAME                       READY     STATUS             RESTARTS   AGE
-busybox-6944bc9f7b-kwr8f   1/1       Running            1064       3d
-busybox2-b6547cbdd-9mvvf   1/1       Running            842        3d
+busybox-6944bc9f7b-kwr8f   1/1       Running            1          3d
+busybox2-b6547cbdd-9mvvf   1/1       Running            2          3d
 ```
 
 we can see it works for the `encompass` NameSpace. 
