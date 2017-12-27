@@ -110,7 +110,7 @@ After applying the above Manifest the Dashboard can be accessed at `https://192.
 
 # Kube-DNS
 
-The [kube-dns.yml]({{ site.baseurl }}/download/kube-dns.yml) YAML file available below and for download.
+The kube-dns addon will make possible for the service DNS names to resolve internally in the cluster. The [kube-dns.yml]({{ site.baseurl }}/download/kube-dns.yml) YAML file available below and for download.
 
 ```
 # kube-dns.yml 
@@ -309,7 +309,7 @@ spec:
 
 # Kube-dns-autoscaller
 
-The [kube-dns-autoscaller.yml]({{ site.baseurl }}/download/kube-dns-autoscaller.yml) YAML file available below and for download.
+The `kube-dns-autoscaller` addon will provide horizontal autoscaling feature for DNS service in the cluster. The [kube-dns-autoscaller.yml]({{ site.baseurl }}/download/kube-dns-autoscaller.yml) YAML file available below and for download.
 
 ```
 # kube-dns-autoscaller.yml
