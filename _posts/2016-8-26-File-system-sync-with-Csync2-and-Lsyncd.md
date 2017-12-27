@@ -239,8 +239,8 @@ $ sudo csync2 -M
 Lsyncd helps automating the syncing process. It puts watcher on each `inode` via `inotify` and invokes Csync2 when ever it detects a file change. This turns the asynchronous replication process into close to synchronous. It only needs to run on the master (nexus1) node:
 
 ```
-ubuntu@nexus1:~$ sudo aptitude install lsyncd
-ubuntu@nexus1:~$ lsyncd --version
+user@nexus1:~$ sudo aptitude install lsyncd
+user@nexus1:~$ lsyncd --version
 Version: 2.0.4
 ```
 
@@ -331,20 +331,20 @@ end
 that tells Lsyncd what to monitor and how to invoke Csync2. The output and the operational stats will be saved under `/var/log/lsyncd`:
 
 ```
-ubuntu@nexus1:~$ sudo mkdir -p /var/log/lsyncd
+user@nexus1:~$ sudo mkdir -p /var/log/lsyncd
 ```
 
 Increase the inotify limit before starting Lsyncd so we don't run out of watchers:
 
 ```
-ubuntu@nexus1:~$ echo "fs.inotify.max_user_watches = 1048576" | sudo tee -a /etc/sysctl.conf
-ubuntu@nexus1:~$ sudo sysctl -p
+user@nexus1:~$ echo "fs.inotify.max_user_watches = 1048576" | sudo tee -a /etc/sysctl.conf
+user@nexus1:~$ sudo sysctl -p
 ```
 
 Test in foreground:
 
 ```
-ubuntu@nexus1:~$ sudo lsyncd -nodaemon -log all /etc/lsyncd.conf
+user@nexus1:~$ sudo lsyncd -nodaemon -log all /etc/lsyncd.conf
 ```
 
 and to automate on startup we can add to the root user crontab:
@@ -356,7 +356,7 @@ and to automate on startup we can add to the root user crontab:
 To start as a service:
 
 ```
-ubuntu@nexus1:~$ sudo service lsyncd start
+user@nexus1:~$ sudo service lsyncd start
 ```
 
 We can see in the log files:
