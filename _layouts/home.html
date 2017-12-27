@@ -1,0 +1,16 @@
+---
+layout: archive
+---
+
+<h3 class="archive__subtitle">{{ site.data.ui-text[site.locale].featured_post | default: "Featured Posts" }}</h3>
+
+{% assign post = site.posts.first %}
+{% include featured.html %}
+
+<h3 class="archive__subtitle">{{ site.data.ui-text[site.locale].recent_posts | default: "Recent Posts" }}</h3>
+
+{% for post in paginator.posts offset:1 limit:2 %}
+  {% include archive-single.html %}
+{% endfor %}
+
+{% include paginator.html %}
