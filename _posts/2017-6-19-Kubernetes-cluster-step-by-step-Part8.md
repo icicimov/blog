@@ -134,6 +134,11 @@ data:
     #endpoint = "unix:///var/run/docker.sock"
     #domain = "docker.localhost"
     #watch = true
+    # For etcd KV store (traefik v1.5.0-rc3 or higher)
+    #[etcd]
+    #endpoint = "192.168.0.147:2379,192.168.0.148:2379,192.168.0.149:2379"
+    #watch = true
+    #prefix = "/traefik"
 ```
 
 Apply the above Manifest:
