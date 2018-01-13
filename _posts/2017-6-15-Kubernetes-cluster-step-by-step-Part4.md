@@ -126,7 +126,7 @@ RestartSec=5
 ExecStart=/usr/local/bin/flanneld \\
   -etcd-endpoints=http://192.168.0.147:4001,http://192.168.0.148:4001,http://192.168.0.149:4001 \\
   -logtostderr=true \\
-  -ip-masq=false \\
+  -ip-masq=true \\
   -subnet-dir=/var/lib/flanneld/networks \\
   -subnet-file=/var/lib/flanneld/subnet.env
 
@@ -134,6 +134,15 @@ ExecStart=/usr/local/bin/flanneld \\
 WantedBy=multi-user.target
 EOF
 ```
+
+Make sure you have `ip-masq` set to true or the Kubernetes services Pods will not have cluster outbound access thus no DNS resolution for public domains which means no internet access. By default Flannel uses the default route interface, in this case `eth0`, for its uplink. In case we have multiple network interfaces with IP's on the same LAN segment or we have multiple IP's on `eth0` then we should also specify:
+
+```
+  -interface=eth0
+  --public-ip=192.168.0.147
+```
+
+to avoid confusion and Flannel picking up a wrong interface and IP for its uplink.
 
 Start and enable the service:
 
