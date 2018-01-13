@@ -31,7 +31,11 @@ I also make sure I have the Kubeconfig file generated (done in Part2 of this ser
 
 # FlannelD
 
-Now that we have the `Etcd` cluster up and running we can move to setting up the K8S cluster overlay network. I decided to go with [FlannelD](https://coreos.com/flannel/docs/latest/) for this purpose. We start with creating the FlannelD configuration in etcd which FlannelD uses as backend storage. 
+Now that we have the `Etcd` cluster up and running we can move to setting up the K8S cluster overlay network. I decided to go with [FlannelD](https://coreos.com/flannel/docs/latest/) for this purpose. The following image describes best the network layout provided by Flannel:
+
+[![Flannel network](/blog/images/docker-flannel.png)](/blog/images/docker-flannel.png "Flannel network")
+
+We start with creating the FlannelD configuration in etcd which FlannelD uses as backend storage. 
 
 ## Option 1: Run as `Systemd` service
 
@@ -41,7 +45,7 @@ On one of the nodes we run:
 etcdctl set /coreos.com/network/config '{ "Network": "100.64.0.0/16", "SubnetLen": 24, "Backend": {"Type": "vxlan"} }'
 ```
 
-Then we download and install it, repeat the bellow procedure on each of the nodes:
+Then we download and install the binary, repeat the bellow procedure on each of the nodes:
 
 ```
 wget https://github.com/coreos/flannel/releases/download/v0.7.0/flanneld-amd64 && \
@@ -84,7 +88,26 @@ root@k8s01:~# ip -4 addr show
        valid_lft forever preferred_lft forever
 ```
 
-and the `flannel.1` VxLAN device created. It had also written a config file:
+and the `flannel.1` VxLAN device created. If we check this VTEP (VxLAN Tunnel End Point) device:
+
+```
+root@k8s01:~# ip -4 -d link show flannel.1
+3: flannel.1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UNKNOWN mode DEFAULT group default
+    link/ether 7a:a8:2d:9f:4f:09 brd ff:ff:ff:ff:ff:ff promiscuity 0
+    vxlan id 1 local 192.168.0.147 dev eth0 srcport 32768 61000 dstport 8472 nolearning ageing 300
+```
+
+we can see the VxLAN specifics, like the VNI (VxLAN Network Identifier) that plays a role when scaling up the network for multitenancy, the eth0 device and the ip the tunnel will go through for peer communication, the UDP port 8472 used and the nolearning tag that disables source-address learning meaning Multicast is not used (since it is not even enabled on some providers like AWS) but Unicast with static L3 entries for the peers which we can see in the device FDB: 
+
+```
+root@k8s01:~# bridge fdb show dev flannel.1
+de:a5:af:80:d3:db dst 192.168.0.148 self permanent
+ae:ea:b6:88:72:39 dst 192.168.0.149 self permanent
+```
+
+For more in depth overview of VxLAN, its options and tunneling types I highly recommend the following post by Vincent Bernart [VXLAN & Linux](https://vincent.bernat.im/en/blog/2017-vxlan-linux).
+
+The daemon had also created the following config file:
 
 ```
 root@k8s01:/usr/src# cat /var/run/flannel/subnet.env
@@ -94,7 +117,7 @@ FLANNEL_MTU=1450
 FLANNEL_IPMASQ=false
 ```
 
-and installed routes on the node:
+and installed some routes on the node:
 
 ```
 root@k8s01:/srv/kubernetes# route -n
@@ -105,6 +128,8 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 100.64.52.0     0.0.0.0         255.255.255.0   U     0      0        0 docker0
 192.168.0.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
 ```
+
+that are used for routing the container traffic. We can see that the containers on the same host communicate to each other over the `docker0` linux bridge and the traffic to the containers on the other nodes will go via `flannel.1` interface as per the routing rule for the `100.64.0.0/16` subnet. 
 
 Now that we are confident all is working properly we install the systemd unit file:
 
@@ -135,11 +160,13 @@ WantedBy=multi-user.target
 EOF
 ```
 
-Make sure you have `ip-masq` set to true so Flannel can add the necessary `iptables` rules to NAT the outgoing "public" traffic or the Kubernetes services Pods will not have cluster outbound access thus no DNS resolution for public domains which means no internet access. By default Flannel uses the default route interface, in this case `eth0`, for its uplink. In case we have multiple network interfaces with IP's on the same LAN segment or we have multiple IP's on `eth0` then we should also specify:
+Make sure you have `ip-masq` set to true so Flannel can add the necessary `iptables` rules to NAT the outgoing "public" traffic or the Kubernetes services Pods will not have cluster outbound access thus no DNS resolution for public domains which means no internet access. If we set this option to `true` we must make sure that the same is set to `false` for the Docker engine. 
+
+By default Flannel uses the default route interface, in this case `eth0`, for its uplink. In case we have multiple network interfaces with IP's on the same LAN segment or we have multiple IP's on `eth0` then we should also specify:
 
 ```
   -interface=eth0
-  --public-ip=192.168.0.147
+  -public-ip=192.168.0.147
 ```
 
 to avoid confusion and Flannel picking up a wrong interface and IP for its uplink.
