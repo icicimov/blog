@@ -97,13 +97,15 @@ root@k8s01:~# ip -4 -d link show flannel.1
     vxlan id 1 local 192.168.0.147 dev eth0 srcport 32768 61000 dstport 8472 nolearning ageing 300
 ```
 
-we can see the VxLAN specifics, like the VNI (VxLAN Network Identifier) that plays a role when scaling up the network for multitenancy, the eth0 device and the ip the tunnel will go through for peer communication, the UDP port 8472 used and the nolearning tag that disables source-address learning meaning Multicast is not used (since it is not even enabled on some providers like AWS) but Unicast with static L3 entries for the peers which we can see in the device FDB: 
+we can see the VxLAN specifics, like the VNI (VxLAN Network Identifier) that plays a role when scaling up the network for multitenancy, the eth0 device and the ip the tunnel will go through for peer communication, the UDP port 8472 used and the nolearning tag that disables source-address learning meaning Multicast is not used (since it is not even enabled on some providers like AWS) but Unicast with static L3 entries for the peers which we can see in the device FDB populated by Flannel: 
 
 ```
 root@k8s01:~# bridge fdb show dev flannel.1
 de:a5:af:80:d3:db dst 192.168.0.148 self permanent
 ae:ea:b6:88:72:39 dst 192.168.0.149 self permanent
 ```
+
+The Flannel daemon also populates the host ARP table according to the kernel requests via the "L2/L3 MISS" notification mechanism.
 
 For more in depth overview of VxLAN, its options and tunneling types I highly recommend the following post by Vincent Bernart [VXLAN & Linux](https://vincent.bernat.im/en/blog/2017-vxlan-linux).
 
