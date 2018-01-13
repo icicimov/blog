@@ -50,8 +50,13 @@ Couple of sysctl settings in `/etc/sysctl.conf` file:
 
 ```
 net.ipv4.ip_forward = 1
+net.ipv4.conf.all.forwarding = 1
 net.ipv4.ip_nonlocal_bind = 1 # needed for haproxy to bind to the kube-api VIP
 net.bridge.bridge-nf-call-iptables = 1
+# Disable IPv6
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
 ```
 
 The `/etc/hosts` file where we set the nodes dns resolution and some domains we want to load-balance via HAProxy (that we install and configure later):
