@@ -31,7 +31,7 @@ I also make sure I have the Kubeconfig file generated (done in Part2 of this ser
 
 # FlannelD
 
-Now that we have the `Etcd` cluster up and running we can move to setting up the K8S cluster overlay network. I decided to go with [FlannelD](https://coreos.com/flannel/docs/latest/) for this purpose. The following image describes best the network layout provided by Flannel:
+Now that we have the `Etcd` cluster up and running we can move to setting up the K8S cluster overlay network. I decided to go with [FlannelD](https://coreos.com/flannel/docs/latest/) for this purpose. The following image describes best the network layout and traffic flow provided by Flannel:
 
 [![Flannel network](/blog/images/docker-flannel.png)](/blog/images/docker-flannel.png "Flannel network")
 
@@ -129,7 +129,7 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 192.168.0.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
 ```
 
-that are used for routing the container traffic. We can see that the containers on the same host communicate to each other over the `docker0` linux bridge and the traffic to the containers on the other nodes will go via `flannel.1` interface as per the routing rule for the `100.64.0.0/16` subnet. 
+that are used for routing the container traffic. We can see that the containers on the same host, communicate to each other over the `docker0` linux bridge (each container gets its own network namespace which gets connected to `docker0` bridge via pair of `veth` interfaces) and the traffic to the containers on the other nodes will go via `flannel.1` interface as per the routing rule for the `100.64.0.0/16` subnet. 
 
 Now that we are confident all is working properly we install the systemd unit file:
 
