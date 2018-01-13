@@ -105,7 +105,7 @@ de:a5:af:80:d3:db dst 192.168.0.148 self permanent
 ae:ea:b6:88:72:39 dst 192.168.0.149 self permanent
 ```
 
-The Flannel daemon also populates the host ARP table according to the kernel requests via the "L2/L3 MISS" notification mechanism.
+The Flannel daemon also populates the host ARP table according to the kernel requests via the `L2/L3 MISS` notification mechanism.
 
 For more in depth overview of VxLAN, its options and tunneling types I highly recommend the following post by Vincent Bernart [VXLAN & Linux](https://vincent.bernat.im/en/blog/2017-vxlan-linux).
 
