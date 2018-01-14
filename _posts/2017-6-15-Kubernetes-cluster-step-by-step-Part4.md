@@ -105,7 +105,7 @@ de:a5:af:80:d3:db dst 192.168.0.148 self permanent
 ae:ea:b6:88:72:39 dst 192.168.0.149 self permanent
 ```
 
-The Flannel daemon also populates the host ARP table according to the kernel requests via the `L2/L3 MISS` notification mechanism.
+The Flannel daemon also emulates the ARP protocol and populates the host ARP table according to the kernel requests via the `L2/L3 MISS` notification mechanism. When a container sends a packet to a new IP address on the flannel network (but on a different host) this generates a `L2 MISS` (i.e. an ARP lookup). When the host encapsulates the packet in order to be sent to another host on the network the kernel vxlan code generates a call to the flannel daemon to get the public IP that should be used for that VTEP (this gets called an `L3 MISS`). The v2.x of flannel vxlan removed the need for the L3 MISS callout. When a new remote host is found (either during startup or when it's created), flannel simply adds the required entries so that no further lookup/callout is required.
 
 For more in depth overview of VxLAN, its options and tunneling types I highly recommend the following post by Vincent Bernart [VXLAN & Linux](https://vincent.bernat.im/en/blog/2017-vxlan-linux).
 
@@ -131,7 +131,7 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 192.168.0.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
 ```
 
-that are used for routing the container traffic. We can see that the containers on the same host, communicate to each other over the `docker0` linux bridge (each container gets its own network namespace which gets connected to `docker0` bridge via pair of `veth` interfaces) and the traffic to the containers on the other nodes will go via `flannel.1` interface as per the routing rule for the `100.64.0.0/16` subnet. 
+that are used for routing the container traffic. We can see that the containers on the same host communicate to each other over the `docker0` linux bridge (each container gets its own network namespace which gets connected to `docker0` bridge via pair of `veth` interfaces) and the traffic to the containers on the other nodes will go via `flannel.1` interface as per the routing rule for the `100.64.0.0/16` subnet. 
 
 Now that we are confident all is working properly we install the systemd unit file:
 
