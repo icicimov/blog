@@ -81,7 +81,7 @@ and since Kubernetes mounts this file inside every Pod created it will enable th
 
 ## Docker
 
-The following scriplet installs Docker on Debian Wheezy:
+The following scriplet installs Docker on Debian Jessie:
 
 ```
 apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
