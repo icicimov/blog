@@ -319,7 +319,57 @@ spec:
         name: acme
 ```
 
-First thing to note is I'm using my own Alpine based Traefik image `igoratencompass/traefik-alpine:v1.5.0-rc3` that has `bash` and `dns utilities` installed. This showed handy in troubleshooting various issues. The rest is common Deployment stuff, we just need to point the Pod to the etcd endpoints from where it needs to pickup its configuration and store the ACME certificates.
+First thing to note is I'm using my own Alpine based Traefik image `igoratencompass/traefik-alpine:v1.5.0-rc3` that has `bash` and `dns utilities` installed. This showed handy in troubleshooting various issues. The rest is common Deployment stuff, we just need to point the Pod to the etcd endpoints from where it needs to pickup its configuration and store the ACME certificates. The `traefik-ingress-controller` ServiceAccount used has been created via the following manifest:
+
+```
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik-ingress-controller
+  namespace: kube-system
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: traefik-ingress-controller
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - services
+      - endpoints
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: traefik-ingress-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik-ingress-controller
+subjects:
+- kind: ServiceAccount
+  name: traefik-ingress-controller
+  namespace: kube-system
+
+```
 
 ## Testing
 
