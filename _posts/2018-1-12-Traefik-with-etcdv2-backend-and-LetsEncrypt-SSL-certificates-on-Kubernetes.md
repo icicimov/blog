@@ -9,7 +9,7 @@ tags: ['kubernetes', 'traefik', 'letsencrypt', 'aws']
 date: 2018-1-12
 ---
 
-This post is an extension of a previous one [Kubernetes cluster step-by-step: Services and Load Balancing]({{ site.baseurl }}{% post_url 2017-6-19-Kubernetes-cluster-step-by-step-Part8 %})) about Traefik and its usage in Kubernetes. This time I'm trying to use the `etcd` KV store as backend since Traefik has support for it and also use Traefik to manage the SSL certificates for my applications via Let's Encrypt and its built in lego support. I hope with all this setup I can run Traefik in multiple Pods for High Availability and load sharing in production clusters. 
+This post is an extension of a previous one [Kubernetes cluster step-by-step: Services and Load Balancing]({{ site.baseurl }}{% post_url 2017-6-19-Kubernetes-cluster-step-by-step-Part8 %}) about Traefik and its usage in Kubernetes. This time I'm trying to use the `etcd` KV store as backend since Traefik has support for it and also use Traefik to manage the SSL certificates for my applications via Let's Encrypt and its built in lego support. I hope with all this setup I can run Traefik in multiple Pods for High Availability and load sharing in production clusters. 
 
 ## Populate the etcd KV store
 
