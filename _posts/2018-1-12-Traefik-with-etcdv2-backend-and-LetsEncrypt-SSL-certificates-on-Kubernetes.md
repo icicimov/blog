@@ -139,7 +139,7 @@ spec:
           path: /acme/acme.json
 ```
 
-This Job needs to be run only once. Replace the `traefik:v1.5.0-rc3` image with the latest one published by Traefik team.
+This Job needs to be run only once. Replace the `traefik:v1.5.0-rc3` image with the latest one published by Traefik team if needed.
 
 Apply the manifest:
 
@@ -319,7 +319,7 @@ spec:
         name: acme
 ```
 
-First thing to note is I'm using my own Alpine based Traefik image `igoratencompass/traefik-alpine:v1.5.0-rc3` that has `bash` and `dns utilities` installed. This showed handy in troubleshooting various issues. The rest is common Deployment stuff, we just need to point the Pod to the etcd endpoints from where it needs to pickup its configuration and store the ACME certificates. The `traefik-ingress-controller` ServiceAccount used has been created via the following manifest:
+First thing to note is I'm using my own Alpine based Traefik image `igoratencompass/traefik-alpine:v1.5.0-rc3` that has `bash` and `dns utilitiess` installed. This showed handy in troubleshooting various issues. The rest is common Deployment stuff, we just need to point the Pod to the etcd endpoints from where it needs to pickup its configuration and store the ACME certificates. The `traefik-ingress-controller` ServiceAccount used has been created via the following manifest:
 
 ```
 ---
@@ -346,6 +346,15 @@ rules:
       - get
       - list
       - watch
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    resourceNames:
+      - "traefik-external-ingress-proxy-config"
+    verbs:
+      - get
+      - update
   - apiGroups:
       - extensions
     resources:
