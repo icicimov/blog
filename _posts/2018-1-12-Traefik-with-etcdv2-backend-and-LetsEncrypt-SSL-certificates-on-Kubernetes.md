@@ -381,6 +381,41 @@ subjects:
 
 ```
 
+Just for completeness, this is the Service manifest:
+
+```
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: traefik-external-ingress-proxy
+  name: traefik-external-ingress-proxy
+  namespace: default
+spec:
+  selector:
+    app: traefik-external-ingress-proxy
+  type: NodePort
+  externalTrafficPolicy: Local  # Pass client ip to backends
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    nodePort: 31285
+  - name: https
+    protocol: TCP
+    port: 443
+    nodePort: 31287
+  - name: http-admin
+    protocol: TCP
+    port: 8080
+    nodePort: 31286
+  selector:
+    app: traefik-external-ingress-proxy
+``` 
+
+In my setup, external access is exposed via HAProxy load balancer that distributes the traffic to the Traefik backend NodePorts.
+
 ## Testing
 
 Right off the bat I'm facing this show stopper issue:
