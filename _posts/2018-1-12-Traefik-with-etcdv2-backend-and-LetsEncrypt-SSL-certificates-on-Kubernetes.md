@@ -330,8 +330,8 @@ metadata:
   namespace: default
 
 ---
-kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
 metadata:
   name: traefik-ingress-controller
 rules:
@@ -356,8 +356,8 @@ rules:
       - watch
 
 ---
-kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
 metadata:
   name: traefik-ingress-controller
 roleRef:
@@ -400,7 +400,7 @@ ns-814.awsdns-37.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400
 I also confirmed that the IAM policy attached works by installing the AWS keys and `awscli` tool on one of the nodes and checking the Zone access with this user's credentials:
 
 ```
-root@k9s01:~# aws route53 list-resource-record-sets --hosted-zone-id MY_ZONE_ID --out text
+root@k9s01:~# aws route53 list-resource-record-sets --hosted-zone-id <MY_HOSTED_ZONE_ID> --out text
 RESOURCERECORDSETS  office.mydomain.com. 172800  NS
 RESOURCERECORDS ns-814.awsdns-37.net.
 RESOURCERECORDS ns-1701.awsdns-20.co.uk.
