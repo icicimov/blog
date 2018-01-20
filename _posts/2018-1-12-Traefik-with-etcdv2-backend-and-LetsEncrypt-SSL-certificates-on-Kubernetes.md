@@ -323,7 +323,7 @@ First thing to note is I'm using my own Alpine based Traefik image `igoratencomp
 
 ## Testing
 
-Right out of the bat I'm facing this show stopper issue:
+Right off the bat I'm facing this show stopper issue:
 
 ```
 time="2018-01-12T03:50:49Z" level=error msg="Error getting ACME certificate for domain [office.mydomain.com nodejs-app.office.mydomain.com encompass.office.mydomain.com]: Cannot obtain certificates map[office.mydomain.com:Error presenting token: Failed to determine Route 53 hosted zone ID: Could not find the start of authority nodejs-app.office.mydomain.com:Error presenting token: Failed to determine Route 53 hosted zone ID: Could not find the start of authority encompass.office.mydomain.com:Error presenting token: Failed to determine Route 53 hosted zone ID: Could not find the start of authority]+v"
