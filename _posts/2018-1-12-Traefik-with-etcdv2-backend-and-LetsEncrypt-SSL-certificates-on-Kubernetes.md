@@ -61,6 +61,7 @@ data:
     caServer = "https://acme-staging.api.letsencrypt.org/directory"
     # DNS-01 challenge
     dnsProvider = "route53"
+    delayDontCheckDNS = 0
     [[acme.domains]]
     main = "office.mydomain.com"
     sans = ["nodejs-app.office.mydomain.com", "encompass.office.mydomain.com"]
