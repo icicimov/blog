@@ -240,7 +240,7 @@ f463d896-7fcb-40b1-b4a1-e493b255d978
     ovs_version: "2.3.0"
 ```
 
-we have `veth100i1` and `veth100i2` created and on `proxmox02` we have `veth101i1` and `veth102i2` created:
+we have `veth100i1` and `veth100i2` created and on `proxmox02` where `lxc02` (PVE instance id 101) was launched we have `veth101i1` and `veth101i2` created:
 
 ```
 root@proxmox02:~# ovs-vsctl show
@@ -624,7 +624,7 @@ root@lxc01:~# ip addr show eth3
        valid_lft forever preferred_lft forever
 ```
 
-Now, if I try to ping `172.29.250.10` or `172.29.250.11` (on proxmox02) from `172.29.250.10`:
+Now, if I try to ping the local `172.29.250.10` IP or the remote `172.29.250.11` of `lxc02` on `proxmox02` from the `172.29.250.13` IP on `eth3` interface:
 
 ```
 root@lxc01:~# ping -c 4 -W 5 -I eth3 172.29.250.10
@@ -648,6 +648,6 @@ From 172.29.250.13 icmp_seq=4 Destination Host Unreachable
 pipe 4
 ```
 
-we can see the connectivity is failing. Although the interfaces belong to the same `L3` class network they have been isolated on `L2` layer in the SDN and thus exist as separate networks.
+we can see the connectivity is failing. Although the interfaces belong to the same `L3` class network they have been isolated on `L2` layer in the SDN and thus exist as separate networks. The packets leaving `eth3` interface end up on the veth pair connected to the OVS bridge `vmbr2` where they get marked with VLAN id tag 33 on ingress. They internally get routed to `eth2`'s veth pair interface on the same bridge `veth100i2` which is tagged with VLAN id 22, thus the packets will get filtered (dropped) and will never reach the IP `172.29.250.10`. The story is similar for the remote interface except in this case the packets will first pass through the VxLAN tunnel before being dropped by the `vmbr2` on the other node because of VLAN id mismatch.
 
 {% include series.html %}
