@@ -184,6 +184,8 @@ iface wlan0 inet static
   broadcast 192.168.24.255
 ```
 
+The wifi side of the router will have `192.168.24.0/24` subnet configured. The LAN port will connect to my internal subnet `192.168.1.0/24`.
+
 ## Set wifi geographic region to improve power levels
 
 Make sure `crda` package is installed, if not then:
@@ -360,9 +362,7 @@ If all god, CTRL+c and start the service:
 
 ```
 root@odroid:~# service hostapd start
-
  * Starting advanced IEEE 802.11 management hostapd     [ OK ]
-ioctl[RTL_IOCTL_HOSTAPD]: Invalid argument
 ```
 
 and now we should see wlan0 up and running:
@@ -604,7 +604,7 @@ cache-size=10000
 # dhcp-authoritative
 ```
 
-The next file is not really needed since we put the servers in the main config but just in case. The `192.168.1.205` is my DNS server and the `192.168.1.205` is the IP of the main router (default GW):
+The next file is not really needed since we put the servers in the main config but just in case. The `192.168.1.205` is my DNS server where I run `Split Horizonn` setup for several of my domains and the `192.168.1.205` is the IP of the main router (default GW) connecting to Internet:
 
 ```
 root@odroid:~# vi /etc/resolv.dnsmasq
