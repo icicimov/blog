@@ -13,6 +13,8 @@ series: "Kubernetes cluster step-by-step"
 {% include toc %}
 The purpose of this exercise is to create local `Kubernetes` cluster for testing deployments. It will be deployed on 3 x VMs (Debian Jessie 8.8) nodes which will be Master and Worker nodes in same time. The nodes names will be k8s01 (192.168.0.147), k8s02 (192.168.0.148) and k8s03 (192.168.0.149). All work is done as `root` user unless otherwise specified. Each node has the IPs, short and FQDN of all the nodes set in its local hosts file.
 
+The following [Git repository](https://github.com/icicimov/k9s-ansible) is available for automated setup via Ansible.
+
 # Nodes System Setup
 
 In this step we prepare the nodes for Kubernetes. First we enable Debian backports and Docker repository on each of the nodes:
