@@ -388,6 +388,7 @@ parameters:
   restuser: "admin"
   secretName: "heketi-secret"
   secretNamespace: "default"
+  volumetype: "replicate:3"
   #gidMin: "40000"
   #gidMax: "50000"
 ```
