@@ -492,6 +492,9 @@ Other issues I found during the tests are captured by [Issue #2670](https://gith
 
 The issue `#2093` [Traefik is not purging old key value pairs or overwriting old config in consul KV store for HA](https://github.com/containous/traefik/issues/2093) means currently the changes of the configuration stored in a KV store are practically impossible.
 
+**UPDATE 31/05/2018:**
+The [issue #2699](https://github.com/containous/traefik/issues/2699) has now been resolved by setting the Route53 DNS zone via `AWS_HOSTED_ZONE_ID` in the Deployment environment variables. See my comments in the issue for the details and prove that Lego integration with Traefik is now working.
+
 ## Conclusion
 
 Traefik is no doubt a great piece of software, super light and reach with features. The question is, does it currently have everything it needs to be employed in production K8S cluster especially when ACME is a requirement? From what I can see the answer is `no`. Apart from the issues I saw it lacks a native integration with Kubernetes elements like `Secrets` and `ConfigMaps`. The [Proposal: Native Kubernetes LetsEncrypt Implementation](https://github.com/containous/traefik/issues/2542) looks promising and is a move in the right direction in terms of K8S integration. I also have a feeling, and I'm sorry to say this since I know the Traefik developers are  working hard, that for now the Kubernetes usage case is a second class citizen when it comes to features and integration. Probably the team is overwhelmed with issues and more focused on other areas and I hope this to change very soon so Traefik gets the spot it deserves in the world of Kubernetes.
