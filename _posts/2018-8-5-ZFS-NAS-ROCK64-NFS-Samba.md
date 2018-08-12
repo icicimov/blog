@@ -25,6 +25,14 @@ root@rock64:~# apt install zlib1g-dev uuid-dev libattr1-dev libblkid-dev libseli
 root@rock64:~# apt install parted lsscsi ksh libssl-dev libelf-dev
 ```
 
+I used the [serial console](https://www.pine64.org/?product=padi-serial-console) I got with the board for USB to Serial communication. On my Linux station I used `minicom` serial console terminal emulation software to obtain a login prompt over `/dev/ttyUSB0` on the initial boot up.
+
+```
+igorc@silverstone:~$ sudo minicom -s -D /dev/ttyUSB0 -b 1500000 --color=on
+```
+
+See the link from the PINE64 forum in the `References` section for details.
+
 ## ZFS
 
 For the ZFS setup I followed a thread I found in the `Armbian` forum, see `References` below. Basically ran:
@@ -334,5 +342,6 @@ freenas -fstype=cifs,rw,username=rock64,password=password,file_mode=0777,dir_mod
 
 ## References
 
+* [How to Setup Serial Console Cable Over the Rock64 SBC](https://forum.pine64.org/showthread.php?tid=5029)
 * [Build ZFS on RK3328](https://forum.armbian.com/topic/6789-build-zfs-on-rk3328/?tab=comments#comment-53681)
 * [ayufan-rock64](https://github.com/ayufan-rock64/linux-build/)
