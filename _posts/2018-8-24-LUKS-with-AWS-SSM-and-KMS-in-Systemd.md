@@ -247,6 +247,6 @@ Aug 24 05:25:40 server luks-mount[2574]:   mode:    read/write
 Aug 24 05:25:40 server systemd[1]: Started Activate LUKS device.
 ```
 
-Now the device will be auto unlocked and mounted on every server restart and we didn't even have to store any sensitive data like password or key file on the server it self. It was all downloaded via shell script and executed in memory so nothing ever reached the file system either. 
+Now the device will be auto unlocked and mounted on every server restart and we didn't even have to store any sensitive data like password or key file on the server it self. It was all downloaded via shell script and executed in memory so nothing ever reached the file system either. In case the disk security has been compromised all we need to do is revoke the IAM user's keys to prevent unauthorized access to the encrypted data.
 
 Obviously with this approach we need to make the services depending on the existence of the mount point depend on the `luks-mount` service too which is easily achieved in Systemd.
