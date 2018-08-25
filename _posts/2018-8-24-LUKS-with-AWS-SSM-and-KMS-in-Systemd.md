@@ -5,7 +5,7 @@ header:
 title: 'Disk encryption in rest with LUKS and AWS SSM and KMS services in Systemd'
 categories: 
   - Server
-tags: ['luks', 'aws', 'server']
+tags: ['luks', 'aws']
 date: 2018-8-24
 ---
 
@@ -55,7 +55,7 @@ $ aws ssm put-parameter --name '/luks/test/key' --value '<our-luks-password>' --
 
 This will upload our password to the SSM store and encrypt it with our master KMS key. Later we can fetch the password from any machine anywhere in the world given the machine has `awscli` installed (or any other AWS SDK utility and custom piece of code): 
 
-```
+```bash
 $ aws ssm get-parameters-by-path --path='/luks/test/key' --with-decryption --region=us-east-1
 ```
 
@@ -63,7 +63,7 @@ and the user running the command on the machine has the IAM users AWS access and
 
 Now lets move to the server where we need the LUKS encryption to happen and go through the disk encryption process manually first, utilizing the AWS resources we created.
 
-```
+```bash
 root@server:~# modprobe -v dm-crypt
 insmod /lib/modules/4.4.0-1066-aws/kernel/drivers/md/dm-crypt.ko 
 
