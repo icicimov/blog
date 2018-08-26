@@ -9,7 +9,7 @@ tags: ['luks', 'aws']
 date: 2018-8-24
 ---
 
-Implementing disk encryption-in-rest in secure and automated way can be challenging. After we are done with the disk encryption we are often faced with the problem of supplying sensitive data like password or key file needed to unlock and mount the encrypted device on server startup or cluster fail over. And most probably we need to do this in an automated way without any human intervention for our production environments which are hosted in public cloud or shared Data Center. 
+Implementing disk encryption-at-rest in secure and automated way can be challenging. After we are done with the disk encryption we are often faced with the problem of supplying sensitive data like password or key file needed to unlock and mount the encrypted device on server startup or cluster fail over. And most probably we need to do this in an automated way without any human intervention for our production environments which are hosted in public cloud or shared Data Center. 
 
 Cloud providers like AWS can help simplify this task via services like IAM, SSM Parameter Store and KMS (Key Management Service) in centralized and standardized manner. They can take over the best part of the tasks related to the Master Encryption Key management like highly available storage and redundancy, security and key rotation. We can use SSM to store the LUKS encryption key password for example and do it in secure way since it integrates with KMS in the background. Using IAM we can control the user access to the assets via Roles and Policies.
 
@@ -266,7 +266,8 @@ Now the device will be auto unlocked and mounted on every server restart and we 
                 "aws:SourceIp": [
                   "103.15.250.0/24",
                   "12.148.72.0/23"
-               ]
+                ]
+              }
             }
         }
 [...]
