@@ -11,9 +11,9 @@ date: 2014-6-15
 
 # Setup
 
-# Install needed packages and prepare MySQL
+## Install needed packages and prepare MySQL
 
-```
+```bash
 # apt-get install build-essential libqt4-dev git apache2 \
 php-pear php-db php5-curl php5-gd libapache2-mod-php5 apache2-utils \
 curl sox libncurses5-dev libssl-dev libmysqlclient15-dev mpg123 libxml2-dev \
@@ -38,7 +38,7 @@ bison flex libspandsp-dev
 
 Upgrade PEAR and downgrade DB module to 1.7.14:
 
-```
+```bash
 # pear install -Z pear
 # pear uninstall db
 # pear install db-1.7.14
@@ -48,7 +48,7 @@ Later ones are broken and cause problems for freepbx. From freepbx-13 the PEAR d
 
 ## Install FreePBX
 
-```
+```bash
 # /usr/src/freepbx/install_amp
 # /usr/src/freepbx/apply_conf.sh
 # ln -s /var/lib/asterisk/moh /var/lib/asterisk/mohmp3
@@ -57,7 +57,7 @@ Later ones are broken and cause problems for freepbx. From freepbx-13 the PEAR d
 
 ## Bug fixes
 
-```
+```bash
 igorc@odroid:~$ sudo mkdir /var/www/html/admin/modules/_cache
 igorc@odroid:~$ sudo chown asterisk:asterisk /var/www/html/admin/modules/_cache
 igorc@odroid:~$ sudo chmod -R g+rw /var/lib/php5/*
@@ -69,7 +69,7 @@ done
 
 ## Upgrade the Asterisk modules
 
-```
+```bash
 igorc@odroid:~$ sudo -u asterisk /var/lib/asterisk/bin/module_admin download framework
 igorc@odroid:~$ sudo -u asterisk /var/lib/asterisk/bin/module_admin install framework
 igorc@odroid:~$ sudo amportal a ma upgrade core
@@ -79,7 +79,7 @@ igorc@odroid:~$ sudo amportal a ma reload
 
 some other modules to install:
 
-```
+```bash
 igorc@odroid:~$ sudo amportal a ma download ttsengines
 igorc@odroid:~$ sudo amportal a ma install ttsengines
 ```

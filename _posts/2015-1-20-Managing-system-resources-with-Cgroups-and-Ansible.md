@@ -15,11 +15,13 @@ Sometimes we need to limit particular resource usage for some process, utility o
 
 The following example shows using cgroups to limit the CPU usage and number of CPU cores for specific utility, in this case the html-to-pdf conversion tool `wkhtmltopdf`. First we install the needed packages:
 
+```bash
 $ sudo aptitude install cgroup-bin cgmanager-utils
+```
 
 On Ubuntu/Debian the cgroups file system mounts under `/sys/fs/cgroups` where all available sub systems get created. To find the capabilities and available cgroup subsystems:
 
-```
+```bash
 $ cat /proc/cgroups
 #subsys_name    hierarchy    num_cgroups    enabled
 cpuset    3    2    1
@@ -35,7 +37,7 @@ hugetlb    11    1    1
 
 Now we can set the cgroup and set it's limits:
 
-```
+```bash
 $ sudo cgcreate -g cpu,cpuset:/group1
 $ sudo cgset -r cpuset.cpus='0,2,4,6' group1
 $ sudo cgset -r cpu.shares='512' group1
@@ -43,7 +45,7 @@ $ sudo cgset -r cpu.shares='512' group1
 
 This will create the group1 under cpu and cpuset subsystems of cgroups. We can check the set values:
 
-```
+```bash
 $ cat /sys/fs/cgroup/cpuset/group1/cpuset.cpus
 0,2,4,6
  
@@ -57,27 +59,27 @@ Now, if we want to limit a process in terms of cpu utilization we can add it to 
 
 * We can add already running process to the group. Example:
 
-  ```
+  ```bash
   # cgclassify -g cpu,cpuset:/group1 $PID
   ```
 
 * We can start a process or execute command utility bound to the group. Examples:
 
-  ```
+  ```bash
   # cgexec -g cpu,cpuset:/group1 /usr/local/bin/wkhtmltopdf file.html
   # cgexec -g cpu,cpuset:/group1 httpd
   ```
 
 * We can adjust the default startup parameters of a process so it automatically starts in the group. Example in `/etc/sysconfig/httpd` or `/etc/default/apache2`:
 
-  ```
+  ```bash
   ...
   CGROUP_DAEMON="cpu,cpuset:/group1"
   ```
 
 * We can use cgrep daemon `cgrepd` which assigns tasks to particular groups based on the settings of the `/etc/cgrules.conf` file on run-time. Example:
     
-  ```
+  ```bash
   # echo 'tomcat7:wkhtmltopdf    cpu,cpuset    group1' >  /etc/cgrules.conf
       
   # cgrulesengd -d -v -f /var/log/cgrulesengd.log &
@@ -255,20 +257,20 @@ exit $RETVAL
 
 make it executable and set it for autostart on proper runlevels:
 
-```
+```bash
 $ sudo chmod +x /etc/init.d/cgred
 $ sudo update-rc.d defaults 99 20
 ```
 
 Then we can grab thedefault cgred config that comes with the documentation:
 
-```
+```bash
 $ sudo cp /usr/share/doc/cgroup-bin/examples/cgred.conf /etc/default/cgred
 ```
 
 and modify it slightly `/etc/default/cgred`:
 
-```
+```bash
 CONFIG_FILE="/etc/cgrules.conf"
 LOG_FILE="/var/log/cgrulesengd.log"
 NODAEMON=""
@@ -283,13 +285,13 @@ LOG="-v"
 
 Then we can use the standard service command to start/stop the daemon:
 
-```
+```bash
 $ sudo service cgred [start|stop|status|restart]
 ```
 
 We also need to parse the rules file and dynamically create our cgroup on start-up. We create the following file for this purpose `/etc/cgconfig.conf`:
 
-```
+```bash
 group group1 {
     cpuset {
         cpuset.memory_spread_slab="0";
@@ -315,7 +317,7 @@ group group1 {
 
 and run the parsing command on start-up which we add to rc.local file `/etc/rc.local`:
 
-```
+```bash
 ...
 cgconfigparser -l /etc/cgconfig.conf
  
