@@ -7,6 +7,7 @@ categories:
   - Server
 tags: ['luks', 'aws']
 date: 2015-11-14
+excerpt: "Encrypting data at rest provides protection of sensitive information stored on EBS volumes. When taking snapshots of encrypted volumes the snapshots are encrypted as well. When the volume is attached to a EC2 instance and mounted, the volume is unlocked and thus all the data available for access like on any other normal drive..."
 ---
 
 ## Introduction
@@ -215,6 +216,8 @@ root@ip-172-31-13-210:~# dd if=/dev/zero of=/dev/xvdg bs=4MB count=6000
 ```
 
 So for a single drive LUKS really hurts the performance. Looks like with encryption the striped LVM or RAID mirror is the way to go if we want to keep the disk performance on reasonable level.
+
+The attached [file]({{ site.baseurl }}/download/ebs_drive_test.txt) has more detailed tests comparing encrypted and non-encrypted SSD drives using `dd` and `fio`. The caches have been dropped before each test was executed.
 
 ## Things to consider and common tasks when LUKS involved
 
