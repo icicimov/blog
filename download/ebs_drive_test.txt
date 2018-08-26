@@ -1,0 +1,812 @@
+
+1) hdparm
+
+- Non encrypted
+
+root@ip-172-31-13-210:~# hdparm -Tt /dev/xvdf
+
+/dev/xvdf:
+ Timing cached reads:   19788 MB in  1.99 seconds = 9953.14 MB/sec
+ Timing buffered disk reads: 402 MB in  3.01 seconds = 133.47 MB/sec
+
+
+- Encrypted
+
+root@ip-172-31-13-210:~# hdparm -Tt /dev/xvdg
+
+/dev/xvdg:
+ Timing cached reads:   19688 MB in  1.99 seconds = 9902.62 MB/sec
+ Timing buffered disk reads: 316 MB in  3.00 seconds = 105.18 MB/sec
+
+
+2) dd
+
+2.1) Read
+
+- Non encrypted
+
+root@ip-172-31-13-210:~# dd of=/dev/null if=/dev/xvdf bs=4MB count=6000
+6000+0 records in
+6000+0 records out
+24000000000 bytes (24 GB) copied, 619.213 s, 38.8 MB/s
+
+- Encrypted
+
+root@ip-172-31-13-210:~# dd of=/dev/null if=/dev/xvdg bs=4MB count=6000
+6000+0 records in
+6000+0 records out
+24000000000 bytes (24 GB) copied, 766.3 s, 31.3 MB/s
+
+- Custom LUKS encrypted on striped LVM accross 2 x 100GB SSD 300/3000 IOPS (standard gp2)
+  and XFS file system
+
+root@ip-172-31-13-210:~# dd of=/dev/null if=/mnt/luks/test.img bs=4MB count=6000
+6000+0 records in
+6000+0 records out
+24000000000 bytes (24 GB) copied, 392.59 s, 61.1 MB/s
+
+2.2) Write
+
+- Non encrypted
+
+root@ip-172-31-13-210:~# dd if=/dev/zero of=/dev/xvdf bs=4MB count=6000 && sync;sync
+887+0 records in
+887+0 records out
+3548000000 bytes (3.5 GB) copied, 43.9896 s, 80.7 MB/s
+4210+0 records in
+4210+0 records out
+16840000000 bytes (17 GB) copied, 297.76 s, 56.6 MB/s
+5901+0 records in
+5901+0 records out
+23604000000 bytes (24 GB) copied, 555.318 s, 42.5 MB/s
+6000+0 records in
+6000+0 records out
+24000000000 bytes (24 GB) copied, 571.07 s, 42.0 MB/s
+
+- Encrypted
+
+root@ip-172-31-13-210:~# dd if=/dev/zero of=/dev/xvdg bs=4MB count=6000 && sync;sync
+101+0 records in
+101+0 records out
+404000000 bytes (404 MB) copied, 33.5545 s, 12.0 MB/s
+579+0 records in
+579+0 records out
+2316000000 bytes (2.3 GB) copied, 284.987 s, 8.1 MB/s
+802+0 records in
+802+0 records out
+3208000000 bytes (3.2 GB) copied, 541.793 s, 5.9 MB/s
+6000+0 records in
+6000+0 records out
+24000000000 bytes (24 GB) copied, 813.996 s, 29.5 MB/s
+
+- Custom LUKS encrypted on striped LVM accross 2 x 100GB SSD 300/3000 IOPS (standard gp2)
+  and XFS file system
+
+root@ip-172-31-13-210:~# dd if=/dev/zero of=/mnt/luks/test.img bs=4MB count=6000 && sync;sync
+1987+0 records in
+1987+0 records out
+7948000000 bytes (7.9 GB) copied, 128.673 s, 61.8 MB/s
+5550+0 records in
+5550+0 records out
+22200000000 bytes (22 GB) copied, 379.105 s, 58.6 MB/s
+6000+0 records in
+6000+0 records out
+24000000000 bytes (24 GB) copied, 404.974 s, 59.3 MB/s
+
+
+
+3) fio
+
+3.1) Read throughput
+
+Non-encrypted:
+
+root@ip-172-31-13-210:~# fio --bs=4m --direct=1 --rw=read --ioengine=libaio --iodepth=64 --runtime=60 --name=/dev/xvdf
+/dev/xvdf: (g=0): rw=read, bs=4M-4M/4M-4M/4M-4M, ioengine=libaio, iodepth=64
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [R] [2.5% done] [4096KB/0KB/0KB /s] [1/0/0 iops] [eta 40m:33s]   
+/dev/xvdf: (groupid=0, jobs=1): err= 0: pid=16336: Tue Oct 27 14:53:03 2015
+  read : io=2756.0MB, bw=45962KB/s, iops=11, runt= 61402msec
+    slat (msec): min=1, max=836, avg=87.23, stdev=79.71
+    clat (msec): min=1290, max=11144, avg=5544.61, stdev=2502.74
+     lat (msec): min=1475, max=11235, avg=5631.85, stdev=2535.31
+    clat percentiles (msec):
+     |  1.00th=[ 1811],  5.00th=[ 1926], 10.00th=[ 2409], 20.00th=[ 4228],
+     | 30.00th=[ 4293], 40.00th=[ 4293], 50.00th=[ 4359], 60.00th=[ 4359],
+     | 70.00th=[ 7308], 80.00th=[ 8291], 90.00th=[ 8979], 95.00th=[10421],
+     | 99.00th=[10945], 99.50th=[11076], 99.90th=[11207], 99.95th=[11207],
+     | 99.99th=[11207]
+    bw (KB  /s): min= 2370, max=133907, per=98.15%, avg=45110.63, stdev=23056.03
+    lat (msec) : 2000=7.84%, >=2000=92.16%
+  cpu          : usr=0.01%, sys=0.52%, ctx=693, majf=0, minf=44613
+  IO depths    : 1=0.1%, 2=0.3%, 4=0.6%, 8=1.2%, 16=2.3%, 32=4.6%, >=64=90.9%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.8%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.2%, >=64=0.0%
+     issued    : total=r=689/w=0/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=2756.0MB, aggrb=45961KB/s, minb=45961KB/s, maxb=45961KB/s, mint=61402msec, maxt=61402msec
+
+Disk stats (read/write):
+  xvdf: ios=22007/0, merge=0/0, ticks=8620972/0, in_queue=8670276, util=99.92%
+
+
+root@ip-172-31-13-210:~# fio --direct=1 --rw=read --ioengine=libaio --size=5G --bs=1024K --direct=1 --refill_buffers --iodepth=16 --name=/dev/xvdf
+/dev/xvdf: (g=0): rw=read, bs=1M-1M/1M-1M/1M-1M, ioengine=libaio, iodepth=16
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [R] [100.0% done] [31744KB/0KB/0KB /s] [31/0/0 iops] [eta 00m:00s]
+/dev/xvdf: (groupid=0, jobs=1): err= 0: pid=16348: Tue Oct 27 14:56:41 2015
+  read : io=5120.0MB, bw=36026KB/s, iops=35, runt=145529msec
+    slat (usec): min=46, max=958, avg=87.51, stdev=25.75
+    clat (msec): min=5, max=1840, avg=454.58, stdev=254.04
+     lat (msec): min=6, max=1840, avg=454.67, stdev=254.04
+    clat percentiles (msec):
+     |  1.00th=[  123],  5.00th=[  123], 10.00th=[  212], 20.00th=[  293],
+     | 30.00th=[  302], 40.00th=[  371], 50.00th=[  379], 60.00th=[  449],
+     | 70.00th=[  494], 80.00th=[  594], 90.00th=[  758], 95.00th=[  947],
+     | 99.00th=[ 1385], 99.50th=[ 1500], 99.90th=[ 1762], 99.95th=[ 1827],
+     | 99.99th=[ 1844]
+    bw (KB  /s): min= 2848, max=159425, per=100.00%, avg=36766.27, stdev=21156.56
+    lat (msec) : 10=0.08%, 20=0.12%, 50=0.20%, 100=0.18%, 250=11.45%
+    lat (msec) : 500=58.38%, 750=18.67%, 1000=6.41%, 2000=4.53%
+  cpu          : usr=0.03%, sys=0.35%, ctx=5121, majf=0, minf=546
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.2%, 16=99.7%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued    : total=r=5120/w=0/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=5120.0MB, aggrb=36026KB/s, minb=36026KB/s, maxb=36026KB/s, mint=145529msec, maxt=145529msec
+
+Disk stats (read/write):
+  xvdf: ios=40960/0, merge=0/0, ticks=18086696/0, in_queue=18086696, util=100.00%
+
+
+Encrypted:
+
+root@ip-172-31-13-210:~# fio --bs=4m --direct=1 --rw=read --ioengine=libaio --iodepth=64 --runtime=60 --name=/dev/xvdg
+/dev/xvdg: (g=0): rw=read, bs=4M-4M/4M-4M/4M-4M, ioengine=libaio, iodepth=64
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [R] [100.0% done] [57344KB/0KB/0KB /s] [14/0/0 iops] [eta 00m:00s]
+/dev/xvdg: (groupid=0, jobs=1): err= 0: pid=16341: Tue Oct 27 14:53:29 2015
+  read : io=2584.0MB, bw=43818KB/s, iops=10, runt= 60387msec
+    slat (msec): min=1, max=482, avg=92.99, stdev=64.37
+    clat (msec): min=304, max=10071, avg=5590.08, stdev=2199.54
+     lat (msec): min=398, max=10259, avg=5683.08, stdev=2225.66
+    clat percentiles (msec):
+     |  1.00th=[  766],  5.00th=[ 2507], 10.00th=[ 4293], 20.00th=[ 4293],
+     | 30.00th=[ 4293], 40.00th=[ 4359], 50.00th=[ 4359], 60.00th=[ 4686],
+     | 70.00th=[ 6849], 80.00th=[ 8225], 90.00th=[ 9110], 95.00th=[ 9503],
+     | 99.00th=[ 9896], 99.50th=[10028], 99.90th=[10028], 99.95th=[10028],
+     | 99.99th=[10028]
+    bw (KB  /s): min=  620, max=65361, per=100.00%, avg=44949.85, stdev=17344.35
+    lat (msec) : 500=0.46%, 750=0.46%, 1000=0.62%, 2000=2.32%, >=2000=96.13%
+  cpu          : usr=0.01%, sys=0.40%, ctx=654, majf=0, minf=61987
+  IO depths    : 1=0.2%, 2=0.3%, 4=0.6%, 8=1.2%, 16=2.5%, 32=5.0%, >=64=90.2%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.8%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.2%, >=64=0.0%
+     issued    : total=r=646/w=0/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=2584.0MB, aggrb=43817KB/s, minb=43817KB/s, maxb=43817KB/s, mint=60387msec, maxt=60387msec
+
+Disk stats (read/write):
+  xvdg: ios=20598/0, merge=0/0, ticks=8625872/0, in_queue=8639432, util=99.92%
+
+
+root@ip-172-31-13-210:~# fio --direct=1 --rw=read --ioengine=libaio --size=5G --bs=1024K --direct=1 --refill_buffers --iodepth=16 --name=/dev/xvdg
+/dev/xvdg: (g=0): rw=read, bs=1M-1M/1M-1M/1M-1M, ioengine=libaio, iodepth=16
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [R] [99.4% done] [59392KB/0KB/0KB /s] [58/0/0 iops] [eta 00m:01s]
+/dev/xvdg: (groupid=0, jobs=1): err= 0: pid=16351: Tue Oct 27 14:57:06 2015
+  read : io=5120.0MB, bw=33626KB/s, iops=32, runt=155919msec
+    slat (usec): min=46, max=582, avg=89.23, stdev=22.31
+    clat (msec): min=87, max=1636, avg=487.10, stdev=252.52
+     lat (msec): min=87, max=1636, avg=487.19, stdev=252.52
+    clat percentiles (msec):
+     |  1.00th=[  215],  5.00th=[  229], 10.00th=[  243], 20.00th=[  293],
+     | 30.00th=[  310], 40.00th=[  334], 50.00th=[  392], 60.00th=[  482],
+     | 70.00th=[  578], 80.00th=[  685], 90.00th=[  857], 95.00th=[ 1029],
+     | 99.00th=[ 1254], 99.50th=[ 1336], 99.90th=[ 1450], 99.95th=[ 1483],
+     | 99.99th=[ 1631]
+    bw (KB  /s): min= 6083, max=65145, per=100.00%, avg=33927.58, stdev=16125.71
+    lat (msec) : 100=0.02%, 250=11.91%, 500=50.23%, 750=21.93%, 1000=10.35%
+    lat (msec) : 2000=5.55%
+  cpu          : usr=0.03%, sys=0.33%, ctx=5099, majf=0, minf=546
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.2%, 16=99.7%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued    : total=r=5120/w=0/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=5120.0MB, aggrb=33625KB/s, minb=33625KB/s, maxb=33625KB/s, mint=155919msec, maxt=155919msec
+
+Disk stats (read/write):
+  xvdg: ios=40886/0, merge=0/0, ticks=19317340/0, in_queue=19332944, util=100.00%
+
+
+
+3.2) Write throughput
+
+Non-encrypted:
+
+root@ip-172-31-13-210:~# fio --bs=4m --direct=1 --rw=write --ioengine=libaio --iodepth=64 --runtime=60 --name=/dev/xvdf
+/dev/xvdf: (g=0): rw=write, bs=4M-4M/4M-4M/4M-4M, ioengine=libaio, iodepth=64
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [W] [100.0% done] [0KB/73728KB/0KB /s] [0/18/0 iops] [eta 00m:00s]
+/dev/xvdf: (groupid=0, jobs=1): err= 0: pid=16411: Tue Oct 27 15:01:10 2015
+  write: io=4932.0MB, bw=83858KB/s, iops=20, runt= 60225msec
+    slat (usec): min=255, max=67734, avg=48657.26, stdev=4695.20
+    clat (msec): min=216, max=3579, avg=3020.97, stdev=360.23
+     lat (msec): min=271, max=3634, avg=3069.63, stdev=360.02
+    clat percentiles (msec):
+     |  1.00th=[  865],  5.00th=[ 2966], 10.00th=[ 3032], 20.00th=[ 3032],
+     | 30.00th=[ 3032], 40.00th=[ 3032], 50.00th=[ 3032], 60.00th=[ 3032],
+     | 70.00th=[ 3032], 80.00th=[ 3032], 90.00th=[ 3261], 95.00th=[ 3425],
+     | 99.00th=[ 3425], 99.50th=[ 3425], 99.90th=[ 3523], 99.95th=[ 3589],
+     | 99.99th=[ 3589]
+    bw (KB  /s): min= 1573, max=88000, per=98.45%, avg=82555.02, stdev=8893.29
+    lat (msec) : 250=0.08%, 500=0.41%, 750=0.32%, 1000=0.41%, 2000=1.46%
+    lat (msec) : >=2000=97.32%
+  cpu          : usr=0.46%, sys=0.43%, ctx=1249, majf=0, minf=27
+  IO depths    : 1=0.1%, 2=0.2%, 4=0.3%, 8=0.6%, 16=1.3%, 32=2.6%, >=64=94.9%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.9%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.1%, >=64=0.0%
+     issued    : total=r=0/w=1233/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+  WRITE: io=4932.0MB, aggrb=83858KB/s, minb=83858KB/s, maxb=83858KB/s, mint=60225msec, maxt=60225msec
+
+Disk stats (read/write):
+  xvdf: ios=88/39344, merge=0/0, ticks=40/8587604, in_queue=8604704, util=99.73%
+
+
+root@ip-172-31-13-210:~# fio --direct=1 --rw=write --ioengine=libaio --size=5G --bs=1024K --direct=1 --refill_buffers --iodepth=16 --name=/dev/xvdf
+/dev/xvdf: (g=0): rw=write, bs=1M-1M/1M-1M/1M-1M, ioengine=libaio, iodepth=16
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [W] [100.0% done] [0KB/84992KB/0KB /s] [0/83/0 iops] [eta 00m:00s]
+/dev/xvdf: (groupid=0, jobs=1): err= 0: pid=16432: Tue Oct 27 15:02:45 2015
+  write: io=5120.0MB, bw=81486KB/s, iops=79, runt= 64341msec
+    slat (usec): min=33, max=22134, avg=89.10, stdev=309.40
+    clat (msec): min=1, max=362, avg=200.68, stdev=13.99
+     lat (msec): min=17, max=362, avg=200.77, stdev=13.93
+    clat percentiles (msec):
+     |  1.00th=[  192],  5.00th=[  194], 10.00th=[  194], 20.00th=[  194],
+     | 30.00th=[  194], 40.00th=[  194], 50.00th=[  194], 60.00th=[  194],
+     | 70.00th=[  217], 80.00th=[  217], 90.00th=[  217], 95.00th=[  219],
+     | 99.00th=[  227], 99.50th=[  237], 99.90th=[  302], 99.95th=[  338],
+     | 99.99th=[  363]
+    bw (KB  /s): min=61033, max=84996, per=99.83%, avg=81344.25, stdev=4892.78
+    lat (msec) : 2=0.02%, 20=0.02%, 50=0.04%, 100=0.08%, 250=99.65%
+    lat (msec) : 500=0.20%
+  cpu          : usr=1.59%, sys=0.74%, ctx=5176, majf=0, minf=27
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.2%, 16=99.7%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued    : total=r=0/w=5120/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+  WRITE: io=5120.0MB, aggrb=81485KB/s, minb=81485KB/s, maxb=81485KB/s, mint=64341msec, maxt=64341msec
+
+Disk stats (read/write):
+  xvdf: ios=97/40865, merge=0/0, ticks=1680/7968700, in_queue=7981508, util=100.00%
+
+
+Encrypted:
+
+root@ip-172-31-13-210:~# fio --bs=4m --direct=1 --rw=write --ioengine=libaio --iodepth=64 --runtime=60 --name=/dev/xvdg
+/dev/xvdg: (g=0): rw=write, bs=4M-4M/4M-4M/4M-4M, ioengine=libaio, iodepth=64
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [W] [2.6% done] [0KB/0KB/0KB /s] [0/0/0 iops] [eta 39m:36s]      
+/dev/xvdg: (groupid=0, jobs=1): err= 0: pid=16421: Tue Oct 27 15:02:03 2015
+  write: io=2856.0MB, bw=47228KB/s, iops=11, runt= 61924msec
+    slat (usec): min=339, max=463116, avg=84200.98, stdev=113096.60
+    clat (msec): min=1796, max=22934, avg=4807.66, stdev=4580.97
+     lat (msec): min=2239, max=22982, avg=4891.86, stdev=4624.97
+    clat percentiles (msec):
+     |  1.00th=[ 2999],  5.00th=[ 3032], 10.00th=[ 3032], 20.00th=[ 3032],
+     | 30.00th=[ 3032], 40.00th=[ 3032], 50.00th=[ 3032], 60.00th=[ 3032],
+     | 70.00th=[ 3032], 80.00th=[ 3064], 90.00th=[10683], 95.00th=[16712],
+     | 99.00th=[16712], 99.50th=[16712], 99.90th=[16712], 99.95th=[16712],
+     | 99.99th=[16712]
+    bw (KB  /s): min=  387, max=87828, per=100.00%, avg=60640.94, stdev=35394.29
+    lat (msec) : 2000=0.14%, >=2000=99.86%
+  cpu          : usr=0.26%, sys=0.19%, ctx=724, majf=0, minf=26
+  IO depths    : 1=0.1%, 2=0.3%, 4=0.6%, 8=1.1%, 16=2.2%, 32=4.5%, >=64=91.2%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.8%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.2%, >=64=0.0%
+     issued    : total=r=0/w=714/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+  WRITE: io=2856.0MB, aggrb=47227KB/s, minb=47227KB/s, maxb=47227KB/s, mint=61924msec, maxt=61924msec
+
+Disk stats (read/write):
+  xvdg: ios=96/22837, merge=0/0, ticks=7696/8700620, in_queue=8730404, util=100.00%
+
+
+root@ip-172-31-13-210:~# fio --direct=1 --rw=write --ioengine=libaio --size=5G --bs=1024K --direct=1 --refill_buffers --iodepth=16 --name=/dev/xvdg
+/dev/xvdg: (g=0): rw=write, bs=1M-1M/1M-1M/1M-1M, ioengine=libaio, iodepth=16
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [W] [100.0% done] [0KB/84992KB/0KB /s] [0/83/0 iops] [eta 00m:00s]
+/dev/xvdg: (groupid=0, jobs=1): err= 0: pid=16459: Tue Oct 27 15:04:37 2015
+  write: io=5120.0MB, bw=85163KB/s, iops=83, runt= 61563msec
+    slat (usec): min=29, max=122, avg=36.92, stdev= 6.85
+    clat (msec): min=8, max=362, avg=192.12, stdev=13.34
+     lat (msec): min=8, max=362, avg=192.16, stdev=13.34
+    clat percentiles (msec):
+     |  1.00th=[  149],  5.00th=[  192], 10.00th=[  194], 20.00th=[  194],
+     | 30.00th=[  194], 40.00th=[  194], 50.00th=[  194], 60.00th=[  194],
+     | 70.00th=[  194], 80.00th=[  194], 90.00th=[  194], 95.00th=[  194],
+     | 99.00th=[  198], 99.50th=[  206], 99.90th=[  302], 99.95th=[  338],
+     | 99.99th=[  363]
+    bw (KB  /s): min=63621, max=134898, per=99.88%, avg=85063.99, stdev=4959.81
+    lat (msec) : 10=0.02%, 20=0.02%, 50=0.16%, 100=0.61%, 250=99.00%
+    lat (msec) : 500=0.20%
+  cpu          : usr=1.67%, sys=0.37%, ctx=5152, majf=0, minf=27
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.2%, 16=99.7%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued    : total=r=0/w=5120/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+  WRITE: io=5120.0MB, aggrb=85162KB/s, minb=85162KB/s, maxb=85162KB/s, mint=61563msec, maxt=61563msec
+
+Disk stats (read/write):
+  xvdg: ios=88/40879, merge=0/0, ticks=44/7630396, in_queue=7640704, util=99.98%
+
+
+3.3) IOPS read
+
+Non-encrypted:
+
+root@ip-172-31-13-210:~# fio --bs=4m --direct=1 --rw=randread --ioengine=libaio --iodepth=64 --runtime=60 --name=/dev/xvdf
+/dev/xvdf: (g=0): rw=randread, bs=4M-4M/4M-4M/4M-4M, ioengine=libaio, iodepth=64
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [r] [100.0% done] [12288KB/0KB/0KB /s] [3/0/0 iops] [eta 00m:00s]
+/dev/xvdf: (groupid=0, jobs=1): err= 0: pid=16520: Tue Oct 27 15:08:50 2015
+  read : io=2504.0MB, bw=42149KB/s, iops=10, runt= 60834msec
+    slat (msec): min=1, max=576, avg=96.12, stdev=81.20
+    clat (msec): min=656, max=10004, avg=6046.17, stdev=2288.54
+     lat (msec): min=871, max=10185, avg=6142.29, stdev=2317.64
+    clat percentiles (msec):
+     |  1.00th=[ 1778],  5.00th=[ 1926], 10.00th=[ 2278], 20.00th=[ 4015],
+     | 30.00th=[ 4424], 40.00th=[ 6128], 50.00th=[ 6521], 60.00th=[ 6915],
+     | 70.00th=[ 7504], 80.00th=[ 8029], 90.00th=[ 9110], 95.00th=[ 9241],
+     | 99.00th=[ 9765], 99.50th=[ 9765], 99.90th=[10028], 99.95th=[10028],
+     | 99.99th=[10028]
+    bw (KB  /s): min= 2378, max=134945, per=94.93%, avg=40014.03, stdev=21795.94
+    lat (msec) : 750=0.16%, 1000=0.16%, 2000=8.15%, >=2000=91.53%
+  cpu          : usr=0.01%, sys=0.57%, ctx=643, majf=0, minf=50234
+  IO depths    : 1=0.2%, 2=0.3%, 4=0.6%, 8=1.3%, 16=2.6%, 32=5.1%, >=64=89.9%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.8%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.2%, >=64=0.0%
+     issued    : total=r=626/w=0/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=2504.0MB, aggrb=42149KB/s, minb=42149KB/s, maxb=42149KB/s, mint=60834msec, maxt=60834msec
+
+Disk stats (read/write):
+  xvdf: ios=19963/0, merge=0/0, ticks=8661812/0, in_queue=8709756, util=99.92%
+
+
+root@ip-172-31-13-210:~# fio --direct=1 --rw=randread --ioengine=libaio --size=5G --bs=1024K --direct=1 --refill_buffers --iodepth=16 --name=/dev/xvdf
+/dev/xvdf: (g=0): rw=randread, bs=1M-1M/1M-1M/1M-1M, ioengine=libaio, iodepth=16
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [r] [100.0% done] [36864KB/0KB/0KB /s] [36/0/0 iops] [eta 00m:00s]
+/dev/xvdf: (groupid=0, jobs=1): err= 0: pid=16553: Tue Oct 27 15:12:45 2015
+  read : io=5120.0MB, bw=37185KB/s, iops=36, runt=140996msec
+    slat (usec): min=44, max=826, avg=89.52, stdev=25.14
+    clat (msec): min=4, max=1839, avg=440.45, stdev=267.55
+     lat (msec): min=5, max=1839, avg=440.54, stdev=267.55
+    clat percentiles (msec):
+     |  1.00th=[   54],  5.00th=[   99], 10.00th=[  123], 20.00th=[  190],
+     | 30.00th=[  269], 40.00th=[  302], 50.00th=[  388], 60.00th=[  478],
+     | 70.00th=[  570], 80.00th=[  660], 90.00th=[  807], 95.00th=[  922],
+     | 99.00th=[ 1205], 99.50th=[ 1319], 99.90th=[ 1549], 99.95th=[ 1582],
+     | 99.99th=[ 1844]
+    bw (KB  /s): min= 7185, max=157849, per=100.00%, avg=37751.39, stdev=20504.24
+    lat (msec) : 10=0.04%, 20=0.20%, 50=0.64%, 100=4.84%, 250=22.71%
+    lat (msec) : 500=33.54%, 750=25.49%, 1000=9.53%, 2000=3.01%
+  cpu          : usr=0.04%, sys=0.37%, ctx=5127, majf=0, minf=546
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.2%, 16=99.7%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued    : total=r=5120/w=0/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=5120.0MB, aggrb=37184KB/s, minb=37184KB/s, maxb=37184KB/s, mint=140996msec, maxt=140996msec
+
+Disk stats (read/write):
+  xvdf: ios=40903/0, merge=3/0, ticks=17346292/0, in_queue=17367700, util=100.00%
+
+
+Encrypted:
+
+root@ip-172-31-13-210:~# fio --bs=4m --direct=1 --rw=randread --ioengine=libaio --iodepth=64 --runtime=60 --name=/dev/xvdg
+/dev/xvdg: (g=0): rw=randread, bs=4M-4M/4M-4M/4M-4M, ioengine=libaio, iodepth=64
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [r] [100.0% done] [57344KB/0KB/0KB /s] [14/0/0 iops] [eta 00m:00s]
+/dev/xvdg: (groupid=0, jobs=1): err= 0: pid=16539: Tue Oct 27 15:09:01 2015
+  read : io=1916.0MB, bw=32486KB/s, iops=7, runt= 60395msec
+    slat (msec): min=1, max=814, avg=125.42, stdev=98.22
+    clat (msec): min=314, max=13154, avg=7404.87, stdev=3240.65
+     lat (msec): min=412, max=13265, avg=7530.29, stdev=3277.60
+    clat percentiles (msec):
+     |  1.00th=[  619],  5.00th=[ 1909], 10.00th=[ 3589], 20.00th=[ 4293],
+     | 30.00th=[ 4490], 40.00th=[ 6718], 50.00th=[ 7963], 60.00th=[ 8356],
+     | 70.00th=[ 9896], 80.00th=[10683], 90.00th=[11469], 95.00th=[12256],
+     | 99.00th=[12911], 99.50th=[13042], 99.90th=[13173], 99.95th=[13173],
+     | 99.99th=[13173]
+    bw (KB  /s): min=  495, max=62894, per=100.00%, avg=33587.32, stdev=16790.82
+    lat (msec) : 500=0.42%, 750=1.04%, 1000=0.63%, 2000=2.92%, >=2000=94.99%
+  cpu          : usr=0.01%, sys=0.33%, ctx=484, majf=0, minf=65053
+  IO depths    : 1=0.2%, 2=0.4%, 4=0.8%, 8=1.7%, 16=3.3%, 32=6.7%, >=64=86.8%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.8%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.2%, >=64=0.0%
+     issued    : total=r=479/w=0/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=1916.0MB, aggrb=32485KB/s, minb=32485KB/s, maxb=32485KB/s, mint=60395msec, maxt=60395msec
+
+Disk stats (read/write):
+  xvdg: ios=15267/0, merge=0/0, ticks=8627080/0, in_queue=8645072, util=99.92%
+
+
+root@ip-172-31-13-210:~# fio --direct=1 --rw=randread --ioengine=libaio --size=5G --bs=1024K --direct=1 --refill_buffers --iodepth=16 --name=/dev/xvdg
+/dev/xvdg: (g=0): rw=randread, bs=1M-1M/1M-1M/1M-1M, ioengine=libaio, iodepth=16
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [r] [100.0% done] [61440KB/0KB/0KB /s] [60/0/0 iops] [eta 00m:00s]
+/dev/xvdg: (groupid=0, jobs=1): err= 0: pid=16556: Tue Oct 27 15:13:15 2015
+  read : io=5120.0MB, bw=32899KB/s, iops=32, runt=159363msec
+    slat (usec): min=50, max=708, avg=89.93, stdev=21.72
+    clat (msec): min=14, max=2186, avg=497.85, stdev=316.16
+     lat (msec): min=14, max=2186, avg=497.95, stdev=316.16
+    clat percentiles (msec):
+     |  1.00th=[  104],  5.00th=[  120], 10.00th=[  184], 20.00th=[  221],
+     | 30.00th=[  285], 40.00th=[  334], 50.00th=[  412], 60.00th=[  506],
+     | 70.00th=[  635], 80.00th=[  775], 90.00th=[  938], 95.00th=[ 1090],
+     | 99.00th=[ 1450], 99.50th=[ 1549], 99.90th=[ 1729], 99.95th=[ 1909],
+     | 99.99th=[ 2180]
+    bw (KB  /s): min= 5361, max=69632, per=100.00%, avg=33086.13, stdev=16282.57
+    lat (msec) : 20=0.08%, 50=0.14%, 100=0.35%, 250=26.88%, 500=31.86%
+    lat (msec) : 750=19.38%, 1000=13.83%, 2000=7.46%, >=2000=0.04%
+  cpu          : usr=0.03%, sys=0.33%, ctx=5099, majf=0, minf=546
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.2%, 16=99.7%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued    : total=r=5120/w=0/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=5120.0MB, aggrb=32898KB/s, minb=32898KB/s, maxb=32898KB/s, mint=159363msec, maxt=159363msec
+
+Disk stats (read/write):
+  xvdg: ios=40964/0, merge=3/0, ticks=19606136/0, in_queue=19614816, util=100.00%
+
+
+3.4) IOPS write
+
+Non-encrypted:
+
+root@ip-172-31-13-210:~# fio --bs=4m --direct=1 --rw=randwrite --ioengine=libaio --iodepth=64 --runtime=60 --name=/dev/xvdf
+/dev/xvdf: (g=0): rw=randwrite, bs=4M-4M/4M-4M/4M-4M, ioengine=libaio, iodepth=64
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [w] [100.0% done] [0KB/73728KB/0KB /s] [0/18/0 iops] [eta 00m:00s]
+/dev/xvdf: (groupid=0, jobs=1): err= 0: pid=16775: Tue Oct 27 15:19:02 2015
+  write: io=4564.0MB, bw=77547KB/s, iops=18, runt= 60267msec
+    slat (usec): min=237, max=74285, avg=52618.16, stdev=5161.95
+    clat (msec): min=217, max=3796, avg=3266.83, stdev=436.26
+     lat (msec): min=271, max=3850, avg=3319.45, stdev=437.23
+    clat percentiles (msec):
+     |  1.00th=[  816],  5.00th=[ 2868], 10.00th=[ 2999], 20.00th=[ 3130],
+     | 30.00th=[ 3294], 40.00th=[ 3359], 50.00th=[ 3359], 60.00th=[ 3425],
+     | 70.00th=[ 3425], 80.00th=[ 3458], 90.00th=[ 3523], 95.00th=[ 3523],
+     | 99.00th=[ 3621], 99.50th=[ 3687], 99.90th=[ 3752], 99.95th=[ 3785],
+     | 99.99th=[ 3785]
+    bw (KB  /s): min= 1574, max=85011, per=98.25%, avg=76187.99, stdev=7975.61
+    lat (msec) : 250=0.09%, 500=0.44%, 750=0.35%, 1000=0.44%, 2000=1.58%
+    lat (msec) : >=2000=97.11%
+  cpu          : usr=0.42%, sys=0.42%, ctx=1142, majf=0, minf=27
+  IO depths    : 1=0.1%, 2=0.2%, 4=0.4%, 8=0.7%, 16=1.4%, 32=2.8%, >=64=94.5%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.9%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.1%, >=64=0.0%
+     issued    : total=r=0/w=1141/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+  WRITE: io=4564.0MB, aggrb=77547KB/s, minb=77547KB/s, maxb=77547KB/s, mint=60267msec, maxt=60267msec
+
+Disk stats (read/write):
+  xvdf: ios=88/36505, merge=0/0, ticks=48/8619852, in_queue=8621652, util=99.68%
+
+
+root@ip-172-31-13-210:~# fio --direct=1 --rw=randwrite --ioengine=libaio --size=5G --bs=1024K --direct=1 --refill_buffers --iodepth=16 --name=/dev/xvdf
+/dev/xvdf: (g=0): rw=randwrite, bs=1M-1M/1M-1M/1M-1M, ioengine=libaio, iodepth=16
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [w] [100.0% done] [0KB/74752KB/0KB /s] [0/73/0 iops] [eta 00m:00s]
+/dev/xvdf: (groupid=0, jobs=1): err= 0: pid=16933: Tue Oct 27 15:26:43 2015
+  write: io=5120.0MB, bw=77266KB/s, iops=75, runt= 67855msec
+    slat (usec): min=29, max=110, avg=37.85, stdev= 6.31
+    clat (msec): min=4, max=827, avg=211.77, stdev=101.29
+     lat (msec): min=4, max=827, avg=211.81, stdev=101.29
+    clat percentiles (msec):
+     |  1.00th=[   73],  5.00th=[   82], 10.00th=[   96], 20.00th=[  123],
+     | 30.00th=[  149], 40.00th=[  176], 50.00th=[  204], 60.00th=[  229],
+     | 70.00th=[  253], 80.00th=[  285], 90.00th=[  326], 95.00th=[  379],
+     | 99.00th=[  570], 99.50th=[  652], 99.90th=[  783], 99.95th=[  807],
+     | 99.99th=[  824]
+    bw (KB  /s): min=60472, max=134525, per=100.00%, avg=77338.16, stdev=6380.56
+    lat (msec) : 10=0.04%, 20=0.10%, 50=0.33%, 100=11.09%, 250=58.07%
+    lat (msec) : 500=28.63%, 750=1.56%, 1000=0.18%
+  cpu          : usr=1.52%, sys=0.35%, ctx=5158, majf=0, minf=27
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.2%, 16=99.7%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued    : total=r=0/w=5120/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+  WRITE: io=5120.0MB, aggrb=77265KB/s, minb=77265KB/s, maxb=77265KB/s, mint=67855msec, maxt=67855msec
+
+Disk stats (read/write):
+  xvdf: ios=88/40866, merge=0/0, ticks=28/8406660, in_queue=8419836, util=99.97%
+
+
+Encrypted:
+
+root@ip-172-31-13-210:~# fio --bs=4m --direct=1 --rw=randwrite --ioengine=libaio --iodepth=64 --runtime=60 --name=/dev/xvdg
+/dev/xvdg: (g=0): rw=randwrite, bs=4M-4M/4M-4M/4M-4M, ioengine=libaio, iodepth=64
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [w] [100.0% done] [0KB/86016KB/0KB /s] [0/21/0 iops] [eta 00m:00s]
+/dev/xvdg: (groupid=0, jobs=1): err= 0: pid=16781: Tue Oct 27 15:19:13 2015
+  write: io=1332.0MB, bw=22645KB/s, iops=5, runt= 60233msec
+    slat (usec): min=174, max=462491, avg=180281.16, stdev=186757.02
+    clat (msec): min=194, max=28732, avg=9050.77, stdev=10023.08
+     lat (msec): min=242, max=29180, avg=9231.05, stdev=10177.89
+    clat percentiles (msec):
+     |  1.00th=[  338],  5.00th=[  971], 10.00th=[ 1795], 20.00th=[ 2933],
+     | 30.00th=[ 2999], 40.00th=[ 3032], 50.00th=[ 3097], 60.00th=[ 3130],
+     | 70.00th=[ 9503], 80.00th=[16712], 90.00th=[16712], 95.00th=[16712],
+     | 99.00th=[16712], 99.50th=[16712], 99.90th=[16712], 99.95th=[16712],
+     | 99.99th=[16712]
+    bw (KB  /s): min=  154, max=85820, per=100.00%, avg=40614.70, stdev=37396.29
+    lat (msec) : 250=0.60%, 500=1.50%, 750=1.50%, 1000=1.50%, 2000=6.31%
+    lat (msec) : >=2000=88.59%
+  cpu          : usr=0.13%, sys=0.09%, ctx=340, majf=0, minf=27
+  IO depths    : 1=0.3%, 2=0.6%, 4=1.2%, 8=2.4%, 16=4.8%, 32=9.6%, >=64=81.1%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.6%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.4%, >=64=0.0%
+     issued    : total=r=0/w=333/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+  WRITE: io=1332.0MB, aggrb=22644KB/s, minb=22644KB/s, maxb=22644KB/s, mint=60233msec, maxt=60233msec
+
+Disk stats (read/write):
+  xvdg: ios=59/10507, merge=0/0, ticks=15920/8563036, in_queue=8594712, util=100.00%
+
+
+root@ip-172-31-13-210:~# fio --direct=1 --rw=randwrite --ioengine=libaio --size=5G --bs=1024K --direct=1 --refill_buffers --iodepth=16 --name=/dev/xvdg
+/dev/xvdg: (g=0): rw=randwrite, bs=1M-1M/1M-1M/1M-1M, ioengine=libaio, iodepth=16
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [w] [100.0% done] [0KB/84992KB/0KB /s] [0/83/0 iops] [eta 00m:00s]
+/dev/xvdg: (groupid=0, jobs=1): err= 0: pid=16936: Tue Oct 27 15:27:38 2015
+  write: io=5120.0MB, bw=47095KB/s, iops=45, runt=111326msec
+    slat (usec): min=28, max=147, avg=45.75, stdev=18.48
+    clat (msec): min=57, max=5054, avg=347.62, stdev=519.86
+     lat (msec): min=57, max=5054, avg=347.66, stdev=519.86
+    clat percentiles (msec):
+     |  1.00th=[   73],  5.00th=[   82], 10.00th=[   96], 20.00th=[  121],
+     | 30.00th=[  145], 40.00th=[  169], 50.00th=[  194], 60.00th=[  219],
+     | 70.00th=[  253], 80.00th=[  289], 90.00th=[  668], 95.00th=[ 1647],
+     | 99.00th=[ 2638], 99.50th=[ 2868], 99.90th=[ 3818], 99.95th=[ 4359],
+     | 99.99th=[ 5080]
+    bw (KB  /s): min= 9126, max=87888, per=100.00%, avg=48581.84, stdev=37669.07
+    lat (msec) : 100=13.26%, 250=56.00%, 500=19.32%, 750=1.74%, 1000=1.48%
+    lat (msec) : 2000=5.00%, >=2000=3.20%
+  cpu          : usr=0.93%, sys=0.25%, ctx=5163, majf=0, minf=27
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.2%, 16=99.7%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued    : total=r=0/w=5120/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+  WRITE: io=5120.0MB, aggrb=47094KB/s, minb=47094KB/s, maxb=47094KB/s, mint=111326msec, maxt=111326msec
+
+Disk stats (read/write):
+  xvdg: ios=0/40902, merge=0/0, ticks=0/13823336, in_queue=13831560, util=99.99%
+
+
+3.5) IOPS mixed
+
+Non-encrypted:
+
+root@ip-172-31-13-210:~# fio --bs=4m --direct=1 --rw=randrw --ioengine=libaio --iodepth=64 --runtime=60 --name=/dev/xvdf
+/dev/xvdf: (g=0): rw=randrw, bs=4M-4M/4M-4M/4M-4M, ioengine=libaio, iodepth=64
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [m] [4.3% done] [45056KB/32768KB/0KB /s] [11/8/0 iops] [eta 22m:24s]  
+/dev/xvdf: (groupid=0, jobs=1): err= 0: pid=17072: Tue Oct 27 15:33:30 2015
+  read : io=2516.0MB, bw=42788KB/s, iops=10, runt= 60213msec
+    slat (usec): min=166, max=430171, avg=49768.66, stdev=51908.05
+    clat (msec): min=196, max=5078, avg=3102.71, stdev=1055.68
+     lat (msec): min=284, max=5165, avg=3152.48, stdev=1069.30
+    clat percentiles (msec):
+     |  1.00th=[  816],  5.00th=[ 1844], 10.00th=[ 1844], 20.00th=[ 1876],
+     | 30.00th=[ 1926], 40.00th=[ 2966], 50.00th=[ 3392], 60.00th=[ 3654],
+     | 70.00th=[ 3851], 80.00th=[ 4113], 90.00th=[ 4359], 95.00th=[ 4555],
+     | 99.00th=[ 5014], 99.50th=[ 5014], 99.90th=[ 5080], 99.95th=[ 5080],
+     | 99.99th=[ 5080]
+    bw (KB  /s): min= 2352, max=94523, per=97.90%, avg=41888.30, stdev=19610.73
+  write: io=2180.0MB, bw=37074KB/s, iops=9, runt= 60213msec
+    slat (usec): min=297, max=266339, avg=52661.50, stdev=49035.75
+    clat (msec): min=312, max=5399, avg=3289.80, stdev=1082.35
+     lat (msec): min=324, max=5568, avg=3342.47, stdev=1096.67
+    clat percentiles (msec):
+     |  1.00th=[  627],  5.00th=[ 1893], 10.00th=[ 1958], 20.00th=[ 2040],
+     | 30.00th=[ 2114], 40.00th=[ 3163], 50.00th=[ 3490], 60.00th=[ 3818],
+     | 70.00th=[ 4080], 80.00th=[ 4293], 90.00th=[ 4555], 95.00th=[ 4752],
+     | 99.00th=[ 5276], 99.50th=[ 5407], 99.90th=[ 5407], 99.95th=[ 5407],
+     | 99.99th=[ 5407]
+    bw (KB  /s): min= 7557, max=78618, per=99.46%, avg=36871.19, stdev=17322.26
+    lat (msec) : 250=0.09%, 500=0.51%, 750=0.43%, 1000=0.34%, 2000=23.34%
+    lat (msec) : >=2000=75.30%
+  cpu          : usr=0.22%, sys=0.40%, ctx=1183, majf=0, minf=28
+  IO depths    : 1=0.1%, 2=0.2%, 4=0.3%, 8=0.7%, 16=1.4%, 32=2.7%, >=64=94.6%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.9%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.1%, >=64=0.0%
+     issued    : total=r=629/w=545/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=2516.0MB, aggrb=42787KB/s, minb=42787KB/s, maxb=42787KB/s, mint=60213msec, maxt=60213msec
+  WRITE: io=2180.0MB, aggrb=37073KB/s, minb=37073KB/s, maxb=37073KB/s, mint=60213msec, maxt=60213msec
+
+Disk stats (read/write):
+  xvdf: ios=20163/17376, merge=0/0, ticks=3151288/5437180, in_queue=8602440, util=99.69%
+
+
+root@ip-172-31-13-210:~# fio --direct=1 --rw=randrw --ioengine=libaio --size=5G --bs=1024K --direct=1 --refill_buffers --iodepth=16 --name=/dev/xvdf
+/dev/xvdf: (g=0): rw=randrw, bs=1M-1M/1M-1M/1M-1M, ioengine=libaio, iodepth=16
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [m] [100.0% done] [28672KB/22528KB/0KB /s] [28/22/0 iops] [eta 00m:00s]
+/dev/xvdf: (groupid=0, jobs=1): err= 0: pid=17147: Tue Oct 27 15:38:12 2015
+  read : io=2600.0MB, bw=40982KB/s, iops=40, runt= 64965msec
+    slat (usec): min=43, max=230, avg=92.85, stdev=18.19
+    clat (msec): min=8, max=597, avg=102.55, stdev=72.06
+     lat (msec): min=8, max=597, avg=102.64, stdev=72.07
+    clat percentiles (msec):
+     |  1.00th=[   14],  5.00th=[   19], 10.00th=[   38], 20.00th=[   47],
+     | 30.00th=[   55], 40.00th=[   70], 50.00th=[   98], 60.00th=[  103],
+     | 70.00th=[  109], 80.00th=[  122], 90.00th=[  194], 95.00th=[  229],
+     | 99.00th=[  351], 99.50th=[  416], 99.90th=[  537], 99.95th=[  594],
+     | 99.99th=[  594]
+    bw (KB  /s): min=11398, max=87713, per=100.00%, avg=41389.71, stdev=17067.10
+  write: io=2520.0MB, bw=39721KB/s, iops=38, runt= 64965msec
+    slat (usec): min=32, max=323, avg=91.56, stdev=24.70
+    clat (msec): min=10, max=1098, avg=306.21, stdev=190.35
+     lat (msec): min=10, max=1098, avg=306.30, stdev=190.35
+    clat percentiles (msec):
+     |  1.00th=[   17],  5.00th=[   53], 10.00th=[   92], 20.00th=[  127],
+     | 30.00th=[  200], 40.00th=[  235], 50.00th=[  269], 60.00th=[  322],
+     | 70.00th=[  388], 80.00th=[  453], 90.00th=[  578], 95.00th=[  668],
+     | 99.00th=[  840], 99.50th=[  930], 99.90th=[ 1074], 99.95th=[ 1074],
+     | 99.99th=[ 1106]
+    bw (KB  /s): min=11356, max=78924, per=100.00%, avg=39861.20, stdev=17145.64
+    lat (msec) : 10=0.04%, 20=3.83%, 50=9.08%, 100=20.27%, 250=37.54%
+    lat (msec) : 500=20.41%, 750=7.64%, 1000=1.04%, 2000=0.16%
+  cpu          : usr=0.82%, sys=0.84%, ctx=5063, majf=0, minf=28
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.2%, 16=99.7%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued    : total=r=2600/w=2520/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=2600.0MB, aggrb=40982KB/s, minb=40982KB/s, maxb=40982KB/s, mint=64965msec, maxt=64965msec
+  WRITE: io=2520.0MB, aggrb=39721KB/s, minb=39721KB/s, maxb=39721KB/s, mint=64965msec, maxt=64965msec
+
+Disk stats (read/write):
+  xvdf: ios=20887/20128, merge=0/0, ticks=1921848/6119244, in_queue=8046788, util=99.96%
+
+
+Encrypted:
+
+root@ip-172-31-13-210:~# fio --bs=4m --direct=1 --rw=randrw --ioengine=libaio --iodepth=64 --runtime=60 --name=/dev/xvdg
+/dev/xvdg: (g=0): rw=randrw, bs=4M-4M/4M-4M/4M-4M, ioengine=libaio, iodepth=64
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [m] [100.0% done] [73728KB/57344KB/0KB /s] [18/14/0 iops] [eta 00m:00s]
+/dev/xvdg: (groupid=0, jobs=1): err= 0: pid=17097: Tue Oct 27 15:33:40 2015
+  read : io=1760.0MB, bw=29988KB/s, iops=7, runt= 60098msec
+    slat (usec): min=167, max=486285, avg=72834.45, stdev=73664.76
+    clat (msec): min=144, max=7931, avg=4351.75, stdev=1833.28
+     lat (msec): min=160, max=8022, avg=4424.59, stdev=1857.00
+    clat percentiles (msec):
+     |  1.00th=[  351],  5.00th=[ 1565], 10.00th=[ 2008], 20.00th=[ 2245],
+     | 30.00th=[ 2671], 40.00th=[ 4228], 50.00th=[ 4621], 60.00th=[ 5014],
+     | 70.00th=[ 5604], 80.00th=[ 5932], 90.00th=[ 6652], 95.00th=[ 7177],
+     | 99.00th=[ 7767], 99.50th=[ 7832], 99.90th=[ 7963], 99.95th=[ 7963],
+     | 99.99th=[ 7963]
+    bw (KB  /s): min= 1008, max=85820, per=100.00%, avg=30530.90, stdev=18363.82
+  write: io=1552.0MB, bw=26444KB/s, iops=6, runt= 60098msec
+    slat (usec): min=278, max=509467, avg=72124.31, stdev=71817.08
+    clat (msec): min=57, max=8608, avg=4546.44, stdev=1955.49
+     lat (msec): min=144, max=8875, avg=4618.57, stdev=1980.16
+    clat percentiles (msec):
+     |  1.00th=[  330],  5.00th=[ 1319], 10.00th=[ 2114], 20.00th=[ 2311],
+     | 30.00th=[ 2737], 40.00th=[ 4424], 50.00th=[ 4883], 60.00th=[ 5407],
+     | 70.00th=[ 5735], 80.00th=[ 6194], 90.00th=[ 6718], 95.00th=[ 7701],
+     | 99.00th=[ 8455], 99.50th=[ 8586], 99.90th=[ 8586], 99.95th=[ 8586],
+     | 99.99th=[ 8586]
+    bw (KB  /s): min= 4964, max=88518, per=100.00%, avg=26586.91, stdev=15199.65
+    lat (msec) : 100=0.12%, 250=0.36%, 500=1.09%, 750=0.48%, 1000=0.97%
+    lat (msec) : 2000=5.56%, >=2000=91.43%
+  cpu          : usr=0.16%, sys=0.29%, ctx=832, majf=0, minf=28
+  IO depths    : 1=0.1%, 2=0.2%, 4=0.5%, 8=1.0%, 16=1.9%, 32=3.9%, >=64=92.4%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.9%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.1%, >=64=0.0%
+     issued    : total=r=440/w=388/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=1760.0MB, aggrb=29988KB/s, minb=29988KB/s, maxb=29988KB/s, mint=60098msec, maxt=60098msec
+  WRITE: io=1552.0MB, aggrb=26444KB/s, minb=26444KB/s, maxb=26444KB/s, mint=60098msec, maxt=60098msec
+
+Disk stats (read/write):
+  xvdg: ios=14039/12304, merge=0/0, ticks=3226248/5377504, in_queue=8617336, util=99.53%
+
+
+root@ip-172-31-13-210:~# fio --direct=1 --rw=randrw --ioengine=libaio --size=5G --bs=1024K --direct=1 --refill_buffers --iodepth=16 --name=/dev/xvdg
+/dev/xvdg: (g=0): rw=randrw, bs=1M-1M/1M-1M/1M-1M, ioengine=libaio, iodepth=16
+fio-2.1.3
+Starting 1 process
+Jobs: 1 (f=1): [m] [100.0% done] [58368KB/77824KB/0KB /s] [57/76/0 iops] [eta 00m:00s]
+/dev/xvdg: (groupid=0, jobs=1): err= 0: pid=17164: Tue Oct 27 15:38:34 2015
+  read : io=2600.0MB, bw=34885KB/s, iops=34, runt= 76319msec
+    slat (usec): min=41, max=198, avg=83.74, stdev=21.54
+    clat (msec): min=8, max=659, avg=123.33, stdev=93.10
+     lat (msec): min=8, max=659, avg=123.42, stdev=93.10
+    clat percentiles (msec):
+     |  1.00th=[   16],  5.00th=[   22], 10.00th=[   27], 20.00th=[   36],
+     | 30.00th=[   58], 40.00th=[  104], 50.00th=[  111], 60.00th=[  118],
+     | 70.00th=[  129], 80.00th=[  192], 90.00th=[  229], 95.00th=[  310],
+     | 99.00th=[  429], 99.50th=[  498], 99.90th=[  644], 99.95th=[  652],
+     | 99.99th=[  660]
+    bw (KB  /s): min= 9429, max=87888, per=100.00%, avg=35326.66, stdev=17087.75
+  write: io=2520.0MB, bw=33812KB/s, iops=33, runt= 76319msec
+    slat (usec): min=32, max=214, avg=76.36, stdev=29.95
+    clat (msec): min=11, max=1612, avg=356.88, stdev=266.32
+     lat (msec): min=11, max=1612, avg=356.96, stdev=266.32
+    clat percentiles (msec):
+     |  1.00th=[   22],  5.00th=[   42], 10.00th=[   99], 20.00th=[  143],
+     | 30.00th=[  188], 40.00th=[  229], 50.00th=[  277], 60.00th=[  330],
+     | 70.00th=[  433], 80.00th=[  578], 90.00th=[  742], 95.00th=[  889],
+     | 99.00th=[ 1156], 99.50th=[ 1270], 99.90th=[ 1500], 99.95th=[ 1532],
+     | 99.99th=[ 1614]
+    bw (KB  /s): min= 7543, max=95681, per=100.00%, avg=34119.64, stdev=19840.03
+    lat (msec) : 10=0.04%, 20=1.68%, 50=15.45%, 100=5.76%, 250=45.02%
+    lat (msec) : 500=19.18%, 750=8.20%, 1000=3.16%, 2000=1.50%
+  cpu          : usr=0.70%, sys=0.63%, ctx=4971, majf=0, minf=28
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.2%, 16=99.7%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued    : total=r=2600/w=2520/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=2600.0MB, aggrb=34885KB/s, minb=34885KB/s, maxb=34885KB/s, mint=76319msec, maxt=76319msec
+  WRITE: io=2520.0MB, aggrb=33811KB/s, minb=33811KB/s, maxb=33811KB/s, mint=76319msec, maxt=76319msec
+
+Disk stats (read/write):
+  xvdg: ios=20788/20072, merge=0/0, ticks=2289640/7046500, in_queue=9350048, util=99.94%
+
