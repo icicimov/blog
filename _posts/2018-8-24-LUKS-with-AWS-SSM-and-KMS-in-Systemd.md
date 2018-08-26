@@ -29,7 +29,7 @@ Assuming we have created our Master Encryption key `alias/MASTER_KEY` in KMS, us
                 "kms:DescribeKey"
             ],
             "Resource": [
-                "arn:aws:kms:us-east-1:<account>:alias/MASTER_KEY"
+                "arn:aws:kms:us-east-1:account-id:alias/MASTER_KEY"
             ]
         },
         {
@@ -40,7 +40,7 @@ Assuming we have created our Master Encryption key `alias/MASTER_KEY` in KMS, us
                 "ssm:GetParameter"
             ],
             "Resource": [
-                "arn:aws:ssm:us-east-1:<account>:parameter/luks/test/*"
+                "arn:aws:ssm:us-east-1:account-id:parameter/luks/test/*"
             ]
         }
     ]
@@ -247,6 +247,29 @@ Aug 24 05:25:40 server luks-mount[2574]:   mode:    read/write
 Aug 24 05:25:40 server systemd[1]: Started Activate LUKS device.
 ```
 
-Now the device will be auto unlocked and mounted on every server restart and we didn't even have to store any sensitive data like password or key file on the server it self. It was all downloaded via shell script and executed in memory so nothing ever reached the file system either. In case the disk security has been compromised all we need to do is revoke the IAM user's keys to prevent unauthorized access to the encrypted data.
+Now the device will be auto unlocked and mounted on every server restart and we didn't even have to store any sensitive data like password or key file on the server it self. It was all downloaded via shell script and executed in memory so nothing ever reached the file system either. In case the disk security has been compromised all we need to do is revoke the IAM user's keys to prevent unauthorized access to the encrypted data. Furthermore we can limit our IAM policy to allow access to the encrypted password for the LUKS device only from specific IPs which adds additional security in case the disk gets stolen.
+
+```
+[...]
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParametersByPath",
+                "ssm:GetParameters",
+                "ssm:GetParameter"
+            ],
+            "Resource": [
+                "arn:aws:ssm:us-east-1:account-id:parameter/luks/test/*"
+            ],
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": [
+                  "103.15.250.0/24",
+                  "12.148.72.0/23"
+               ]
+            }
+        }
+[...]
+```
 
 Obviously with this approach we need to make the services depending on the existence of the mount point depend on the `luks-mount` service too which is easily achieved in Systemd.
