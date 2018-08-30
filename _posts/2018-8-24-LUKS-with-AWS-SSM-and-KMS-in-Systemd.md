@@ -2,7 +2,7 @@
 type: posts
 header:
   teaser: 'images.jpg'
-title: 'Disk encryption in rest with LUKS and AWS SSM and KMS services in Systemd'
+title: 'Disk encryption at rest with LUKS and AWS SSM and KMS services in Systemd'
 categories: 
   - Server
 tags: ['luks', 'aws']
