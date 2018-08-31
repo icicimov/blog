@@ -160,7 +160,7 @@ if [ $# -ne 1 ]; then
 fi
 
 ACTION="$1"
-PASSWD=$(aws ssm get-parameters-by-path --path="${SSM_PATH}" --with-decryption --region=${SSM_REGION})
+PASSWD=$(aws ssm get-parameters --name "${SSM_PATH}" --query 'Parameters[0].Value' --with-decryption --output=text --region=${SSM_REGION})
 UUID=$(cryptsetup luksUUID ${LUKS_DEVICE})
 
 case "$ACTION" in
