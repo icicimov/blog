@@ -70,7 +70,7 @@ insmod /lib/modules/4.4.0-1066-aws/kernel/drivers/md/dm-crypt.ko
 root@server:~# modprobe -v rmd160
 insmod /lib/modules/4.4.0-1066-aws/kernel/crypto/rmd160.ko'
 
-root@server:~# PASSWD=$(aws ssm get-parameters-by-path --path='/luks/test/key' --with-decryption --region=us-east-1)
+root@server:~# PASSWD=$(aws ssm get-parameters --name "/luks/test/key" --query 'Parameters[0].Value' --with-decryption --output=text --region=us-east-1) 
 root@server:~# echo -n "$PASSWD" | cryptsetup luksFormat --cipher aes-cbc-essiv:sha256 --hash ripemd160 --key-size 256 /dev/nvme1n1
 
 root@server:~# cryptsetup -v isLuks /dev/nvme1n1
