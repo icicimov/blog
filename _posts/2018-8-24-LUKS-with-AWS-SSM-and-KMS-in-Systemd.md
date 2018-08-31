@@ -59,7 +59,7 @@ This will upload our password to the SSM store and encrypt it with our master KM
 $ aws ssm get-parameters-by-path --path='/luks/test/key' --with-decryption --region=us-east-1
 ```
 
-and the user running the command on the machine has the IAM users AWS access and secret keys configured under `~/.aws/` directory. This IAM user needs to have the above created IAM policy attached to it.
+and the user running the command on the machine has the IAM users AWS access and secret keys configured under `~/.aws/` directory. This IAM user needs to have the above created IAM policy attached to it. Just a note, for Ubuntu-16.04 the packaged version of `awscli` was outdated and missing some `ssm` subcommands so needed to install the newest one via `pip`.
 
 Now lets move to the server where we need the LUKS encryption to happen and go through the disk encryption process manually first, utilizing the AWS resources we created.
 
