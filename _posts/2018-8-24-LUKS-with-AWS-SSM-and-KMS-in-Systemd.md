@@ -164,13 +164,13 @@ PASSWD=$(aws ssm get-parameters --name "${SSM_PATH}" --query 'Parameters[0].Valu
 UUID=$(cryptsetup luksUUID ${LUKS_DEVICE})
 
 case "$ACTION" in
-start)  echo -n "$PASSWD" | cryptsetup luksOpen UUID=${UUID} ${LUKS_DEVICE_MAP}
+start)  echo -n "$PASSWD" | cryptsetup luksOpen UUID=${UUID} ${LUKS_DEVICE_MAP} || exit 1
         cryptsetup status ${LUKS_DEVICE_MAP}
         mount -t ${LUKS_DEVICE_FS} -o ${LUKS_DEVICE_MOUNT_OPT} \
         /dev/mapper/${LUKS_DEVICE_MAP} ${LUKS_DEVICE_MOUNT_POINT}
         ;;
 stop)   umount -f ${LUKS_DEVICE_MOUNT_POINT}
-        echo -n "$PASSWD" | cryptsetup luksClose /dev/mapper/${LUKS_DEVICE_MAP}
+        echo -n "$PASSWD" | cryptsetup luksClose /dev/mapper/${LUKS_DEVICE_MAP} || exit 1
         ;;
 *)      exit 0
         ;;
