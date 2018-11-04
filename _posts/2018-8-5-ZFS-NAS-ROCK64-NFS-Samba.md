@@ -340,6 +340,38 @@ igorc@silverstone:~$ cat /etc/auto.cifs
 freenas -fstype=cifs,rw,username=rock64,password=password,file_mode=0777,dir_mode=0777 ://192.168.1.15/volume1_Windows
 ```
 
+## Maintenance
+
+Add the following cron job for the root user:
+
+```
+# zpool scrub every month
+0 2 1 * * /sbin/zpool scrub volume1
+0 13 1 * * /sbin/zpool status -v
+```
+
+## S.M.A.R.T
+
+Install `smartmontools` package and add at the bottom of /etc/smartd.conf file:
+
+```
+# Run all SMART tests for sda and sdb
+# sda - Run the short selftest every day at 2am and long one every Saturday at 3am
+# sdb - Run the short selftest every day at 3am and long one every Sunday at 3am
+# Send email to user@gmail.com
+/dev/sda -H -l error -l selftest -f -s (S/../.././02|L/../../6/03) -m user@gmail.com -M exec /usr/share/smartmontools/smartd-runner
+/dev/sdb -H -l error -l selftest -f -s (S/../.././03|L/../../7/03) -m user@gmail.com -M exec /usr/share/smartmontools/smartd-runner
+```
+
+Restart and insure the `smartd` service is enabled:
+
+```
+root@rock64:~# systemctl restart smartd.service
+root@rock64:~# systemctl status -l smartd.service
+root@rock64:~# systemctl is-enabled smartd.service
+enabled
+```
+
 ## References
 
 * [How to Setup Serial Console Cable Over the Rock64 SBC](https://forum.pine64.org/showthread.php?tid=5029)
