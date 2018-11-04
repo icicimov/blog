@@ -342,6 +342,8 @@ freenas -fstype=cifs,rw,username=rock64,password=password,file_mode=0777,dir_mod
 
 ## Maintenance
 
+### Scrubbing 
+
 Add the following cron job for the root user:
 
 ```
@@ -349,6 +351,16 @@ Add the following cron job for the root user:
 0 2 1 * * /sbin/zpool scrub volume1
 0 13 1 * * /sbin/zpool status -v
 ```
+
+### Upgrading to 2TB drives 
+
+Shutdown rock64, replace the drive, reboot and run:
+
+```
+root@rock64:~# zpool replace volume1 5866446095118011762 /dev/disk/by-id/ata-WDC_WD20EFRX-68EUZN0_WD-WCC4MH5DC3T4-part2
+```
+
+and wait for re-silvering to finish. Confirm the pool is healthy and repeat for the other drive. In the command above, we reference the old disk by its `guid` (which we find by running `zdb`) and the new one by its disk/partition `id`. This prevents the mess that can happen if the disk boot order changes for some reason.
 
 ## S.M.A.R.T
 
