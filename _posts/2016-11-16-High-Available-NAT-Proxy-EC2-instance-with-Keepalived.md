@@ -5,7 +5,7 @@ header:
 title: 'Highly Available NAT/Proxy EC2 instance with Keepalived'
 categories: 
   - High-Availability
-tags: ['aws']
+tags: ['aws','high-availability','keepalived']
 date: 2016-11-16
 ---
 
