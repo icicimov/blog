@@ -288,7 +288,39 @@ esac
 exit 0
 ```
 
-Basically with each fail-over we associated the VIP1 (EIP) with the secondary IP ot the eth0's ENI interface. Then we search for all private subnets in our VPC that we have tagged with `Network=private` and update their Routing Tables for the VIP2 address.
+Basically with each fail-over we associate the VIP1 (EIP) with the secondary IP of the eth0's ENI interface. Then we search for all private subnets in our VPC that we have tagged with `Network=private` and update their Routing Tables for the VIP2 address.
+
+The GW instances need the following IAM instance role assigned in order to manipulate the EC2 resources:
+
+```
+IAM role needed for the instances:
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:ModifyInstanceAttribute",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeRouteTables",
+        "ec2:CreateRoute",
+        "ec2:ReplaceRoute",
+        "ec2:AllocateAddress",
+        "ec2:AssignPrivateIpAddresses",
+        "ec2:AssociateAddress",
+        "ec2:DescribeAddresses",
+        "ec2:DisassociateAddress"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+They also need IP forwarding enabled which means the following system kernel parameter set `net.ipv4.ip_forward = 1`.
 
 The clients will have the VIP2 `10.240.240.240` set as default GW. To test we run `wget` on the client to start downloading some large file like iso image:
 
