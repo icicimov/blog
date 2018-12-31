@@ -31,7 +31,44 @@ I used the [serial console](https://www.pine64.org/?product=padi-serial-console)
 igorc@silverstone:~$ sudo minicom -s -D /dev/ttyUSB0 -b 1500000 --color=on
 ```
 
-See the link from the PINE64 forum in the `References` section for details.
+See the link from the PINE64 forum in the `References` section for details. Optionally setup a static IP, in Bionic we use `netplan` for that purpose, edit `/etc/netplan/eth0.yaml` file and change it from:
+
+```
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      dhcp4: true
+```
+
+to:
+
+```
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      match:
+        macaddress: <eth0_mac_address>
+      wakeonlan: true
+      dhcp4: false
+      addresses:
+        - 192.168.1.15/24
+      gateway4: 192.168.1.1
+      nameservers:
+        search: [lan, home]
+        addresses: [127.0.0.53, 192.168.1.205, 8.8.8.8, 8.8.4.4]
+```
+
+then run:
+
+```
+root@rock64:~# netplan apply --debug
+```
+
+to apply the setup. Another option is of course to keep using DHCP and setting up a MAC reservation for the chosen static IP in the DHCP server.
 
 ## ZFS
 
