@@ -218,21 +218,21 @@ spec:
 We apply the manifest:
 
 ```bash
-$ kc apply -f go-app-hpa-v2.yml
+$ kubectl apply -f go-app-hpa-v2.yml
 horizontalpodautoscaler.autoscaling "go-app-hpa-v2" created
 ```
 
 and delete the old existing HPA that was based on the CPU metric:
 
 ```bash
-$ kc delete hpa go-app-autoscaler
+$ kubectl delete hpa go-app-autoscaler
 horizontalpodautoscaler.autoscaling "go-app-autoscaler" deleted
 ```
 
 If we check a minute later we can see the new HPA has picked up on the metrics for our go-app-deployment deployment and established the needed number of pods:
 
 ```bash
-$ kc get hpa
+$ kubectl get hpa
 NAME                      REFERENCE                            TARGETS            MINPODS   MAXPODS   REPLICAS   AGE
 go-app-hpa-v2             Deployment/go-app-deployment         200m/500m          3         6         3          3m
 app1-autoscaler           Deployment/app1-deployment           0%/80%             1         6         1          302d
@@ -243,7 +243,7 @@ app2-autoscaler           Deployment/app2-deployment           0%/80%           
 We can notice how the TARGETS for this one is different from the existing ones based on CPU metric.
 
 ```bash
-$ kc describe hpa go-app-hpa-v2
+$ kubectl describe hpa go-app-hpa-v2
 Name:                       go-app-hpa-v2
 Namespace:                  default
 Labels:                     <none>
@@ -275,7 +275,7 @@ $ while true; do curl -sSNL https://go-app.k8s.domain.com/ | grep http_requests_
 we can see the HPA picking up the increasing requests stats:
 
 ```bash
-$ kc describe hpa go-app-hpa-v2
+$ kubectl describe hpa go-app-hpa-v2
 Name:                       go-app-hpa-v2
 ...
   "http_requests" on pods:  245m / 500m
@@ -389,7 +389,7 @@ $ kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods
 We can see HPA detected the threshold has been crossed:
 
 ```bash
-$ kc describe hpa go-app-hpa-v2
+$ kubectl describe hpa go-app-hpa-v2
 Name:                       go-app-hpa-v2
 ...
 Metrics:                    ( current / target )
@@ -411,7 +411,7 @@ Events:
 and launched a new pod to help with the load:
 
 ```bash
-$ kc get pods -l app=go-app
+$ kubectl get pods -l app=go-app
 NAME                                 READY     STATUS    RESTARTS   AGE
 go-app-deployment-7f8d8bcbbc-dgqrz   1/1       Running   0          1h
 go-app-deployment-7f8d8bcbbc-dszdw   1/1       Running   0          1h
@@ -481,7 +481,7 @@ $ kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods
 Then after we stop the load the HPA detects the new limit:
 
 ```bash
-$ kc describe hpa go-app-hpa-v2
+$ kubectl describe hpa go-app-hpa-v2
 Name:                       go-app-hpa-v2
 ...
   "http_requests" on pods:  275m / 500m
@@ -503,7 +503,7 @@ Events:
 and the HPA terminates one of the pods to bring them back to the default count of 3:
 
 ```bash
-$ kc get pods -l app=go-app
+$ kubectl get pods -l app=go-app
 NAME                                 READY     STATUS    RESTARTS   AGE
 go-app-deployment-7f8d8bcbbc-dgqrz   1/1       Running   0          1h
 go-app-deployment-7f8d8bcbbc-dszdw   1/1       Running   0          1h
