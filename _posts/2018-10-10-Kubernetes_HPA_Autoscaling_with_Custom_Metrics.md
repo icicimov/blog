@@ -34,6 +34,15 @@ The changes we need to make to enable API versions required to support scaling o
 
 * The last component needed, the [Aggregation API](https://v1-9.docs.kubernetes.io/docs/tasks/access-kubernetes-api/configure-aggregation-layer/) is enabled by default by Kops
 
+* Additionally, in case of `anonymous-auth=false` in `kubelet`, we need to enable webhook authorization and token authentication in order to allow serviceaccount tokens to communicate with kubelet
+
+  ```
+  kubelet:
+    anonymousAuth: false
+    authenticationTokenWebhook: true
+    authorizationMode: Webhook
+  ```
+
 ## Kubernetes Metrics Server
 
 Next we need to install the [Custom Metrics Server](https://github.com/kubernetes/kops/blob/master/addons/metrics-server/README.md). We can install it as [Kops Addon](https://github.com/kubernetes/kops/blob/master/addons/metrics-server/README.md):
