@@ -18,6 +18,8 @@ When checking for this scenario on our production cluster I ran:
 /data/.glusterfs/indices/xattrop/xattrop-f805ddba-b680-465b-a3aa-04e6e5011582
 ```
 
+*NOTE*: We can add the `-path "./??/**/*"` parameter to the above command for extra security as suggested in the comments below. 
+
 So far so good, only one file on the first node. On the second one:
 
 ```
