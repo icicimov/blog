@@ -137,3 +137,28 @@ Create an A ALIAS Record `cdn.mydomain.com` pointing to the domain name of the C
 ## Application Changes
 
 Edit the app so it loads all assets from `cdn.mydomain.com` and set that URL as default path for all static content.
+
+## CORS
+
+If we need CORS support in the S3 bucket, we need to add some CORS rules under Permissions -> CORS Configuration, for example:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<CORSRule>
+    <AllowedOrigin>https://mydomain.com</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>HEAD</AllowedMethod>
+    <MaxAgeSeconds>3000</MaxAgeSeconds>
+    <AllowedHeader>*</AllowedHeader>
+</CORSRule>
+<CORSRule>
+    <AllowedOrigin>https://*.mydomain.com</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>HEAD</AllowedMethod>
+    <MaxAgeSeconds>3000</MaxAgeSeconds>
+    <AllowedHeader>*</AllowedHeader>
+</CORSRule>
+```
+
+On the CloudFront side we select `OPTIONS` under `Cached HTTP Methods` and configure CloudFront in the `Whitelist Headers` section to forward the `Origin`, `Access-Control-Request-Headers` and `Access-Control-Request-Method` headers.
