@@ -247,7 +247,7 @@ W0408 16:02:02.632836   24998 instancegroups.go:206] Not validating cluster as c
 I0408 16:02:02.632923   24998 rollingupdate.go:184] Rolling update completed for cluster "<cluster-name>"!
 ```
 
-Now, at first this will fail since the API DNS record "api.internal.<cluster-name>" does not get updated and holds on to the IPs of the old masters that have been recycled, maybe related to [kops issue #6727](https://github.com/kubernetes/kops/issues/6727).
+Now, at first this will fail since the API DNS record `api.internal.<cluster-name>` does not get updated and holds on to the IPs of the old masters that have been recycled, maybe related to [kops issue](https://github.com/kubernetes/kops/issues/6727).
 
 We go to the DNS zone and manually set the A record value to the current master nodes IPs. After that change we can see in the kubelet logs the cluster begins to form, calico pods get created and all springs back to life. 
 
