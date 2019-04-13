@@ -5,7 +5,7 @@ header:
 title: 'Etcd cluster member recovery in Kubernetes'
 categories: 
   - Kubernetes
-tags: ['kubernetes']
+tags: ['kubernetes','etcd']
 date: 2019-2-21
 ---
 

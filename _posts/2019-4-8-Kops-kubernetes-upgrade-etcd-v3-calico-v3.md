@@ -5,7 +5,7 @@ header:
 title: 'Kops Kubernetes upgrade to etcd-v3 with etcd-manager and calico-v3'
 categories: 
   - Kubernetes
-tags: ['kubernetes']
+tags: ['kubernetes','etcd']
 date: 2019-4-8
 ---
 
