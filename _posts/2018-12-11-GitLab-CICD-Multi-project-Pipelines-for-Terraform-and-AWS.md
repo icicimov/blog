@@ -142,6 +142,7 @@ init:
 
 validate:
   stage: validate
+  <<: *job_template
   script:
     - terraform validate -var-file variables.tfvars
   dependencies:
