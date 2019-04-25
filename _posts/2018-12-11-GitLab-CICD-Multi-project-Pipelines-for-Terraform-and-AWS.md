@@ -24,16 +24,17 @@ stages:
   - destroy
 ```
 
-and each stage will include the following template:
+and each stage will include the following `before_script` and job template:
 
 ```yaml
+before_script:
+  - terraform --version
+  - mkdir -p ~/.aws
+  - echo $AWS_CREDS | base64 -d > ~/.aws/credentials
+  - rm -rf .terraform
+  - terraform init
+
 .job_template: &job_template
-  before_script:
-    - terraform --version
-    - mkdir -p ~/.aws
-    - echo $AWS_CREDS | base64 -d > ~/.aws/credentials
-    - rm -rf .terraform
-    - terraform init
   only:
     refs:
       - master
@@ -105,14 +106,14 @@ cache:
   paths:
     - modules
 
+before_script:
+  - terraform --version
+  - mkdir -p ~/.aws
+  - echo $AWS_CREDS | base64 -d > ~/.aws/credentials
+  - rm -rf .terraform
+  - TF_LOG=trace terraform init
+
 .job_template: &job_template
-  before_script:
-    - terraform --version
-    - mkdir -p ~/.aws
-    - echo $AWS_CREDS | base64 -d > ~/.aws/credentials
-    - rm -rf .terraform
-    - terraform init
-    #- TF_LOG=trace terraform init  # for verbose output
   only:
     refs:
       - master
@@ -137,6 +138,7 @@ init:
     - echo "modules/*" > .git/info/sparse-checkout
     - git pull --depth=1 origin master
     - cp -R modules ../
+  <<: *job_template
 
 validate:
   stage: validate
@@ -158,6 +160,7 @@ plan:
 
 apply:
   stage: apply
+  image: igoratencompass/terraform-awscli:latest
   <<: *job_template
   script:
     - terraform apply -auto-approve -input=false "vpc.tfplan"
@@ -169,7 +172,7 @@ destroy:
   stage: destroy
   <<: *job_template
   script:
-    - terraform destroy -force -auto-approve
+    - terraform destroy -force -auto-approve -var-file variables.tfvars
   dependencies:
     - apply
   when: manual
@@ -197,7 +200,7 @@ Initializing modules...
 Error downloading modules: Error loading modules: error downloading 'https://git.example.com/<group>/ProjectA': /usr/bin/git exited with 128: Cloning into '.terraform/modules/a839ef67cd80c00e3439361c5830c57c'...
 ```
 
-I run GitLab in Kubernetes which in turn is deployed in AWS via [kops](https://icicimov.github.io/blog/virtualization/Kubernetes-Cluster-in-AWS-with-Kops/). Thus the runners are launched as Docker containers and I could not get any log out of them. They also error and exit too quickly thus making any kind of troubleshooting impossible. As a result I came out with the workaround under the `modules` stage (using sparse checkout) and set all modules to read from local source instead:
+I run GitLab in Kubernetes which in turn is deployed in AWS via [kops](https://icicimov.github.io/blog/virtualization/Kubernetes-Cluster-in-AWS-with-Kops/). Thus the runners are launched as Docker containers and I could not get any log out of them. They also error and exit too quickly thus making any kind of troubleshooting impossible. As a result I came up with the workaround under the `modules` stage (using sparse checkout) and set all modules to read from local source instead:
 
 ```
 module "vpn" {
@@ -234,12 +237,20 @@ Uploading artifacts to coordinator... ok
 Job succeeded
 ```
 
+Then we manually run the `plan` stage which creates a complete VPC with all our resources and services deployed and ready for testing:
+
+[![Pipeline apply stage](/blog/images/terraform-pipeline-apply.png)](/blog/images/terraform-pipeline-apply.png "Pipeline apply stage")
+
+When done we run the `destroy` stage to well destroy the whole infrastructure:
+
+[![Pipeline destroy stage](/blog/images/terraform-pipeline-destroy.png)](/blog/images/terraform-pipeline-destroy.png "Pipeline destroy stage")
+
 ## Source project CI/CD setup
 
 Now to `PrrojectA`, the source project, setup. First we crate a `Trigger` in `ProjectB` under `Settings->CI/CD->Pipeline triggers` and copy the token value into a `TOKEN` variable in `ProjectA`. Then the pipeline itself is simple and looks like this:
 
 ```yaml
-image: $CI_REGISTRY/<group>/.../curl:alpine
+image: igoratencompass/curl:alpine
 
 stages:
   - vpc_test_downstream
