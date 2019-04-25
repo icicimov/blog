@@ -5,7 +5,7 @@ header:
 title: 'GitLab CI/CD Multi-project Pipelines for Terraform and AWS'
 categories: 
   - DevOps
-tags: ['gitlab', 'terraform', CI/CD', 'aws']
+tags: ['gitlab', 'terraform', 'CI/CD', 'aws']
 date: 2018-12-11
 ---
 
