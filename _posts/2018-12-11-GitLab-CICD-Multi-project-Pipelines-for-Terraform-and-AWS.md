@@ -272,6 +272,10 @@ trigger_pipeline_in_e2e:
       - modules/*
       - modules/**/*
 ```
-So only when I make changes to the `modules` directory and tag a release or push to master this pipeline will trigger the `ProjectB`'s pipeline. The screen shot below shows the `ProjectB`'s pipeline when this happens (notice the triggered annotations for the jobs):
+So only when I make changes to the `modules` directory and tag a release or push to master this pipeline will trigger the `ProjectB`'s pipeline. An example is shown below:
+
+[![Source pipeline](/blog/images/terraform-source-pipeline-trigger.png)](/blog/images/terraform-source-pipeline-trigger.png "Source pipeline")
+
+The screen shot below shows the `ProjectB`'s pipeline when this happens (notice the triggered annotations for the jobs):
 
 [![Pipeline triggers](/blog/images/terraform-triggers.png)](/blog/images/terraform-triggers.png "Pipeline triggers")
