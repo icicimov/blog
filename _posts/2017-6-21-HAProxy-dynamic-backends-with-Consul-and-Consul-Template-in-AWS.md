@@ -188,3 +188,50 @@ root@ip-10-77-0-94:~# tail -f /var/log/consul-template/consul-template.log
 ```
 
 And that's it, every time a new tomcat instance gets created or terminated, Consul Template will detect that and update and reload HAProxy with the new backend configuration.  
+
+**UPDATE** 
+
+Since Haproxy's introduction of `resolvers` and support for SRV DNS records in `server-template` I have ditched `consul-template` which makes the overall setup (one moving part less) and configuration much simpler. What I have now in Haproxy 1.8+ is:  
+
+```
+resolvers consul
+    #nameserver consul 127.0.0.1:8600   # choose this or dnsmasq below
+    nameserver dnsmasq 127.0.0.1:53     # to use dnsmasq and its caching
+    accepted_payload_size 8192
+    resolve_retries       30
+    timeout resolve       1s
+    timeout retry         2s
+    hold valid            30s
+    hold other            30s
+    hold refused          30s
+    hold nx               30s
+    hold timeout          30s
+    hold obsolete         30s
+
+backend tomcats
+    default-server inter 10s downinter 5s rise 2 fall 2 slowstart 60s maxconn 250 maxqueue 256 ...
+    server-template tomcats 10 _tomcat._tcp.service.consul resolvers consul resolve-prefer ipv4 check observe layer7
+```
+
+In other words the backend servers discovery and configuration updates are now entirely left to Haproxy. Now the backend looks like this in the monitoring console:
+
+[![Haproxy server-template backend](/blog/images/haproxy-consul-discovery.png)](/blog/images/haproxy-consul-discovery.png "Haproxy server-template backend")
+
+I also have introduced a `server-state-file` file to save the servers state on reload to a file:
+
+```
+global
+    server-state-base /var/lib/haproxy
+    server-state-file state
+
+defaults
+    load-server-state-from-file global
+    default-server init-addr last,libc,none
+```
+
+and have this added to the systemd service to support this functionality:
+
+```
+[Service]
+ExecReload=/bin/echo "show servers state" | /usr/bin/socat stdio /run/haproxy/admin.sock > /var/lib/haproxy/state
+```
