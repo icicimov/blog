@@ -192,7 +192,7 @@ ubuntu@ip-172-31-1-215:~/ecs/app$
 
 ## Create the infrastructure
 
-The instructions about running Terraform are in the repository's README file. It basically boils down to:
+The repository is available at [terraform-consul-ecs-cluster](https://github.com/icicimov/terraform-consul-ecs-cluster). The instructions about running Terraform are in the repository's README file. It basically boils down to:
 
 ```bash
 $ terraform plan -var-file ecs-cluster.tfvars -var-file provider-credentials.tfvars -out ecs.tfplan
