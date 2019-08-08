@@ -198,7 +198,7 @@ Will modify resources:
                             +     version: 3.2.18
                             -     version: 2.2.1
 
-  ManagedFile/k8s-uk.encompasshost.internal-addons-bootstrap
+  ManagedFile/<cluster-name>-addons-bootstrap
     Contents            
                           ...
                           +     manifest: networking.projectcalico.org/k8s-1.7-v3.yaml
