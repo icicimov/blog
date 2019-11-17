@@ -2,7 +2,7 @@
 type: posts
 header:
   teaser: 'cloud-computing.jpg'
-title: 'Adding Adding DRBD shared volumes to Proxmox to support Live Migration'
+title: 'Adding DRBD shared volumes to Proxmox to support Live Migration'
 categories: 
   - Virtualization
 tags: [kvm, proxmox, high-availability, cluster, drbd]
@@ -103,7 +103,7 @@ common {
 }
 ```
 
-and then we create the resources, first for r0 we create `/etc/drbd.d/r0.res` file:
+and then we create the resources, first for `r0` we create `/etc/drbd.d/r0.res` file:
 
 ```
 resource r0 {
@@ -122,7 +122,7 @@ resource r0 {
 }
 ```
 
-and for r` we create `/etc/drbd.d/r`.res` file:
+and for `r1` we create `/etc/drbd.d/r1.res` file:
 
 ```
 root@proxmox01:~# vi /etc/drbd.d/r1.res
@@ -208,8 +208,11 @@ root@proxmox01:~# pvcreate /dev/drbd{0,1}
 root@proxmox02:~# pvcreate /dev/drbd{0,1}
   Physical volume "/dev/drbd0" successfully created
   Physical volume "/dev/drbd1" successfully created
+```
 
 and create the volume groups on one of the nodes only:
+
+```
 root@proxmox01:~# vgcreate vg_drbd0 /dev/drbd0
   Volume group "vg_drbd0" successfully created
  
