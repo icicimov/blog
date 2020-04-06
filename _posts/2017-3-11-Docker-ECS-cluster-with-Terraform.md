@@ -5,7 +5,7 @@ header:
 title: 'Docker ECS cluster with Terraform'
 categories: 
   - Docker
-tags: ['docker', 'ecs', 'aws']
+tags: ['docker', 'containers', 'ecs', 'aws']
 date: 2017-03-11
 ---
 
