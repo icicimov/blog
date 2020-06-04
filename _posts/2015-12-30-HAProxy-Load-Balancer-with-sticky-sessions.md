@@ -199,9 +199,9 @@ We can see there are the same 10 entries in each server's stick-table confirming
 
 ```
 Dec 30 00:46:55 ip-10-22-1-175 haproxy[1938]: <MY_IP>:48362 [30/Dec/2015:00:46:50.094] localhost~ tomcats/10.22.2.34 376/0/0/5391/5774 200 30548 - JSESSIONID=58B7757A43F3F765B0F8D611552C5C9A.ip-10-22-2-34 ---- 10/10/0/1/0 0/0 "GET /myapi/dataproduct/prices HTTP/1.1"
-Dec 30 00:47:12 ip-10-22-1-175 haproxy[1938]: <MY_IP>:48376 [30/Dec/2015:00:47:11.614] localhost~ tomcats/10.22.2.34 394/0/0/308/711 200 20916 JSESSIONID=58B7757A43F3F765B0F8D611552C5C9A.ip-10-22-2-34 - ---- 2/2/0/1/0 0/0 "GET /myapi/workspace/567769e3e4b06013a88723a4 HTTP/1.1"
-Dec 30 00:47:13 ip-10-22-1-175 haproxy[1938]: <MY_IP>:48377 [30/Dec/2015:00:47:11.833] localhost~ tomcats/10.22.2.34 1674/0/0/85/1759 200 2061 JSESSIONID=58B7757A43F3F765B0F8D611552C5C9A.ip-10-22-2-34 - ---- 2/2/1/2/0 0/0 "GET /myapi/workspace/567769e3e4b06013a88723a4/documents HTTP/1.1"
-Dec 30 00:47:13 ip-10-22-1-175 haproxy[1938]: <MY_IP>:48376 [30/Dec/2015:00:47:12.325] localhost~ tomcats/10.22.2.34 1179/0/1/162/1342 202 542 JSESSIONID=58B7757A43F3F765B0F8D611552C5C9A.ip-10-22-2-34 - ---- 2/2/0/1/0 0/0 "GET /myapi/workspace/567769e3e4b06013a88723a4/orders/statusCounts HTTP/1.1"
+Dec 30 00:47:12 ip-10-22-1-175 haproxy[1938]: <MY_IP>:48376 [30/Dec/2015:00:47:11.614] localhost~ tomcats/10.22.2.34 394/0/0/308/711 200 20916 JSESSIONID=58B7757A43F3F765B0F8D611552C5C9A.ip-10-22-2-34 - ---- 2/2/0/1/0 0/0 "GET /myapi/workspace/58B7757A HTTP/1.1"
+Dec 30 00:47:13 ip-10-22-1-175 haproxy[1938]: <MY_IP>:48377 [30/Dec/2015:00:47:11.833] localhost~ tomcats/10.22.2.34 1674/0/0/85/1759 200 2061 JSESSIONID=58B7757A43F3F765B0F8D611552C5C9A.ip-10-22-2-34 - ---- 2/2/1/2/0 0/0 "GET /myapi/workspace/58B7757A/documents HTTP/1.1"
+Dec 30 00:47:13 ip-10-22-1-175 haproxy[1938]: <MY_IP>:48376 [30/Dec/2015:00:47:12.325] localhost~ tomcats/10.22.2.34 1179/0/1/162/1342 202 542 JSESSIONID=58B7757A43F3F765B0F8D611552C5C9A.ip-10-22-2-34 - ---- 2/2/0/1/0 0/0 "GET /myapi/workspace/58B7757A/orders/statusCounts HTTP/1.1"
 Dec 30 00:47:13 ip-10-22-1-175 haproxy[1938]: <MY_IP>:48376 [30/Dec/2015:00:47:12.325] localhost~ tomcats/10.22.2.34 1179/0/1/162/1342 202 542 JSESSIONID=58B7757A43F3F765B0F8D611552C5C9A.ip-10-22-2-34 - ---- 4/4/0/1/0 0/0 "GET /myapi/user/preferences/search HTTP/1.1"
 ```
 
@@ -244,8 +244,6 @@ Tasks: 68
 Run_queue: 1
 Idle_pct: 98
 node: haproxy
- 
-$ echo "show table" | socat stdio unix-connect:/tmp/haproxy
 ```
 
 If the permissions on the socket are elevated to admin level as in this example:
