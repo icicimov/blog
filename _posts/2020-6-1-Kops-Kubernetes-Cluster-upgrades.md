@@ -6,7 +6,7 @@ title: 'Kops Kubernetes Cluster upgrades'
 categories: 
   - Virtualization
 tags: [kubernetes, docker, containers, kops]
-date: 2020-6-1-Kops-Kubernetes-Cluster-upgrades
+date: 2020-6-1
 ---
 
 Some notes and rules on upgrades to the Kubernetes clusters with Kops I've adopted during more than 3 years of working with Kops and Kubernetes. I always follow the points below to avoid ending up with a broken cluster. And they probably work since I still have clusters created with version `1.4` running and upgraded to the latest Kubernetes version to this date.
