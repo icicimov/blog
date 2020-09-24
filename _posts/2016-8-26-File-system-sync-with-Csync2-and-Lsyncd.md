@@ -244,7 +244,7 @@ user@nexus1:~$ lsyncd --version
 Version: 2.0.4
 ```
 
-We create the following `/etc/[lsyncd.conf]({{ site.baseurl }}/download/lsyncd.conf)` Lua config file:
+We create the following /etc/[lsyncd.conf]({{ site.baseurl }}/download/lsyncd.conf) Lua config file:
 
 ```
 settings = {
