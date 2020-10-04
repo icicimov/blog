@@ -159,7 +159,7 @@ This problem is caused by Ansible not picking up the correct DNS servers in its 
 nameserver 127.0.0.53
 ```
 
-for `systemd-reolved` enabled servers. Consequently when using the `{{ ansible_dns.nameservers }}` fact in our templates to extract the DNS server for the remote host we endup with the following in the `/etc/ipsec.conf` config file for our VPN:
+for `systemd-reolved` enabled servers. Consequently when using the `{% raw %}{{ ansible_dns.nameservers }}{% endraw %}` fact in our templates to extract the DNS server for the remote host we endup with the following in the `/etc/ipsec.conf` config file for our VPN:
 
 ```
 version 2.0
